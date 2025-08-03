@@ -1,0 +1,54 @@
+<body>
+  <h1>Register</h1>
+
+  Username:
+  <input type="text" [(ngModel)]="user.username" name="username">
+  <br/>
+
+  Password:
+  <input type="password" [(ngModel)]="user.password" name="password">
+  <br/>
+
+  Email:
+  <input type="email" [(ngModel)]="user.email" name="email">
+  <br/>
+
+  Firstname:
+  <input type="text" [(ngModel)]="user.firstName" name="firstName">
+  <br/>
+
+  Lastname:
+  <input type="text" [(ngModel)]="user.lastName" name="lastName">
+  <br/>
+
+  Gender:
+  <select [(ngModel)]="user.gender" name="gender">
+    <option value="M">M</option>
+    <option value="Ž">Ž</option>
+  </select>
+  <br/>
+
+  Address:
+  <input type="text" [(ngModel)]="user.address" name="address">
+  <br/>
+
+  Phone:
+  <input type="text" [(ngModel)]="user.phone" name="phone">
+  <br/>
+
+  Credit Card:
+  <input type="text" [(ngModel)]="user.creditCard" name="creditCard">
+  <br/>
+
+  Profile Image:
+  <input type="file" (change)="onFileSelected($event)">
+  <br/><br/>
+
+  <button (click)="register()">Register</button>
+  <br/><br/>
+
+  {{message}}
+
+  <hr/>
+  <a routerLink="/">Back</a>
+</body>

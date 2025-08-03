@@ -1,0 +1,37 @@
+# Angular build output
+/dist
+/out-tsc
+
+# Runtime/compiled files
+/tmp
+/.sass-cache
+/.cache
+
+# Dependency directories
+/node_modules
+
+# Environment files
+src/environments/environment*.ts
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+/coverage
+
+# Misc
+/.angular/cache
