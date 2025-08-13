@@ -1,0 +1,33 @@
+<div class="vikendica-details-container">
+  <!-- Left: Carousel -->
+  <div id="vikendicaCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      @for (photo of vikendica.photos; track $index) {
+        <div class="carousel-item" [class.active]="$index === 0">
+          <img
+            [src]="photo"
+            class="d-block w-100"
+            alt="Photo of {{ vikendica.Title }}"
+          >
+        </div>
+      }
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#vikendicaCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#vikendicaCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+
+  <!-- Right: Details -->
+  <div class="vikendica-details-info">
+    <h2>{{ vikendica.Title }}</h2>
+    <p class="price">{{ vikendica.Price }} € / night</p>
+    <p class="location">📍 {{ vikendica.Location }}</p>
+    <p class="description">{{ vikendica.Description }}</p>
+
+    <button class="btn btn-primary">Book Now</button>
+  </div>
+</div>

@@ -9,12 +9,20 @@ import { Observable } from 'rxjs';
 })
 export class VikendicaService {
 
-  private apiUrl = 'http://localhost/vikendice/getAll';
+  private apiUrl = 'http://localhost:4000/vikendice/';
 
   constructor(private http:HttpClient) {}
 
   GetAllV_():Observable<Vikendica[]>{
-    return this.http.get<Vikendica[]>(this.apiUrl);
+    return this.http.get<Vikendica[]>(`${this.apiUrl}/getAll`);
+  }
+
+  getId():Observable<Vikendica>{
+    return this.http.get<Vikendica>(`${this.apiUrl}/getId`);
+  }
+
+  insertCottage(data:FormData){
+    return this.http.post("`${this.apiUrl}/insertCottage`",{data:data});
   }
 
 }

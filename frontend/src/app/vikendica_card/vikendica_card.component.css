@@ -1,0 +1,51 @@
+.vikendica-card {
+  width: 350px;
+  height: 200px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.vikendica-title {
+  background: #f7f7f7;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+
+.vikendica-content {
+  display: flex;
+  flex: 1;
+  padding: 10px 15px;
+  gap: 15px;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.vikendica-photo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+.vikendica-price {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.price-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #2
+}

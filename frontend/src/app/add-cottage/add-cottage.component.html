@@ -1,0 +1,86 @@
+<!-- add-cottage.component.html -->
+<div class="add-cottage-container">
+  <h2>Add New Cottage</h2>
+
+  <div class="add-cottage">
+    <!-- Left column: form -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="title" class="required">Title:</label>
+        <input type="text" id="title" placeholder="Cottage Name" [(ngModel)]="title" #titleInput="ngModel" required>
+        <div *ngIf="titleInput.invalid && (titleInput.dirty || titleInput.touched)" class="validation-error">
+          Title is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="required">Description:</label>
+        <textarea id="description" placeholder="Describe your cottage..." rows="4"
+                  [(ngModel)]="description" #descriptionInput="ngModel" required></textarea>
+        <div *ngIf="descriptionInput.invalid && (descriptionInput.dirty || descriptionInput.touched)" class="validation-error">
+          Description is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="priceSummer" class="required">Price Summer(€):</label>
+        <input type="number" id="price" placeholder="Per night "
+               [(ngModel)]="priceSummer" #priceInput="ngModel" required min="1">
+        <div *ngIf="priceInput.invalid && (priceInput.dirty || priceInput.touched)" class="validation-error">
+          Valid price is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="priceWinter" class="required">Price Winter(€):</label>
+        <input type="number" id="price" placeholder="Per night "
+               [(ngModel)]="priceWinter" #priceInput="ngModel" required min="1">
+        <div *ngIf="priceInput.invalid && (priceInput.dirty || priceInput.touched)" class="validation-error">
+          Valid price is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="photos" class="required">Photos:</label>
+        <input type="file" id="photos" multiple (change)="onFilesSelected($event)">
+        <div class="info-text">Select up to 5 photos (JPEG or PNG)</div>
+        <div *ngIf="photos.length === 0 && formSubmitted" class="validation-error">
+          At least one photo is required
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="photos.length > 0">
+        <div class="photo-preview">
+          <h4>Selected Photos:</h4>
+          <ul>
+            <li *ngFor="let photo of photos; let i = index">
+              <span class="file-info">{{ photo.name }}</span>
+              <button type="button" (click)="removePhoto(i)">✖</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="btn-primary" (click)="submitCottage()">Submit Cottage</button>
+    </div>
+
+    <!-- Right column: map -->
+    <div class="map-section">
+      <label class="required">Location:</label>
+      <div class="info-text">Click on the map to set cottage location</div>
+      <div class="map-container">
+        <div *ngIf="!mapInitialized" class="map-overlay">
+          <div class="loading-spinner"></div>
+          <p>Loading map...</p>
+        </div>
+        <div id="map"></div>
+      </div>
+      <div class="coordinates" *ngIf="location.lat !== 0 && location.lng !== 0">
+        Selected: {{ location.lat | number:'1.4-4' }}, {{ location.lng | number:'1.4-4' }}
+      </div>
+      <div *ngIf="location.lat === 0 && location.lng === 0 && formSubmitted" class="validation-error">
+        Please select a location on the map
+      </div>
+    </div>
+  </div>
+</div>

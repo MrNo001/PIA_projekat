@@ -52,3 +52,6 @@ Thumbs.db
 
 # Optional eslint cache
 .eslintcache
+
+
+/backend/uploads/

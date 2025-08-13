@@ -10,7 +10,6 @@ export class AuthController{
 
 
 
-
   static login = (req:Request,res:Response) =>{
     let u = req.body.username;
     let p = req.body.password;
@@ -19,7 +18,8 @@ export class AuthController{
    
     User.findOne({username:u,password:p}).then((user) => {
       if(user){
-        res.json(user.username);
+        res.json(user.username).status(200);
+        console.log("Found the user");
         }
       else{
       res.json(null);
@@ -43,6 +43,9 @@ export class AuthController{
       const phone = req.body.phone;
       const creditCard = req.body.creditCard;
       const role = req.body.role;
+      const profileImage = req.file ? req.file.filename : 'default.png';
+
+    
 
       
       // if(!passRx.test(password)){
@@ -55,7 +58,7 @@ export class AuthController{
       // }
       
       //const profileImg = req.file?'/' + req.file.path.replace(/\\/g, '/') : undefined;
-      const profileImg = "../../uploads/default.png"
+
 
 
       let user = {
@@ -69,6 +72,7 @@ export class AuthController{
         phone:phone,
         creditCard:creditCard,
         role:role,
+        profileImg:profileImage
       }
 
       new User(user).save().then(ok=>

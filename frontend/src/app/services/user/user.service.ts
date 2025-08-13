@@ -17,11 +17,16 @@ export class UserService {
   return this.httpClient.post(`${this.apiUrl}/auth/login`, { username, password });
 }
 
-  // register(u: User){
-  //   return this.httpClient.post<Message>("http://localhost:4000/users/register", u)
-  // }
-    register(user: User): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/auth/register`, user);
+    register(user: User,file:File): Observable<any> {
+
+    const formData = new FormData();
+    Object.keys(user).forEach(key=>{
+      formData.append(key,(user as any)[key]);
+    });
+
+    formData.append('profileImage',file);
+
+    return this.httpClient.post(`${this.apiUrl}/auth/register`, formData);
   }
 
   changePassword(oldPass: string, newPass: string): Observable<any> {
@@ -30,7 +35,31 @@ export class UserService {
     newPassword: newPass
   });
 }
-  getUser(user: string){
-    return this.httpClient.get<User>(`http://localhost:4000/users/getUser/${user}`, {observe: 'response'});
+  getUser(username: string){
+    return this.httpClient.get<User>(`http://localhost:4000/users/getUser/${username}`);
+  }
+
+   // update user: send multipart/form-data (fields + optional profileImage)
+  updateUser(user: User, file?: File | null): Observable<any> {
+    const formData = new FormData();
+
+    // Append user fields (exclude undefined)
+    Object.keys(user).forEach(key => {
+      const value = (user as any)[key];
+      if (value !== undefined && value !== null) formData.append(key, String(value));
+    });
+
+    if (file) {
+      formData.append('profileImage', file);
+    }
+
+    // Endpoint should be implemented server-side to accept multipart/form-data
+    return this.httpClient.post(`${this.apiUrl}/users/update`, formData);
+  }
+
+  // helper to build full uploads URL
+  getUploadUrl(filename: string | null | undefined): string | null {
+    if (!filename) return null;
+    return `${this.apiUrl}/uploads/${filename}`;
   }
 }

@@ -1,54 +1,44 @@
 <body>
-  <h1>Register</h1>
+  <div class="register-container">
+    <h1>Register</h1>
 
-  Username:
-  <input type="text" [(ngModel)]="user.username" name="username">
-  <br/>
+    <label>Username:</label>
+    <input type="text" [(ngModel)]="user.username" name="username">
 
-  Password:
-  <input type="password" [(ngModel)]="user.password" name="password">
-  <br/>
+    <label>Password:</label>
+    <input type="password" [(ngModel)]="user.password" name="password">
 
-  Email:
-  <input type="email" [(ngModel)]="user.email" name="email">
-  <br/>
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="user.email" name="email">
 
-  Firstname:
-  <input type="text" [(ngModel)]="user.firstName" name="firstName">
-  <br/>
+    <label>Firstname:</label>
+    <input type="text" [(ngModel)]="user.firstName" name="firstName">
 
-  Lastname:
-  <input type="text" [(ngModel)]="user.lastName" name="lastName">
-  <br/>
+    <label>Lastname:</label>
+    <input type="text" [(ngModel)]="user.lastName" name="lastName">
 
-  Gender:
-  <select [(ngModel)]="user.gender" name="gender">
-    <option value="M">M</option>
-    <option value="Ž">Ž</option>
-  </select>
-  <br/>
+    <label>Gender:</label>
+    <select [(ngModel)]="user.gender" name="gender">
+      <option value="M">M</option>
+      <option value="Ž">Ž</option>
+    </select>
 
-  Address:
-  <input type="text" [(ngModel)]="user.address" name="address">
-  <br/>
+    <label>Address:</label>
+    <input type="text" [(ngModel)]="user.address" name="address">
 
-  Phone:
-  <input type="text" [(ngModel)]="user.phone" name="phone">
-  <br/>
+    <label>Phone:</label>
+    <input type="text" [(ngModel)]="user.phone" name="phone">
 
-  Credit Card:
-  <input type="text" [(ngModel)]="user.creditCard" name="creditCard">
-  <br/>
+    <label>Credit Card:</label>
+    <input type="text" [(ngModel)]="user.creditCard" name="creditCard">
 
-  Profile Image:
-  <input type="file" (change)="onFileSelected($event)">
-  <br/><br/>
+    <label>Profile Image:</label>
+    <input type="file" (change)="onFileSelected($event)">
 
-  <button (click)="register()">Register</button>
-  <br/><br/>
+    <button (click)="register()">Register</button>
 
-  {{message}}
+    <div class="message">{{message}}</div>
 
-  <hr/>
-  <a routerLink="/">Back</a>
+    <a routerLink="/">Back</a>
+  </div>
 </body>

@@ -1,3 +1,35 @@
-<p>home works!</p>
+<!-- Navigation Bar -->
+ <nav>
+  <app-nav-bar ></app-nav-bar>
+ </nav>
 
-{{message}}
+
+<!-- Main Content -->
+<div class="stats">
+  <p>Ukupan broj Vikendica: {{ numOfCottages }}</p>
+  <p>Ukupan broj vlasnika: {{ numOfOwners }}</p>
+  <p>Ukupan broj turista: {{ numOfTourists }}</p>
+  <p>Ukupan broj rezervisanih vikendica u poslednjih 24h: {{ numOfReservationsLastDay }}</p>
+  <p>Ukupan broj rezervisanih vikendica u poslednjih 7 dana: {{ numOfReservationsLastWeek }}</p>
+  <p>Ukupan broj rezervisanih vikendica u poslednjih 30 dana: {{ numOfReservationsLastMonth }}</p>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar">
+  <select [(ngModel)]="searchField">
+    <option value="title">Title</option>
+    <option value="description">Description</option>
+    <option value="location">Location</option>
+  </select>
+
+  <input type="text" [(ngModel)]="searchTerm" placeholder="Search..." />
+
+  <button (click)="onSearch()">Search</button>
+</div>
+
+<!-- Vikendice List -->
+<div class="vikendice-list">
+  @for (vikendica of Vikendice; track $index) {
+    <app-vikendica_card [vikendica]="vikendica"></app-vikendica_card>
+  }
+</div>

@@ -1,8 +1,22 @@
+<div class="login-container">
+  <h2>Login</h2>
 
-Username: <input type="text" [(ngModel)]="username">
-<br>
-Password: <input type="text" [(ngModel)]="password">
-<br> <button (click)="Login()">Login</button>
-{{message}}
-<br>
-<a routerLink="register"></a>
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input id="username" type="text" [(ngModel)]="username" placeholder="Enter your username">
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input id="password" type="password" [(ngModel)]="password" placeholder="Enter your password">
+  </div>
+
+  <button class="login-btn" (click)="Login()">Login</button>
+
+  <p class="message">{{ message }}</p>
+
+  <p class="register-link">
+    Don’t have an account?
+    <a routerLink="/register">Register here</a>
+  </p>
+</div>

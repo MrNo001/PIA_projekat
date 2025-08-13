@@ -1,6 +1,6 @@
 import { Component,inject } from '@angular/core';
 import { routes } from '../app.routes';
-import { RouterLink } from '@angular/router';
+import { RouterLink,Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { FormsModule } from '@angular/forms';
 
@@ -15,6 +15,8 @@ export class LoginComponent {
 
   userService= inject(UserService) ;
 
+  router = inject(Router);
+
   username:string = "";
   password:string = "";
 
@@ -27,6 +29,8 @@ export class LoginComponent {
         if(data){
           localStorage.setItem("key",data);
           console.log("Login with "+data);
+          this.router.navigate(["/profile"]);
+
         }
         else{
           this.message = "Error";

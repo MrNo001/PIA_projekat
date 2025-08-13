@@ -1,0 +1,18 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <a class="nav-logo" routerLink="/">Planinska Vikendica</a>
+    <a class="nav-link" href="#">Home</a>
+    <a class="nav-link" href="#">About</a>
+    <a class="nav-link" href="#">Contact</a>
+  </div>
+  <div class="nav-right">
+    @if(isLoggedIn){
+      <a href="/register"><button class="btn" (click)="LogOut()" routerLink="/register">Log Out</button></a>
+    }
+    @else{
+         <a href="/register"> <button class="btn" routerLink="/register">Register</button>  </a>
+       <a href="/login"> <button class="btn btn-outline" routerLink="/login">Login</button> </a>
+    }
+
+  </div>
+</nav>

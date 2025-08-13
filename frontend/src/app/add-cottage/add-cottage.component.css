@@ -1,0 +1,252 @@
+/* add-cottage.component.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+.add-cottage-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.add-cottage-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #3498db;
+}
+
+.add-cottage {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.form-section {
+  flex: 1;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.map-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: 600;
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.required:after {
+  content: " *";
+  color: #e74c3c;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.map-container {
+  width: 100%;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 2;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.coordinates {
+  background: #2c3e50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.photo-preview {
+  margin-top: 10px;
+}
+
+.photo-preview h4 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.photo-preview ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.photo-preview li {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  border: 1px solid #eee;
+  max-width: 250px;
+}
+
+.photo-preview .file-info {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photo-preview button {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 22px;
+  font-size: 14px;
+  transition: background 0.2s;
+  margin-left: 10px;
+}
+
+.photo-preview button:hover {
+  background: #c0392b;
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.validation-error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 5px;
+  display: block;
+}
+
+.info-text {
+  color: #7f8c8d;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .add-cottage {
+    flex-direction: column;
+  }
+
+  .map-section, .form-section {
+    width: 100%;
+  }
+}
+
+/* Map controls styling */
+.leaflet-top, .leaflet-bottom {
+  z-index: 3;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
