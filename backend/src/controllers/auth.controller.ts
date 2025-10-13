@@ -85,7 +85,5 @@ export class AuthController{
       });
   }
 
+
 }
-
-
-

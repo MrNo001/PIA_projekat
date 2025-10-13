@@ -1,19 +1,28 @@
-import { url } from 'inspector';
-import mongoose, { mongo } from 'mongoose'
-
+import mongoose from 'mongoose'
 
 const VikendicaSchema = new mongoose.Schema({
-    Ocena : Number,
-    Description :{type:String,required:true},
-    OwnerUsername : {type:String,required:true},
-    Title:{type:String,required:true},
-    Location:{type:{lng:Number,lat:Number},required:true},
-    PriceSummer:{type:Number,required:true},
-    PriceWinter:{type:Number,required:true},
-    Media:{type:[{
-      url: { type: String, required: true },  // link to file
-      type: { type: String, enum: ['image', 'video'], required: true }
-    }]}
+    Ocena: { type: Number, default: -1 },
+    Description: { type: String, required: true },
+    OwnerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    Title: { type: String, required: true },
+    Location: { 
+        type: { 
+            lng: { type: Number, required: true }, 
+            lat: { type: Number, required: true } 
+        }, 
+        required: true 
+    },
+    PriceSummer: { type: Number, required: true },
+    PriceWinter: { type: Number, required: true },
+    Photos: { type: [String], default: [] },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Vikendica",VikendicaSchema);
+// Update the updatedAt field before saving
+VikendicaSchema.pre('save', function(next) {
+    this.updatedAt = new Date();
+    next();
+});
+
+export default mongoose.model("Vikendica", VikendicaSchema);

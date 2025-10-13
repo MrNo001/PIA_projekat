@@ -1,0 +1,153 @@
+<div class="owner-dashboard-wrapper">
+  <nav>
+    <app-nav-bar activePage="dashboard"></app-nav-bar>
+  </nav>
+
+  <main class="dashboard-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>{{ getGreeting() }}, {{ currentUser?.firstName || currentUser?.username }}!</h1>
+      <p>Welcome to your cottage management dashboard</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading dashboard data...</p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="!loading" class="dashboard-content">
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon cottages">
+            <i class="bi bi-house-door"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ totalCottages }}</h3>
+            <p>Total Cottages</p>
+            <a routerLink="/my-cottages" class="stat-link">Manage Cottages</a>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon reservations">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ totalReservations }}</h3>
+            <p>Total Reservations</p>
+            <a routerLink="/owner-reservations" class="stat-link">View Reservations</a>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon pending">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ pendingReservations }}</h3>
+            <p>Pending Reservations</p>
+            <a routerLink="/owner-reservations" class="stat-link">Review Now</a>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon revenue">
+            <i class="bi bi-currency-euro"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ totalRevenue }}€</h3>
+            <p>Total Revenue</p>
+            <a routerLink="/owner-statistics" class="stat-link">View Statistics</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <a routerLink="/addCottage" class="action-card">
+            <div class="action-icon">
+              <i class="bi bi-plus-circle"></i>
+            </div>
+            <div class="action-content">
+              <h4>Add New Cottage</h4>
+              <p>List a new cottage for rent</p>
+            </div>
+          </a>
+
+          <a routerLink="/my-cottages" class="action-card">
+            <div class="action-icon">
+              <i class="bi bi-pencil-square"></i>
+            </div>
+            <div class="action-content">
+              <h4>Manage Cottages</h4>
+              <p>Edit your existing cottages</p>
+            </div>
+          </a>
+
+          <a routerLink="/owner-reservations" class="action-card">
+            <div class="action-icon">
+              <i class="bi bi-calendar-event"></i>
+            </div>
+            <div class="action-content">
+              <h4>View Reservations</h4>
+              <p>Manage booking requests</p>
+            </div>
+          </a>
+
+          <a routerLink="/owner-statistics" class="action-card">
+            <div class="action-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <div class="action-content">
+              <h4>View Statistics</h4>
+              <p>Analyze your performance</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-activity">
+        <h2>Recent Activity</h2>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="bi bi-house-door"></i>
+            </div>
+            <div class="activity-content">
+              <p><strong>{{ totalCottages }} cottages</strong> in your portfolio</p>
+              <small class="text-muted">Last updated: {{ getCurrentDate() }}</small>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="activity-content">
+              <p><strong>{{ totalReservations }} total reservations</strong> across all cottages</p>
+              <small class="text-muted">Including {{ pendingReservations }} pending</small>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="bi bi-currency-euro"></i>
+            </div>
+            <div class="activity-content">
+              <p><strong>{{ totalRevenue }}€ total revenue</strong> from confirmed bookings</p>
+              <small class="text-muted">From completed and confirmed reservations</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

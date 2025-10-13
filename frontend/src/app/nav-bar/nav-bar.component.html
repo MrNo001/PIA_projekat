@@ -1,18 +1,38 @@
 <nav class="navbar">
   <div class="nav-left">
-    <a class="nav-logo" routerLink="/">Planinska Vikendica</a>
-    <a class="nav-link" href="#">Home</a>
-    <a class="nav-link" href="#">About</a>
-    <a class="nav-link" href="#">Contact</a>
+    <a class="nav-logo" [routerLink]="isOwner() ? '/owner-dashboard' : '/'">Planinska Vikendica</a>
+    
+    <!-- Tourist Navigation -->
+    @if(isTourist() || !isLoggedIn) {
+      <a class="nav-link" routerLink="/profile">Profile</a>
+    }
+    
+    <!-- Owner Navigation -->
+    @if(isOwner()) {
+      <a class="nav-link" routerLink="/my-cottages" [class.active]="activePage === 'my-cottages'">My Cottages</a>
+      <a class="nav-link" routerLink="/owner-reservations" [class.active]="activePage === 'reservations'">Reservations</a>
+      <a class="nav-link" routerLink="/owner-statistics" [class.active]="activePage === 'statistics'">Statistics</a>
+      <a class="nav-link" routerLink="/profile">Profile</a>
+    }
+    
+    <!-- Admin Navigation -->
+    @if(isAdmin()) {
+      <a class="nav-link" routerLink="/admin-dashboard">Admin Dashboard</a>
+      <a class="nav-link" routerLink="/admin-users">Users</a>
+      <a class="nav-link" routerLink="/admin-cottages">Cottages</a>
+    }
   </div>
+  
   <div class="nav-right">
-    @if(isLoggedIn){
-      <a href="/register"><button class="btn" (click)="LogOut()" routerLink="/register">Log Out</button></a>
+    @if(isLoggedIn) {
+      <div class="user-info">
+        <span class="user-name">{{ currentUser?.firstName || currentUser?.username }}</span>
+        <span class="user-role" [class]="'role-' + userRole">{{ userRole | titlecase }}</span>
+      </div>
+      <button class="btn btn-outline" (click)="LogOut()">Log Out</button>
+    } @else {
+      <a routerLink="/register"><button class="btn">Register</button></a>
+      <a routerLink="/login"><button class="btn btn-outline">Login</button></a>
     }
-    @else{
-         <a href="/register"> <button class="btn" routerLink="/register">Register</button>  </a>
-       <a href="/login"> <button class="btn btn-outline" routerLink="/login">Login</button> </a>
-    }
-
   </div>
 </nav>

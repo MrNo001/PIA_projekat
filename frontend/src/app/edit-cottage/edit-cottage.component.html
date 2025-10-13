@@ -1,0 +1,182 @@
+<div class="edit-cottage-wrapper">
+  <header class="topbar">
+    <h2>Edit Cottage</h2>
+    <div class="top-actions">
+      <button class="btn btn-outline-secondary" (click)="cancel()">
+        <i class="bi bi-arrow-left"></i> Cancel
+      </button>
+    </div>
+  </header>
+
+  <main class="edit-cottage-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading cottage details...</p>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="!loading" class="edit-form">
+      <!-- Success/Error Messages -->
+      <div *ngIf="success" class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        {{ error }}
+      </div>
+
+      <form (ngSubmit)="saveCottage()" #editForm="ngForm">
+        <div class="row">
+          <!-- Basic Information -->
+          <div class="col-lg-8">
+            <div class="form-section">
+              <h3>Basic Information</h3>
+              
+              <div class="form-group">
+                <label for="title">Cottage Title *</label>
+                <input type="text" 
+                       id="title" 
+                       class="form-control" 
+                       [(ngModel)]="title" 
+                       name="title"
+                       required
+                       placeholder="Enter cottage title">
+              </div>
+
+              <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" 
+                          class="form-control" 
+                          rows="4"
+                          [(ngModel)]="description" 
+                          name="description"
+                          required
+                          placeholder="Describe your cottage..."></textarea>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="priceSummer">Summer Price (€/night) *</label>
+                    <input type="number" 
+                           id="priceSummer" 
+                           class="form-control" 
+                           [(ngModel)]="priceSummer" 
+                           name="priceSummer"
+                           min="1"
+                           required
+                           placeholder="0">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="priceWinter">Winter Price (€/night) *</label>
+                    <input type="number" 
+                           id="priceWinter" 
+                           class="form-control" 
+                           [(ngModel)]="priceWinter" 
+                           name="priceWinter"
+                           min="1"
+                           required
+                           placeholder="0">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photos Section -->
+            <div class="form-section">
+              <h3>Photos</h3>
+              
+              <!-- Existing Photos -->
+              <div *ngIf="existingPhotos.length > 0" class="existing-photos">
+                <h4>Current Photos</h4>
+                <div class="photos-grid">
+                  <div *ngFor="let photo of existingPhotos" class="photo-item">
+                    <img [src]="getPhotoUrl(photo)" alt="Cottage photo">
+                    <button type="button" 
+                            class="btn btn-sm btn-danger remove-photo-btn"
+                            (click)="removeExistingPhoto(photo)"
+                            title="Remove photo">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- New Photos -->
+              <div class="new-photos">
+                <h4>Add New Photos</h4>
+                <div class="file-upload-area">
+                  <input type="file" 
+                         id="photos" 
+                         multiple 
+                         accept="image/*"
+                         (change)="onFileSelected($event)"
+                         class="file-input">
+                  <label for="photos" class="file-label">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Choose photos to add</span>
+                  </label>
+                </div>
+
+                <!-- New Photos Preview -->
+                <div *ngIf="photos.length > 0" class="new-photos-preview">
+                  <div *ngFor="let photo of photos; let i = index" class="photo-item">
+                    <img [src]="getPhotoPreview(photo)" [alt]="photo.name || 'Photo'" (error)="handleImageError($event)">
+                    <button type="button" 
+                            class="btn btn-sm btn-danger remove-photo-btn"
+                            (click)="removeNewPhoto(i)"
+                            title="Remove photo">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                    <div class="photo-name">{{ photo.name }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map Section -->
+          <div class="col-lg-4">
+            <div class="form-section">
+              <h3>Location</h3>
+              <p class="location-help">
+                Click on the map or drag the marker to set the cottage location.
+              </p>
+              <div #mapContainer class="map-container"></div>
+              <div class="location-coordinates">
+                <small>
+                  <strong>Coordinates:</strong> 
+                  {{ location.lat.toFixed(6) }}, {{ location.lng.toFixed(6) }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" 
+                  class="btn btn-outline-secondary" 
+                  (click)="cancel()"
+                  [disabled]="saving">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="btn btn-primary"
+                  [disabled]="saving || !editForm.form.valid">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!saving" class="bi bi-check-circle me-2"></i>
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>

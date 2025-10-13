@@ -4,11 +4,14 @@
   <div class="vikendica-content">
     <img
       class="vikendica-photo"
-      [src]= "'http://localhost:4000/uploads/default-house.png'"
+        src="http://localhost:4000{{ photo }}"
       alt="Photo of {{ vikendica.Title }}"
     />
     <div class="vikendica-price">
-      <span class="price-value">{{ vikendica.Price }}€</span>
+      <span class="price-value">{{ vikendica.PriceSummer }}€</span>
+      <span class="price-value">{{ vikendica.PriceWinter }}€</span>
     </div>
   </div>
 </div>
+
+

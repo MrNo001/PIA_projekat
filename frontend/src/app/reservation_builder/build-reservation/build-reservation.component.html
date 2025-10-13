@@ -1,0 +1,75 @@
+<div class="build-reservation">
+  <div class="cottage-info mb-4" *ngIf="cottage.Title">
+    <h3>{{ cottage.Title }}</h3>
+    <p class="price-display">{{ cottage.PriceSummer }}€ / noć</p>
+  </div>
+  
+  <h4 class="mb-4">Unesite detalje rezervacije</h4>
+
+  <div class="calendar-container mb-4">
+    <div class="input-group">
+      <label for="startDate">Datum početka</label>
+      <input type="date" class="form-control" id="startDate"
+             [min]="minStartDate | date:'yyyy-MM-dd'"
+             [(ngModel)]="startDate" (change)="updateReservationData()">
+    </div>
+
+    <div class="input-group">
+      <label for="endDate">Datum završetka</label>
+      <input type="date" class="form-control" id="endDate"
+             [min]="minEndDate | date:'yyyy-MM-dd'"
+             [(ngModel)]="endDate" (change)="updateReservationData()">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="input-group">
+        <label for="adults">Broj odraslih</label>
+        <input type="number" class="form-control" id="adults" min="1"
+               [(ngModel)]="adults" (change)="updateReservationData()">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="input-group">
+        <label for="children">Broj dece</label>
+        <input type="number" class="form-control" id="children" min="0"
+               [(ngModel)]="children" (change)="updateReservationData()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Price Summary -->
+  <div class="price-summary mt-4" *ngIf="isValid">
+    <div class="summary-card">
+      <h5>Pregled rezervacije</h5>
+      <div class="summary-item">
+        <span>Period:</span>
+        <span>{{ formattedPeriod }}</span>
+      </div>
+      <div class="summary-item">
+        <span>Broj noći:</span>
+        <span>{{ nights }}</span>
+      </div>
+      <div class="summary-item">
+        <span>Cena po noći:</span>
+        <span>{{ cottage.PriceSummer || 85 }}€</span>
+      </div>
+      <div class="summary-item total">
+        <span>Ukupna cena:</span>
+        <span><strong>{{ totalPrice }}€</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <button (click)="updateReservationData()">Smth</button>
+
+  <div class="alert alert-info mt-4">
+    <i class="bi bi-info-circle"></i> Minimalno boravak je 2 noćenja. Cena noćenja: {{ cottage.PriceSummer || 85 }}€ po noći.
+  </div>
+
+  <div *ngIf="validationError" class="alert alert-danger">
+    <i class="bi bi-exclamation-circle"></i>
+    {{ validationError }}
+  </div>
+</div>

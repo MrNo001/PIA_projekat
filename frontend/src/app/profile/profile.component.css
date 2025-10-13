@@ -34,6 +34,44 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.07);
 }
 
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.profile-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.role-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-owner {
+  background-color: #28a745;
+  color: white;
+}
+
+.role-tourist {
+  background-color: #007bff;
+  color: white;
+}
+
+.role-admin {
+  background-color: #dc3545;
+  color: white;
+}
+
 .profile-grid {
   display: grid;
   grid-template-columns: 220px 1fr;

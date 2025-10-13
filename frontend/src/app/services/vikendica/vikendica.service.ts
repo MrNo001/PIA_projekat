@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class VikendicaService {
 
-  private apiUrl = 'http://localhost:4000/vikendice/';
+  private apiUrl = 'http://localhost:4000/vikendice';
 
   constructor(private http:HttpClient) {}
 
@@ -17,12 +17,27 @@ export class VikendicaService {
     return this.http.get<Vikendica[]>(`${this.apiUrl}/getAll`);
   }
 
-  getId():Observable<Vikendica>{
-    return this.http.get<Vikendica>(`${this.apiUrl}/getId`);
+  getById(id?: string):Observable<Vikendica>{
+    if (id) {
+      return this.http.get<Vikendica>(`${this.apiUrl}/getById/${id}`);
+    }
+    return this.http.get<Vikendica>(`${this.apiUrl}/getById`);
   }
 
   insertCottage(data:FormData){
-    return this.http.post("`${this.apiUrl}/insertCottage`",{data:data});
+    return this.http.post(`${this.apiUrl}/insertCottage`,data);
+  }
+
+  getCottagesByOwner(ownerId: string): Observable<Vikendica[]> {
+    return this.http.get<Vikendica[]>(`${this.apiUrl}/owner/${ownerId}`);
+  }
+
+  updateCottage(data: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update`, data);
+  }
+
+  deleteCottage(cottageId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${cottageId}`);
   }
 
 }

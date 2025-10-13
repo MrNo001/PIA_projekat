@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(){
        this.vikendiceService.GetAllV_().subscribe(data=>{
       this.Vikendice = data;
+      console.log(this.Vikendice);
     })
   }
 

@@ -1,22 +1,62 @@
-import { Component } from '@angular/core';
-import { Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, RouterLink],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
 
   @Input() activePage: string = '';
   @Input() userRole: string = '';
-  @Input() isLoggedIn: boolean = localStorage.getItem("key")!=null;
+  @Input() isLoggedIn: boolean = localStorage.getItem("key") != null;
+  
+  currentUser: any = null;
 
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) {}
 
-  LogOut(){
+  ngOnInit() {
+    if (this.isLoggedIn) {
+      const username = localStorage.getItem('key');
+      if (username) {
+        this.userService.getUser(username).subscribe({
+          next: (user) => {
+            this.currentUser = user;
+            this.userRole = user.role;
+          },
+          error: (err) => {
+            console.error('Failed to fetch user:', err);
+          }
+        });
+      }
+    }
+  }
+
+  LogOut() {
     localStorage.removeItem("key");
-    console.log("loged out");
+    this.userService.loggedIn = false;
+    this.userService.currentUser = null;
+    this.router.navigate(['/login']);
+    console.log("logged out");
+  }
+
+  isOwner(): boolean {
+    return this.userRole === 'owner';
+  }
+
+  isTourist(): boolean {
+    return this.userRole === 'tourist';
+  }
+
+  isAdmin(): boolean {
+    return this.userRole === 'admin';
   }
 }

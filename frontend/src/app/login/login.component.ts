@@ -3,11 +3,12 @@ import { routes } from '../app.routes';
 import { RouterLink,Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { FormsModule } from '@angular/forms';
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink,FormsModule],
+  imports: [RouterLink,FormsModule,NavBarComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -27,10 +28,21 @@ export class LoginComponent {
       {
         next: data => {
         if(data){
+          this.userService.loggedIn=true;
           localStorage.setItem("key",data);
           console.log("Login with "+data);
-          this.router.navigate(["/profile"]);
-
+          
+          // Fetch user details and set currentUser
+          this.userService.getUser(this.username).subscribe({
+            next: (user) => {
+              this.userService.currentUser = user;
+              this.router.navigate(["/profile"]);
+            },
+            error: (err) => {
+              console.error('Error fetching user details:', err);
+              this.router.navigate(["/profile"]);
+            }
+          });
         }
         else{
           this.message = "Error";

@@ -13,6 +13,9 @@ export class UserService {
   private httpClient = inject(HttpClient)
   apiUrl="http://localhost:4000"
 
+  public loggedIn:boolean = false
+  public currentUser: User | null = null
+
   login(username: string, password: string): Observable<any> {
   return this.httpClient.post(`${this.apiUrl}/auth/login`, { username, password });
 }

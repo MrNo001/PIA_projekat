@@ -5,12 +5,18 @@
     <h2>Welcome, {{ user.firstName || user.username }}</h2>
     <div class="top-actions">
       <a routerLink="/" class="link">Home</a>
+      <!-- Owner-specific navigation -->
+      <a *ngIf="user.role === 'owner'" routerLink="/my-cottages" class="link">My Cottages</a>
+      <a *ngIf="user.role === 'owner'" routerLink="/addCottage" class="link">Add Cottage</a>
       <a routerLink="/logout" class="link">Logout</a>
     </div>
   </header>
 
   <main class="profile-card">
-    <h3>Profile</h3>
+    <div class="profile-header">
+      <h3>Profile</h3>
+      <span class="role-badge" [class]="'role-' + user.role">{{ user.role | titlecase }}</span>
+    </div>
 
     <div class="profile-grid">
       <div class="avatar-col">

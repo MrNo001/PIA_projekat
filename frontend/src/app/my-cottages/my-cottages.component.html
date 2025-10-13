@@ -1,0 +1,125 @@
+<div class="my-cottages-wrapper">
+  <header class="topbar">
+    <h2>My Cottages</h2>
+    <div class="top-actions">
+      <button class="btn btn-primary" (click)="addNewCottage()">
+        <i class="bi bi-plus-circle"></i> Add New Cottage
+      </button>
+      <a routerLink="/profile" class="link">Back to Profile</a>
+    </div>
+  </header>
+
+  <main class="cottages-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading your cottages...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        {{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadCottages()">
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && cottages.length === 0" class="empty-state">
+      <div class="empty-content">
+        <i class="bi bi-house-door empty-icon"></i>
+        <h3>No Cottages Yet</h3>
+        <p>You haven't added any cottages to your portfolio. Start by adding your first cottage!</p>
+        <button class="btn btn-primary btn-lg" (click)="addNewCottage()">
+          <i class="bi bi-plus-circle"></i> Add Your First Cottage
+        </button>
+      </div>
+    </div>
+
+    <!-- Cottages Grid -->
+    <div *ngIf="!loading && !error && cottages.length > 0" class="cottages-grid">
+      <div class="cottages-header">
+        <h3>Your Cottages ({{ cottages.length }})</h3>
+        <div class="view-options">
+          <button class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-grid"></i> Grid
+          </button>
+          <button class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-list"></i> List
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div *ngFor="let cottage of cottages" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="cottage-card">
+            <!-- Cottage Image -->
+            <div class="cottage-image">
+              <img [src]="getCottageImageUrl(cottage.Photos?.[0] || '')" 
+                   [alt]="cottage.Title"
+                   (error)="handleImageError($event)">
+              <div class="image-overlay">
+                <div class="overlay-actions">
+                  <button class="btn btn-sm btn-light" (click)="viewCottage(cottage._id || '')" title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-warning" (click)="editCottage(cottage._id || '')" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteCottage(cottage._id || '', cottage.Title)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="status-badge" [class]="getStatusBadgeClass(cottage)">
+                {{ getStatusText(cottage) }}
+              </div>
+            </div>
+
+            <!-- Cottage Info -->
+            <div class="cottage-info">
+              <h4 class="cottage-title">{{ cottage.Title }}</h4>
+              <p class="cottage-description">{{ cottage.Description | slice:0:100 }}{{ cottage.Description.length > 100 ? '...' : '' }}</p>
+              
+              <div class="cottage-details">
+                <div class="detail-item">
+                  <i class="bi bi-geo-alt"></i>
+                  <span>Location: {{ cottage.Location?.lat?.toFixed(2) || 'N/A' }}, {{ cottage.Location?.lng?.toFixed(2) || 'N/A' }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-currency-euro"></i>
+                  <span>Summer: {{ cottage.PriceSummer || 0 }}€/night</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-currency-euro"></i>
+                  <span>Winter: {{ cottage.PriceWinter || 0 }}€/night</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-images"></i>
+                  <span>{{ cottage.Photos?.length || 0 }} photos</span>
+                </div>
+              </div>
+
+              <div class="cottage-actions">
+                <button class="btn btn-outline-primary btn-sm" (click)="viewCottage(cottage._id || '')">
+                  <i class="bi bi-eye"></i> View
+                </button>
+                <button class="btn btn-warning btn-sm" (click)="editCottage(cottage._id || '')">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteCottage(cottage._id || '', cottage.Title)">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

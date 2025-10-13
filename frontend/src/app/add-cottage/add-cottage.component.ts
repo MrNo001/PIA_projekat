@@ -125,7 +125,7 @@ export class AddCottageComponent implements AfterViewInit {
       console.log(response);
     },
     error: (error) => {
-      console.error('Registration error:', error);
+      console.error('Inserting error:', error);
     }
     });
     // In a real app, you would send formData to your backend
@@ -142,7 +142,7 @@ export class AddCottageComponent implements AfterViewInit {
     alert('Cottage submitted successfully!');
 
     // Reset form after successful submission
-    this.resetForm();
+    //this.resetForm();
   }
 
   resetForm() {

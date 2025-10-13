@@ -45,3 +45,24 @@
   line-height: 1.5;
   margin-bottom: 20px;
 }
+
+
+/* Add to your component's CSS or global styles */
+.map-container {
+  height: 250px;
+  width: 100%;
+  margin: 15px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+/* Fix for Leaflet's default icon paths */
+.leaflet-default-icon-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png);
+}

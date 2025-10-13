@@ -8,6 +8,7 @@ import authRouter from './routers/auth.router'
 import testRouter from './routers/testing.router'
 import vikendicaRouter from './routers/vikendica.router'
 import userRouter from './routers/user.router'
+import reservationRouter from './routers/reservation.router'
 
 
 const app = express()
@@ -31,6 +32,7 @@ router.use("/auth", authRouter)
 router.use("/testing",testRouter);
 router.use("/vikendice",vikendicaRouter);
 router.use("/users",userRouter);
+router.use("/reservations",reservationRouter);
 
 router.get("/test",(req,res) => {
     console.log("jupiii");
