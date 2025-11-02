@@ -25,6 +25,9 @@ authRouter.post('/register', upload.single('profileImage'), (req, res) => {
 authRouter.route('/login').post(
     (req,res) => AuthController.login(req,res));
 
+authRouter.route('/change-password').post(
+    (req,res) => AuthController.changePassword(req,res));
+
 authRouter.route('/test').get(
     (req,res)=> { res.json({message:"passed test"});}
 )

@@ -27,7 +27,8 @@ export class MakeReservationComponent implements OnInit {
 
   ngOnInit() {
     // Check if user is logged in
-    if (!this.userService.loggedIn) {
+    const username = localStorage.getItem('key');
+    if (!username) {
       this.router.navigate(['/login']);
       return;
     }

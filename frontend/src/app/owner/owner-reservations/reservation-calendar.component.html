@@ -1,0 +1,42 @@
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button class="btn btn-outline-secondary btn-sm" (click)="previousMonth()">
+      <i class="bi bi-chevron-left"></i>
+      Previous Month
+    </button>
+    <h3 class="calendar-title">{{ getMonthYearString() }}</h3>
+    <button class="btn btn-outline-secondary btn-sm" (click)="nextMonth()">
+      <i class="bi bi-chevron-right"></i>
+      Next Month
+    </button>
+  </div>
+
+  <div class="calendar-grid">
+    <!-- Week day headers -->
+    <div class="weekday-header">
+      <div *ngFor="let day of weekDays" class="weekday">{{ day }}</div>
+    </div>
+
+    <!-- Calendar days -->
+    <div class="calendar-body">
+      <div *ngFor="let date of calendarDays; let i = index" 
+           class="calendar-day"
+           [class.other-month]="!isCurrentMonth(date)"
+           [class.today]="isToday(date)">
+        
+        <div class="day-number">{{ date.getDate() }}</div>
+        
+        <!-- Reservations for this date -->
+        <div class="reservations-container">
+          <div *ngFor="let reservation of getReservationsForDate(date)" 
+               [ngClass]="getReservationClasses(reservation, date)"
+               [style.background-color]="getReservationColor(reservation)"
+               (click)="onReservationClick(reservation, $event)"
+               [title]="getCottageName(reservation.cottageId) + ' - ' + getDateString(reservation.startDate) + ' to ' + getDateString(reservation.endDate)">
+            {{ getCottageName(reservation.cottageId) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

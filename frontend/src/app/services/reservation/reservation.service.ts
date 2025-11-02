@@ -5,8 +5,8 @@ import { ReservationData } from '../../_models/reservation';
 
 export interface Reservation {
   _id?: string;
-  cottageId: string;
-  userId: string;
+  cottageId: string | any; // Can be string ID or populated cottage object
+  userUsername: string;
   startDate: Date;
   endDate: Date;
   adults: number;
@@ -14,14 +14,19 @@ export interface Reservation {
   totalPrice: number;
   nights: number;
   specialRequests?: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'expired';
+  rating?: {
+    score: number;
+    comment?: string;
+    ratedAt?: Date;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface CreateReservationRequest {
   cottageId: string;
-  userId: string;
+  userUsername: string;
   startDate: Date;
   endDate: Date;
   adults: number;
@@ -39,12 +44,24 @@ export class ReservationService {
 
   // Create a new reservation
   createReservation(reservationData: CreateReservationRequest): Observable<any> {
-    return this.http.post(this.apiUrl, reservationData);
+    console.log('ReservationService.createReservation - URL:', `${this.apiUrl}/create`);
+    console.log('ReservationService.createReservation - Data:', reservationData);
+    return this.http.post(`${this.apiUrl}/create`, reservationData);
   }
 
   // Get all reservations for a user
-  getUserReservations(userId: string): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}`);
+  getUserReservations(userUsername: string): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}`);
+  }
+
+  // Get current reservations for a user (pending, confirmed)
+  getCurrentReservations(userUsername: string): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}/current`);
+  }
+
+  // Get archived reservations for a user (completed, cancelled)
+  getArchivedReservations(userUsername: string): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}/archived`);
   }
 
   // Get all reservations for a cottage
@@ -63,8 +80,8 @@ export class ReservationService {
   }
 
   // Cancel reservation
-  cancelReservation(reservationId: string, userId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${reservationId}/cancel`, { userId });
+  cancelReservation(reservationId: string, userUsername: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${reservationId}/cancel`, { userUsername });
   }
 
   // Calculate nights between two dates

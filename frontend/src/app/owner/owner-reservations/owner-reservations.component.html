@@ -1,0 +1,183 @@
+<div class="owner-reservations-wrapper">
+  <nav>
+    <app-nav-bar activePage="reservations"></app-nav-bar>
+  </nav>
+
+  <main class="reservations-container">
+    <header class="page-header">
+      <h1>Reservations Management</h1>
+      <p>Manage reservations for your cottages</p>
+    </header>
+
+    <!-- Statistics Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ getTotalReservations() }}</h3>
+          <p>Total Reservations</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ getPendingReservations() }}</h3>
+          <p>Pending Reservations</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-currency-euro"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ getTotalRevenue() }}€</h3>
+          <p>Total Revenue</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="controls-section">
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="cottageFilter">Filter by Cottage:</label>
+          <select id="cottageFilter" [(ngModel)]="selectedCottage" (change)="loadReservations()">
+            <option value="all">All Cottages</option>
+            <option *ngFor="let cottage of userCottages" [value]="cottage._id">
+              {{ cottage.Title }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="statusFilter">Filter by Status:</label>
+          <select id="statusFilter" [(ngModel)]="statusFilter">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading reservations...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        {{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadReservations()">
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && getFilteredReservations().length === 0" class="empty-state">
+      <div class="empty-content">
+        <i class="bi bi-calendar-x empty-icon"></i>
+        <h3>No Reservations Found</h3>
+        <p>You don't have any reservations matching your current filters.</p>
+      </div>
+    </div>
+
+    <!-- Calendar View -->
+    <div *ngIf="!loading && !error" class="calendar-view">
+      <app-reservation-calendar 
+        [reservations]="getFilteredReservations()"
+        [cottages]="userCottages"
+        [selectedReservationId]="selectedReservationId"
+        (reservationClick)="onReservationClick($event)">
+      </app-reservation-calendar>
+    </div>
+
+    <!-- Reservations List Below Calendar -->
+    <div *ngIf="!loading && !error && getFilteredReservations().length > 0" class="reservations-list">
+      <div class="reservations-header">
+        <h3>Reservations ({{ getFilteredReservations().length }})</h3>
+      </div>
+
+      <div class="reservations-grid">
+        <div *ngFor="let reservation of getFilteredReservations()" 
+             class="reservation-card"
+             [class.selected-card]="selectedReservationId === reservation._id"
+             (click)="selectReservationFromList(reservation)">
+          <div class="reservation-header">
+            <div class="reservation-info">
+              <h4>{{ getCottageName(reservation.cottageId) }}</h4>
+              <span class="reservation-id">#{{ reservation._id?.slice(-8) }}</span>
+            </div>
+            <div class="status-badge" [class]="getStatusBadgeClass(reservation.status)">
+              {{ getStatusText(reservation.status) }}
+            </div>
+          </div>
+
+          <div class="reservation-details">
+            <div class="detail-row">
+              <i class="bi bi-calendar-event"></i>
+              <span>{{ formatDate(reservation.startDate) }} - {{ formatDate(reservation.endDate) }}</span>
+            </div>
+            <div class="detail-row">
+              <i class="bi bi-people"></i>
+              <span>{{ reservation.adults }} adults, {{ reservation.children }} children</span>
+            </div>
+            <div class="detail-row">
+              <i class="bi bi-moon"></i>
+              <span>{{ reservation.nights }} nights</span>
+            </div>
+            <div class="detail-row">
+              <i class="bi bi-currency-euro"></i>
+              <span><strong>{{ reservation.totalPrice }}€</strong></span>
+            </div>
+            <div class="detail-row" *ngIf="reservation.specialRequests">
+              <i class="bi bi-chat-left-text"></i>
+              <span>{{ reservation.specialRequests }}</span>
+            </div>
+          </div>
+
+          <div class="reservation-actions" *ngIf="reservation.status === 'pending'">
+            <button class="btn btn-success btn-sm" 
+                    (click)="confirmReservation(reservation._id || ''); $event.stopPropagation()">
+              <i class="bi bi-check-circle"></i> Confirm
+            </button>
+            <button class="btn btn-danger btn-sm" 
+                    (click)="rejectReservation(reservation._id || ''); $event.stopPropagation()">
+              <i class="bi bi-x-circle"></i> Reject
+            </button>
+          </div>
+
+          <div class="reservation-footer">
+            <small class="text-muted">
+              Created: {{ formatDate(reservation.createdAt) }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Reservation Modal -->
+  <app-reservation-modal
+    [reservation]="selectedReservation"
+    [cottage]="getSelectedCottage()"
+    [show]="showModal"
+    (close)="closeModal()"
+    (confirm)="onConfirmReservation($event)"
+    (cancel)="onCancelReservation($event)">
+  </app-reservation-modal>
+</div>

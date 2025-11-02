@@ -1,12 +1,20 @@
 .confirm-reservation {
   padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .summary-card {
   background: #ecf0f1;
   border-radius: 10px;
   padding: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+}
+
+.summary-card h5 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-weight: 600;
 }
 
 .summary-item {
@@ -23,6 +31,15 @@
   padding-bottom: 0;
 }
 
+.summary-item span:first-child {
+  color: #555;
+}
+
+.summary-item span:last-child {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
 .price-calculation {
   background: white;
   border-radius: 10px;
@@ -30,32 +47,112 @@
   margin-top: 20px;
 }
 
-.input-group {
-  margin-bottom: 20px;
+.form-section {
+  margin-bottom: 25px;
 }
 
-.input-group label {
+.input-group-custom {
+  margin-bottom: 25px;
+}
+
+.input-group-custom label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
   color: #34495e;
+  font-size: 14px;
 }
 
-.card-input {
-  border: 2px solid #ddd;
+.card-input-wrapper {
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
   padding: 12px 15px;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  background: white;
 }
 
-.card-input:focus {
+.card-input-wrapper:focus-within {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-control-card {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+  background: transparent;
+  padding: 0;
+}
+
+.form-control-card::placeholder {
+  color: #bbb;
+}
+
+.form-control-textarea {
+  width: 100%;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-control-textarea:focus {
   border-color: #3498db;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-control-textarea::placeholder {
+  color: #bbb;
 }
 
 .character-count {
   font-size: 12px;
   color: #6c757d;
   text-align: right;
-  margin-top: 5px;
+  margin-top: 8px;
+}
+
+.alert {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.btn-confirm {
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-confirm:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

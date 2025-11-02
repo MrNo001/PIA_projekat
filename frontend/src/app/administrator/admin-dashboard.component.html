@@ -1,0 +1,89 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="admin-dashboard">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="dashboard-title">Administrator Dashboard</h1>
+        <p class="dashboard-subtitle">Welcome back, {{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ stats.totalUsers }}</h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-house"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ stats.totalOwners }}</h3>
+            <p>Owners</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-person"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ stats.totalTourists }}</h3>
+            <p>Tourists</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ stats.pendingRequests }}</h3>
+            <p>Pending Requests</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+      <div class="col-12">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+          <a routerLink="/admin/users" class="action-card">
+            <i class="bi bi-people"></i>
+            <h4>Manage Users</h4>
+            <p>View and manage all users in the system</p>
+          </a>
+          <a routerLink="/admin/requests" class="action-card">
+            <i class="bi bi-clipboard-check"></i>
+            <h4>Review Requests</h4>
+            <p>Review pending registration requests</p>
+          </a>
+          <a routerLink="/admin/cottages" class="action-card">
+            <i class="bi bi-house"></i>
+            <h4>Manage Cottages</h4>
+            <p>View and manage all cottages</p>
+          </a>
+          <a routerLink="/admin/blocked" class="action-card">
+            <i class="bi bi-shield-exclamation"></i>
+            <h4>Blocked Cottages</h4>
+            <p>Manage temporarily blocked cottages</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

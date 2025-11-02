@@ -3,6 +3,12 @@ import { ReservationController } from '../controllers/reservation.controller';
 
 const router = Router();
 
+// Debug middleware to log all requests
+router.use((req, res, next) => {
+  console.log(`[Reservation Router] ${req.method} ${req.path}`);
+  next();
+});
+
 // Helper function to handle async controller methods
 const asyncHandler = (fn: (req: Request, res: Response) => Promise<any>) => {
   return (req: Request, res: Response, next: any) => {
@@ -10,11 +16,22 @@ const asyncHandler = (fn: (req: Request, res: Response) => Promise<any>) => {
   };
 };
 
+// Test endpoint
+router.get('/test', (req, res) => {
+  res.json({ message: 'Reservation router is working' });
+});
+
 // Create a new reservation
-router.post('/', asyncHandler(ReservationController.createReservation));
+router.post('/create', asyncHandler(ReservationController.createReservation));
 
 // Get all reservations for a user
-router.get('/user/:userId', asyncHandler(ReservationController.getUserReservations));
+router.get('/user/:userUsername', asyncHandler(ReservationController.getUserReservations));
+
+// Get current reservations for a user (pending, confirmed)
+router.get('/user/:userUsername/current', asyncHandler(ReservationController.getCurrentReservations));
+
+// Get archived reservations for a user (completed, cancelled)
+router.get('/user/:userUsername/archived', asyncHandler(ReservationController.getArchivedReservations));
 
 // Get all reservations for a cottage
 router.get('/cottage/:cottageId', asyncHandler(ReservationController.getCottageReservations));
@@ -27,5 +44,8 @@ router.put('/:reservationId/status', asyncHandler(ReservationController.updateRe
 
 // Cancel reservation
 router.put('/:reservationId/cancel', asyncHandler(ReservationController.cancelReservation));
+
+// Update reservation cottage reference
+router.put('/:reservationId/cottage', asyncHandler(ReservationController.updateReservationCottage));
 
 export default router;

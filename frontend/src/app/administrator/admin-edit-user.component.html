@@ -1,0 +1,71 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="admin-edit-user-wrapper">
+  <header class="topbar">
+    <h2>Edit User: {{ user.firstName || user.username }}</h2>
+    <div class="top-actions">
+      <a routerLink="/admin/users" class="link">Back to Users</a>
+    </div>
+  </header>
+
+  <main class="profile-card">
+    <div class="profile-header">
+      <h3>User Profile</h3>
+      <span class="role-badge" [class]="'role-' + user.role">{{ user.role | titlecase }}</span>
+    </div>
+
+    <div class="profile-grid">
+      <div class="avatar-col">
+        <div class="avatar-preview">
+          <img *ngIf="imagePreviewUrl; else noImg" [src]="imagePreviewUrl" alt="Profile image" (error)="handleImageError($event)" />
+          <ng-template #noImg>
+            <div class="avatar-placeholder">No image</div>
+          </ng-template>
+        </div>
+
+        <label class="file-label">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          Change profile picture
+        </label>
+      </div>
+
+      <div class="form-col">
+        <form (ngSubmit)="saveUser()" #profileForm="ngForm">
+          <label>First name
+            <input name="firstName" [(ngModel)]="user.firstName" />
+          </label>
+
+          <label>Last name
+            <input name="lastName" [(ngModel)]="user.lastName" />
+          </label>
+
+          <label>Address
+            <input name="address" [(ngModel)]="user.address" />
+          </label>
+
+          <label>Email
+            <input name="email" type="email" [(ngModel)]="user.email" />
+          </label>
+
+          <label>Phone
+            <input name="phone" [(ngModel)]="user.phone" />
+          </label>
+
+          <label>Credit Card
+            <input name="creditCard" [(ngModel)]="user.creditCard" (input)="onCreditCardChange()" />
+          </label>
+          <div class="error-message" *ngIf="creditCardError">{{ creditCardError }}</div>
+
+          <div class="actions">
+            <button type="button" (click)="saveUser()" [disabled]="loading">
+              {{ loading ? 'Saving...' : 'Update User' }}
+            </button>
+            <button type="button" (click)="cancel()" class="btn-cancel" [disabled]="loading">Cancel</button>
+            <span class="msg">{{ message }}</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+

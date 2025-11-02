@@ -1,0 +1,215 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="admin-requests">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="page-title">Registration Requests</h1>
+        <p class="page-subtitle">Review and manage pending registration requests</p>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="filters-card">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Search</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search requests..."
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="onFilterChange()"
+              >
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Role</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="roleFilter"
+                (ngModelChange)="onFilterChange()"
+              >
+                <option value="all">All Roles</option>
+                <option value="owner">Owners</option>
+                <option value="tourist">Tourists</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Status</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="statusFilter"
+                (ngModelChange)="onFilterChange()"
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3 d-flex align-items-end">
+              <button class="btn btn-primary" (click)="loadRequests()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="row" *ngIf="loading">
+      <div class="col-12">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading requests...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="row" *ngIf="error && !loading">
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle"></i> {{ error }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadRequests()">
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="row" *ngIf="!loading && !error">
+      <div class="col-12">
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="paginatedRequests.length === 0">
+                  <td colspan="7" class="text-center py-4">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-2 text-muted">No requests found matching your filters.</p>
+                  </td>
+                </tr>
+                <tr *ngFor="let request of paginatedRequests">
+                  <td>
+                    <strong>{{ request.username }}</strong>
+                  </td>
+                  <td>{{ request.firstName }} {{ request.lastName }}</td>
+                  <td>{{ request.email }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(request.role)">
+                      {{ request.role | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(request.status)">
+                      {{ getStatusText(request.status) }}
+                    </span>
+                  </td>
+                  <td>{{ request.submittedAt | date:'short' }}</td>
+                  <td>
+                    <div class="btn-group" role="group" *ngIf="request.status === 'pending'">
+                      <button 
+                        class="btn btn-sm btn-success"
+                        (click)="approveRequest(request)"
+                        title="Approve Request"
+                      >
+                        <i class="bi bi-check-circle"></i> Approve
+                      </button>
+                      <button 
+                        class="btn btn-sm btn-danger"
+                        (click)="rejectRequest(request)"
+                        title="Reject Request"
+                      >
+                        <i class="bi bi-x-circle"></i> Reject
+                      </button>
+                    </div>
+                    <div *ngIf="request.status === 'rejected' && request.rejectionReason" class="rejection-reason">
+                      <small class="text-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {{ request.rejectionReason }}
+                      </small>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-container" *ngIf="totalPages > 1">
+            <nav aria-label="Requests pagination">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <button class="page-link" (click)="goToPage(currentPage - 1)">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+                <li 
+                  class="page-item" 
+                  *ngFor="let page of getPageNumbers()"
+                  [class.active]="page === currentPage"
+                >
+                  <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <button class="page-link" (click)="goToPage(currentPage + 1)">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rejection Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectionModalLabel">Reject Registration Request</h5>
+        <button type="button" class="btn-close" (click)="closeRejectionModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to reject the registration request for <strong>{{ selectedRequest?.username }}</strong>?</p>
+        <p>This will prevent future registrations with the same username or email address.</p>
+        
+        <div class="mb-3">
+          <label for="rejectionReason" class="form-label">Reason for rejection (required):</label>
+          <textarea 
+            class="form-control" 
+            id="rejectionReason" 
+            rows="3" 
+            [(ngModel)]="rejectionReason"
+            placeholder="Please provide a reason for rejection..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeRejectionModal()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="confirmRejection()">Reject Request</button>
+      </div>
+    </div>
+  </div>
+</div>

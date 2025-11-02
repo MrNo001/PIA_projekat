@@ -2,9 +2,10 @@
 import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { icon, Marker } from 'leaflet';
-import { VikendicaService } from '../services/vikendica/vikendica.service';
+import { CottageService } from '../services/cottage/cottage.service';
 
 @Component({
   selector: 'app-add-cottage',
@@ -28,7 +29,8 @@ export class AddCottageComponent implements AfterViewInit {
 
   @ViewChild('map') mapContainer!: ElementRef;
 
-  vikendicaService = inject(VikendicaService);
+  cottageService = inject(CottageService);
+  private router = inject(Router);
 
   ngAfterViewInit() {
     // Initialize the map with a slight delay to ensure DOM is ready
@@ -87,6 +89,71 @@ export class AddCottageComponent implements AfterViewInit {
     }
   }
 
+  onJsonFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e: any) => {
+        try {
+          const jsonContent = JSON.parse(e.target.result);
+          this.importCottageData(jsonContent);
+          
+          // Reset the file input so the same file can be selected again
+          input.value = '';
+        } catch (error) {
+          console.error('Error parsing JSON file:', error);
+          alert('Error parsing JSON file. Please check the file format.');
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
+  importCottageData(data: any) {
+    // Import title
+    if (data.title) {
+      this.title = data.title;
+    }
+
+    // Import description
+    if (data.description) {
+      this.description = data.description;
+    }
+
+    // Import prices
+    if (data.priceSummer !== undefined && data.priceSummer !== null) {
+      this.priceSummer = data.priceSummer;
+    }
+    if (data.priceWinter !== undefined && data.priceWinter !== null) {
+      this.priceWinter = data.priceWinter;
+    }
+
+    // Import location and update map
+    if (data.location && data.location.lat && data.location.lng) {
+      this.location = {
+        lat: data.location.lat,
+        lng: data.location.lng
+      };
+
+      // Update map to show the imported location
+      if (this.map && this.marker) {
+        this.map.setView([data.location.lat, data.location.lng], 13);
+        this.marker.setLatLng([data.location.lat, data.location.lng])
+          .bindPopup(`Imported location: ${data.location.lat.toFixed(4)}, ${data.location.lng.toFixed(4)}`)
+          .openPopup();
+        
+        // Refresh map size
+        setTimeout(() => this.map.invalidateSize(), 100);
+      }
+    }
+
+    // Show success message
+    alert('Cottage data imported successfully! Please add photos before submitting.');
+  }
+
   removePhoto(index: number) {
     this.photos.splice(index, 1);
     // Refresh the map after DOM update
@@ -120,29 +187,19 @@ export class AddCottageComponent implements AfterViewInit {
     });
 
 
-    this.vikendicaService.insertCottage(formData).subscribe({
+    this.cottageService.insertCottage(formData).subscribe({
       next: (response: any) => {
-      console.log(response);
-    },
-    error: (error) => {
-      console.error('Inserting error:', error);
-    }
+        console.log(response);
+        // Show success message
+        alert('Cottage submitted successfully!');
+        // Navigate back to my-cottages page
+        this.router.navigate(['/my-cottages']);
+      },
+      error: (error) => {
+        console.error('Inserting error:', error);
+        alert('Failed to submit cottage. Please try again.');
+      }
     });
-    // In a real app, you would send formData to your backend
-    console.log('Submitting cottage:', {
-      title: this.title,
-      description: this.description,
-      priceSummer: this.priceSummer,
-      priceWinter: this.priceWinter,
-      location: this.location,
-      photos: this.photos.map(p => p.name)
-    });
-
-    // Show success message
-    alert('Cottage submitted successfully!');
-
-    // Reset form after successful submission
-    //this.resetForm();
   }
 
   resetForm() {

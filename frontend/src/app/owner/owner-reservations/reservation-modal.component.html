@@ -1,0 +1,127 @@
+<div class="modal-backdrop" *ngIf="show" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h4 class="modal-title">Reservation Details</h4>
+      <button type="button" class="btn-close" (click)="closeModal()">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="reservation && cottage">
+      <!-- Reservation Info -->
+      <div class="reservation-info">
+        <div class="info-row">
+          <span class="label">Cottage:</span>
+          <span class="value">{{ cottage.Title }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Reservation ID:</span>
+          <span class="value">#{{ reservation._id?.slice(-8) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Status:</span>
+          <span class="badge" [class]="getStatusBadgeClass(reservation.status)">
+            {{ getStatusText(reservation.status) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="dates-section">
+        <h5>Reservation Period</h5>
+        <div class="date-range">
+          <div class="date-item">
+            <i class="bi bi-calendar-event"></i>
+            <div>
+              <span class="date-label">Check-in</span>
+              <span class="date-value">{{ formatDate(reservation.startDate) }}</span>
+            </div>
+          </div>
+          <div class="date-separator">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="date-item">
+            <i class="bi bi-calendar-event"></i>
+            <div>
+              <span class="date-label">Check-out</span>
+              <span class="date-value">{{ formatDate(reservation.endDate) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="nights-info">
+          <i class="bi bi-moon"></i>
+          <span>{{ reservation.nights }} nights</span>
+        </div>
+      </div>
+
+      <!-- Guest Info -->
+      <div class="guest-section">
+        <h5>Guest Information</h5>
+        <div class="guest-details">
+          <div class="guest-item">
+            <i class="bi bi-people"></i>
+            <span>{{ reservation.adults }} adults</span>
+          </div>
+          <div class="guest-item" *ngIf="reservation.children > 0">
+            <i class="bi bi-person"></i>
+            <span>{{ reservation.children }} children</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="pricing-section">
+        <h5>Pricing</h5>
+        <div class="price-breakdown">
+          <div class="price-item">
+            <span>Price per night:</span>
+            <span>{{ (reservation.totalPrice / reservation.nights).toFixed(2) }}€</span>
+          </div>
+          <div class="price-item">
+            <span>Number of nights:</span>
+            <span>{{ reservation.nights }}</span>
+          </div>
+          <div class="price-total">
+            <span>Total Price:</span>
+            <span class="total-amount">{{ reservation.totalPrice }}€</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Requests -->
+      <div class="requests-section" *ngIf="reservation.specialRequests">
+        <h5>Special Requests</h5>
+        <div class="requests-content">
+          <i class="bi bi-chat-left-text"></i>
+          <span>{{ reservation.specialRequests }}</span>
+        </div>
+      </div>
+
+      <!-- Created Date -->
+      <div class="created-info">
+        <small class="text-muted">
+          <i class="bi bi-clock"></i>
+          Created: {{ formatDate(reservation.createdAt) }}
+        </small>
+      </div>
+    </div>
+
+    <div class="modal-footer" *ngIf="reservation?.status === 'pending'">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+        Close
+      </button>
+      <button type="button" class="btn btn-danger" (click)="cancelReservation()">
+        <i class="bi bi-x-circle"></i> Cancel Reservation
+      </button>
+      <button type="button" class="btn btn-success" (click)="confirmReservation()">
+        <i class="bi bi-check-circle"></i> Confirm Reservation
+      </button>
+    </div>
+
+    <div class="modal-footer" *ngIf="reservation?.status !== 'pending'">
+      <button type="button" class="btn btn-primary" (click)="closeModal()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>

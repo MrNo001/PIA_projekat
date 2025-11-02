@@ -11,9 +11,13 @@ const userSchema = new mongoose.Schema({
   phone:      String,
   creditCard: String,          
   profileImg: { type: String, default: '/uploads/default.png' },
-  role:       { type: String, enum: ['tourist', 'owner', 'admin'], default: 'tourist' },
-  active:     { type: Boolean, default: false },        // true after admin approval
-  pending:    { type: Boolean, default: true }          // awaiting admin
+  role:       { type: String, enum: ['tourist', 'owner', 'administrator'], default: 'tourist' },
+  isActive:   { type: Boolean, default: false },        // true after admin approval
+  pending:    { type: Boolean, default: true },         // awaiting admin
+  rejectionReason: String,                               // reason for rejection
+  rejectedAt: Date,                                       // when rejected
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 

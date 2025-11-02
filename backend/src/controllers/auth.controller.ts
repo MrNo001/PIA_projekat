@@ -8,29 +8,44 @@ const  cardRx = /^(3(0[0-3]|6|8)\d{12}|5[1-5]\d{14}|(4539|4556|4916|4532|4929|44
 
 export class AuthController{
 
-
-
-  static login = (req:Request,res:Response) =>{
+  static login = async (req:Request,res:Response) =>{
     let u = req.body.username;
     let p = req.body.password;
 
     console.log("REQUEST "+ u + " "+ p);
    
-    User.findOne({username:u,password:p}).then((user) => {
-      if(user){
-        res.json(user.username).status(200);
-        console.log("Found the user");
-        }
-      else{
-      res.json(null);
+    try {
+      const user = await User.findOne({username:u});
+      
+      if(!user){
+        res.json(null);
+        return;
       }
-    }).catch((err)=>{
+
+      // Compare the plaintext password with the hashed password
+      const isPasswordValid = await bcrypt.compare(p, user.password);
+      
+      if(!isPasswordValid){
+        res.json(null);
+        return;
+      }
+
+      // Check if user is active
+      if(!user.isActive){
+        res.status(403).json({error: "Account is not active. Please wait for administrator approval."});
+        console.log("User not active");
+        return;
+      }
+      
+      res.json(user.username).status(200);
+      console.log("Found the user");
+    } catch (err) {
       console.log(err);
       res.json(null);
-    });
+    }
   }
 
-  static register = (req:Request,res:Response) =>
+  static register = async (req:Request,res:Response) =>
   {
      /* const {username,password,email,firstName,lastName,gender,address,phone,creditCard,role='tourist'}=req.body; */
       const username = req.body.username;
@@ -45,45 +60,74 @@ export class AuthController{
       const role = req.body.role;
       const profileImage = req.file ? req.file.filename : 'default.png';
 
-    
+      try {
+        // Hash the password with bcrypt (salt rounds = 10)
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-      
-      // if(!passRx.test(password)){
-      //   res.status(400).json({message:"Wrong password format"});
-      //   return;
-      // }
-      // if(!cardRx.test(creditCard)){
-      //   res.status(400).json({messaeg:"Wrong credit card format"});
-      //   return;
-      // }
-      
-      //const profileImg = req.file?'/' + req.file.path.replace(/\\/g, '/') : undefined;
+        let user = {
+          username:username,
+          password:hashedPassword,
+          email:email,
+          firstName:firstName,
+          lastName:lastName,
+          gender:gender,
+          address:address,
+          phone:phone,
+          creditCard:creditCard,
+          role:role,
+          profileImg:profileImage
+        }
 
-
-
-      let user = {
-        username:username,
-        password:password,
-        email:email,
-        firstName:firstName,
-        lastName:lastName,
-        gender:gender,
-        address:address,
-        phone:phone,
-        creditCard:creditCard,
-        role:role,
-        profileImg:profileImage
-      }
-
-      new User(user).save().then(ok=>
-      {
+        await new User(user).save();
         res.status(201).json({message:"Registration waiting for admin approval"});
-        return;
-      }).catch(err => {
-        console.log("Couldnt save user");
+      } catch (err) {
+        console.log("Couldnt save user", err);
         res.status(400).json({message:"Failed to register user"});
-      });
+      }
   }
 
+  static changePassword = async (req:Request,res:Response) => {
+    const username = req.body.username;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+
+    try {
+      // Find the user
+      const user = await User.findOne({username:username});
+      
+      if(!user){
+        res.status(404).json({message:"User not found"});
+        return;
+      }
+
+      // Verify the old password
+      const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+      
+      if(!isOldPasswordValid){
+        res.status(401).json({message:"Old password is incorrect"});
+        return;
+      }
+
+      // Hash the new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the password using findOneAndUpdate with username
+      const result = await User.findOneAndUpdate(
+        { username: username },
+        { password: hashedNewPassword },
+        { new: true }
+      );
+
+      if(!result){
+        res.status(404).json({message:"User not found"});
+        return;
+      }
+
+      res.status(200).json({message:"Password changed successfully"});
+    } catch (err) {
+      console.log("Error changing password", err);
+      res.status(500).json({message:"Failed to change password"});
+    }
+  }
 
 }

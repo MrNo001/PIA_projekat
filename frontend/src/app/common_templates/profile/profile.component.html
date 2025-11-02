@@ -1,0 +1,76 @@
+
+<div class="tourist-wrapper">
+
+  <header class="topbar">
+    <h2>Welcome, {{ user.firstName || user.username }}</h2>
+    <div class="top-actions">
+      <a routerLink="/" class="link">Home</a>
+      <!-- Owner-specific navigation -->
+      <a *ngIf="user.role === 'owner'" routerLink="/my-cottages" class="link">My Cottages</a>
+      <a *ngIf="user.role === 'owner'" routerLink="/addCottage" class="link">Add Cottage</a>
+      <a (click)="logOut()" class="link" style="cursor: pointer;">Logout</a>
+    </div>
+  </header>
+
+  <main class="profile-card">
+    <div class="profile-header">
+      <h3>Profile</h3>
+      <span class="role-badge" [class]="'role-' + user.role">{{ user.role | titlecase }}</span>
+    </div>
+
+    <div class="profile-grid">
+      <div class="avatar-col">
+        <div class="avatar-preview">
+          <img *ngIf="imagePreviewUrl; else noImg" [src]="imagePreviewUrl" alt="Profile image" (error)="handleImageError($event)" />
+          <ng-template #noImg>
+            <div class="avatar-placeholder">No image</div>
+          </ng-template>
+        </div>
+
+        <label class="file-label">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          Change profile picture
+        </label>
+      </div>
+
+      <div class="form-col">
+        <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+          <label>First name
+            <input name="firstName" [(ngModel)]="user.firstName" />
+          </label>
+
+          <label>Last name
+            <input name="lastName" [(ngModel)]="user.lastName" />
+          </label>
+
+          <label>Address
+            <input name="address" [(ngModel)]="user.address" />
+          </label>
+
+          <label>Email
+            <input name="email" type="email" [(ngModel)]="user.email" />
+          </label>
+
+          <label>Phone
+            <input name="phone" [(ngModel)]="user.phone" />
+          </label>
+
+          <label>Credit Card
+            <input name="creditCard" [(ngModel)]="user.creditCard" (input)="onCreditCardChange()" />
+          </label>
+          <div class="error-message" *ngIf="creditCardError">{{ creditCardError }}</div>
+
+          <div class="actions">
+            <button type="button" (click)="saveProfile()" [disabled]="loading">Update</button>
+            <span class="msg">{{ message }}</span>
+          </div>
+        </form>
+
+        <div class="password-section">
+          <h4>Change Password</h4>
+          <a routerLink="/change-password" class="change-password-link">Change Password</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

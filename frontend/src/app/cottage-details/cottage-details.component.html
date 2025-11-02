@@ -1,0 +1,92 @@
+<div class="cottage-details-container">
+  <div id="cottageCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      @for (photo of cottage.Photos; track $index) {
+        <button type="button"
+                data-bs-target="#cottageCarousel"
+                [attr.data-bs-slide-to]="$index"
+                [class.active]="$index === 0"></button>
+      }
+    </div>
+
+    <div class="carousel-inner">
+      @for (photo of cottage.Photos; track $index) {
+        <div class="carousel-item" [class.active]="$index === 0">
+          <img src="http://localhost:4000/uploads/cottage_photos/{{photo}}" class="d-block w-100" alt="Photo of {{ cottage.Title }}" (error)="handleImageError($event)">
+        </div>
+      }
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#cottageCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#cottageCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div class="cottage-details-info">
+    <h2>{{ cottage.Title }}</h2>
+    <p class="price">{{ getCurrentSeasonPrice() }} € / night <span class="season-badge">({{ getCurrentSeason() }})</span></p>
+    @if (cottage.Ocena === -1) {
+      <p class="overall-rating no-ratings-detail">No ratings yet</p>
+    } @else {
+      <div class="overall-rating">
+        <span class="rating-number">{{ cottage.Ocena.toFixed(1) }}</span>
+        <app-star-rating 
+          [rating]="cottage.Ocena" 
+          [readonly]="true"
+          size="medium"
+        ></app-star-rating>
+      </div>
+    }
+    @if (owner) {
+      <p class="owner-info"><strong>Owner:</strong> {{ owner.firstName }} {{ owner.lastName }}</p>
+    }
+    <div class="map-container">
+      <div #mapContainer class="map"></div>
+    </div>
+    <p class="description">{{ cottage.Description }}</p>
+
+    @if (isTourist()) {
+      <button class="btn btn-primary" (click)="BookCottage()">Book Now</button>
+    }
+  </div>
+</div>
+
+<!-- Ratings Section -->
+<div class="ratings-section">
+  <h3>Reviews</h3>
+  @if (ratings.length === 0) {
+    <p class="no-ratings">No reviews yet. Be the first to review this cottage!</p>
+  }
+  @if (ratings.length > 0) {
+    <div class="ratings-list">
+      @for (rating of ratings; track rating.reservationId) {
+        <div class="rating-card">
+          <div class="rating-header">
+            <div class="user-info">
+              @if (getUserForRating(rating.userUsername)) {
+                <span class="user-name">{{ getUserForRating(rating.userUsername)!.firstName }} {{ getUserForRating(rating.userUsername)!.lastName }}</span>
+              } @else {
+                <span class="user-name">{{ rating.userUsername }}</span>
+              }
+              <span class="rating-date">{{ formatDate(rating.rating.ratedAt) }}</span>
+            </div>
+            <app-star-rating 
+              [rating]="rating.rating.score" 
+              [readonly]="true"
+              size="small"
+            ></app-star-rating>
+          </div>
+          @if (rating.rating.comment) {
+            <p class="rating-comment">{{ rating.rating.comment }}</p>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+

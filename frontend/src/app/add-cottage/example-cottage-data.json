@@ -1,0 +1,11 @@
+{
+  "title": "Mountain View Retreat",
+  "description": "A beautiful mountain retreat with stunning views, perfect for escaping the city. This cozy cottage features modern amenities, a fully equipped kitchen, and a spacious living area with a fireplace. Located near hiking trails and ski slopes, it's ideal for both summer and winter getaways.",
+  "priceSummer": 120,
+  "priceWinter": 150,
+  "location": {
+    "lat": 43.8563,
+    "lng": 18.4131
+  }
+}
+

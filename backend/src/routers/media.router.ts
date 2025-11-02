@@ -4,7 +4,8 @@ const multer  = require('multer')
 const path = require('path');
 import { Request,Response } from "express";
 
-const upload = multer({dest:'uploads'});
+const upload_profile_photo = multer({dest:'uploads/profile_photos/'});
+const upload_cottage_photo = multer({dest:'uploads/cottage_photos/'});
 
 const mediaRouter = express.Router();
 
@@ -12,7 +13,15 @@ const mediaRouter = express.Router();
 
 // router.get("getMedia/",upload.single('photo'),(req,res)=>{})
 
-mediaRouter.post('/upload', upload.single('file'), function (req:Request, res:Response) {
+mediaRouter.post('/upload_profile_photo', upload_profile_photo.single('file'), function (req:Request, res:Response) {
+
+    const photo = req.file;
+    console.log(photo);
+    res.json({message:"we did it"});
+    
+})
+
+mediaRouter.post('/upload_cottage_photo', upload_cottage_photo.single('file'), function (req:Request, res:Response) {
 
     const photo = req.file;
     console.log(photo);
@@ -22,7 +31,6 @@ mediaRouter.post('/upload', upload.single('file'), function (req:Request, res:Re
 
 
 export default mediaRouter; 
-
 
 
 /* const storage = multer.diskStorage({

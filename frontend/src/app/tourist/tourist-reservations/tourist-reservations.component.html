@@ -1,0 +1,191 @@
+<!-- Navigation Bar -->
+<nav>
+  <app-nav-bar activePage="reservations"></app-nav-bar>
+</nav>
+
+<div class="tourist-reservations-container">
+  <div class="header">
+    <h2>My Reservations</h2>
+    <p>Manage your current and past bookings</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading reservations...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Current Reservations -->
+  <div class="reservations-section">
+    <h3>Current Bookings</h3>
+    <div *ngIf="currentReservations.length === 0" class="no-reservations">
+      <p>You don't have any current bookings.</p>
+    </div>
+    
+    <div *ngIf="currentReservations.length > 0" class="reservations-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Cottage</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of currentReservations" (click)="openDetailModal(reservation)" style="cursor: pointer;">
+            <td>{{ formatDate(reservation.startDate) }}</td>
+            <td>{{ formatDate(reservation.endDate) }}</td>
+            <td>
+              <div class="cottage-info">
+                <img 
+                  [src]="getCottageImageUrl(getCottagePhotos(reservation)[0])" 
+                  [alt]="getCottageTitle(reservation)"
+                  (error)="handleImageError($event)"
+                  class="cottage-image"
+                />
+                <span>{{ getCottageTitle(reservation) }}</span>
+              </div>
+            </td>
+            <td>{{ getCottageLocation(reservation).lat }}, {{ getCottageLocation(reservation).lng }}</td>
+            <td>
+              <button 
+                *ngIf="canCancelReservation(reservation)"
+                (click)="cancelReservation(reservation); $event.stopPropagation()"
+                class="btn btn-danger btn-sm"
+              >
+                Cancel
+              </button>
+              <span *ngIf="!canCancelReservation(reservation)" class="text-muted">
+                Cannot cancel
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Archived Reservations -->
+  <div class="reservations-section">
+    <h3>Booking Archive</h3>
+    <div *ngIf="archivedReservations.length === 0" class="no-reservations">
+      <p>You don't have any past bookings.</p>
+    </div>
+    
+    <div *ngIf="archivedReservations.length > 0" class="reservations-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Start Date</th>
+            <th>Cottage</th>
+            <th>Rating & Comment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of archivedReservations" (click)="openDetailModal(reservation)" style="cursor: pointer;">
+            <td>{{ formatDate(reservation.startDate) }}</td>
+            <td>
+              <div class="cottage-info">
+                <img 
+                  [src]="getCottageImageUrl(getCottagePhotos(reservation)[0])" 
+                  [alt]="getCottageTitle(reservation)"
+                  (error)="handleImageError($event)"
+                  class="cottage-image"
+                />
+                <span>{{ getCottageTitle(reservation) }}</span>
+              </div>
+            </td>
+            <td>
+              <div *ngIf="hasRating(reservation)" class="rating-display">
+                <app-star-rating 
+                  [rating]="getRating(reservation)!.score" 
+                  [readonly]="true"
+                  size="small"
+                ></app-star-rating>
+                <p *ngIf="getRating(reservation)!.comment" class="comment">
+                  "{{ getRating(reservation)!.comment }}"
+                </p>
+              </div>
+              <div *ngIf="!hasRating(reservation)" class="no-rating">
+                <p class="text-muted">No rating yet</p>
+              </div>
+            </td>
+            <td>
+              <button 
+                *ngIf="canRateReservation(reservation)"
+                (click)="openRatingForm(reservation); $event.stopPropagation()"
+                class="btn btn-primary btn-sm"
+              >
+                Rate & Comment
+              </button>
+              <span *ngIf="!canRateReservation(reservation)" class="text-muted">
+                {{ reservation.status === 'completed' ? 'Already rated' : 'Cannot rate' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Rating Modal -->
+  <div *ngIf="showRatingForm" class="modal-overlay" (click)="closeRatingForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>Rate Your Stay</h4>
+        <button class="close-btn" (click)="closeRatingForm()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="selectedReservation" class="reservation-info">
+          <h5>{{ getCottageTitle(selectedReservation) }}</h5>
+          <p>Stay: {{ formatDate(selectedReservation.startDate) }} - {{ formatDate(selectedReservation.endDate) }}</p>
+        </div>
+        
+        <div class="rating-section">
+          <label>Rating:</label>
+          <app-star-rating 
+            [(rating)]="ratingForm.rating"
+            [readonly]="false"
+            size="large"
+          ></app-star-rating>
+        </div>
+        
+        <div class="comment-section">
+          <label for="comment">Comment (optional):</label>
+          <textarea 
+            id="comment"
+            [(ngModel)]="ratingForm.comment"
+            placeholder="Share your experience..."
+            rows="4"
+            maxlength="500"
+          ></textarea>
+          <small>{{ ratingForm.comment.length }}/500 characters</small>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRatingForm()">Cancel</button>
+        <button 
+          class="btn btn-primary" 
+          (click)="submitRating()"
+          [disabled]="ratingForm.rating === 0"
+        >
+          Submit Rating
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reservation Detail Modal -->
+  <app-reservation-detail-modal
+    [reservation]="selectedDetailReservation"
+    [show]="showDetailModal"
+    (close)="closeDetailModal()"
+  ></app-reservation-detail-modal>
+</div>

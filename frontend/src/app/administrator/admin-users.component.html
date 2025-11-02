@@ -1,0 +1,187 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="admin-users">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="page-title">User Management</h1>
+        <p class="page-subtitle">Manage all users in the system</p>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="filters-card">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Search</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search users..."
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="onFilterChange()"
+              >
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Role</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="roleFilter"
+                (ngModelChange)="onFilterChange()"
+              >
+                <option value="all">All Roles</option>
+                <option value="administrator">Administrators</option>
+                <option value="owner">Owners</option>
+                <option value="tourist">Tourists</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Status</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="statusFilter"
+                (ngModelChange)="onFilterChange()"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3 d-flex align-items-end">
+              <button class="btn btn-primary" (click)="loadUsers()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="row" *ngIf="loading">
+      <div class="col-12">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading users...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="row" *ngIf="error && !loading">
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle"></i> {{ error }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadUsers()">
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="row" *ngIf="!loading && !error">
+      <div class="col-12">
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="paginatedUsers.length === 0">
+                  <td colspan="7" class="text-center py-4">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-2 text-muted">No users found matching your filters.</p>
+                  </td>
+                </tr>
+                <tr *ngFor="let user of paginatedUsers">
+                  <td>
+                    <strong>{{ user.username }}</strong>
+                  </td>
+                  <td>{{ user.firstName }} {{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                      {{ user.role | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(user.isActive)">
+                      {{ getStatusText(user.isActive) }}
+                    </span>
+                  </td>
+                  <td>{{ user.createdAt | date:'short' }}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button 
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="editUser(user)"
+                        title="Edit User"
+                      >
+                        <i class="bi bi-pencil"></i> Edit
+                      </button>
+                      <button 
+                        class="btn btn-sm"
+                        [ngClass]="user.isActive ? 'btn-warning' : 'btn-success'"
+                        (click)="toggleUserStatus(user)"
+                        [title]="user.isActive ? 'Deactivate User' : 'Activate User'"
+                      >
+                        <i class="bi" [ngClass]="user.isActive ? 'bi-person-x' : 'bi-person-check'"></i>
+                        {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                      </button>
+                      <button 
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="deleteUser(user)"
+                        title="Delete User"
+                      >
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-container" *ngIf="totalPages > 1">
+            <nav aria-label="Users pagination">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <button class="page-link" (click)="goToPage(currentPage - 1)">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+                <li 
+                  class="page-item" 
+                  *ngFor="let page of getPageNumbers()"
+                  [class.active]="page === currentPage"
+                >
+                  <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <button class="page-link" (click)="goToPage(currentPage + 1)">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

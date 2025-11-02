@@ -1,7 +1,6 @@
 
 export class User {
   constructor(
-    public _id: string = "",
     public username: string = "",
     public password: string = "",
     public email: string = "",
@@ -12,7 +11,8 @@ export class User {
     public phone: string= "",
     public profileImage: string = "",
     public creditCard: string ="",
-    public role:string = "tourist"
+    public role:string = "tourist",
+    public isActive: boolean = false
   ) {}
 
   get fullName(): string {

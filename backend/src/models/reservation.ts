@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 
 const reservationSchema = new mongoose.Schema({
-  cottageId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vikendica', required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  _id: { type: String, required: true },
+  cottageId: { type: String, ref: 'Cottage', required: true },
+  userUsername: { type: String, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   adults: { type: Number, required: true, min: 1 },
@@ -12,8 +13,13 @@ const reservationSchema = new mongoose.Schema({
   specialRequests: { type: String, maxlength: 500 },
   status: { 
     type: String, 
-    enum: ['pending', 'confirmed', 'cancelled', 'completed'], 
+    enum: ['pending', 'confirmed', 'cancelled', 'completed', 'expired'], 
     default: 'pending' 
+  },
+  rating: {
+    score: { type: Number, min: 1, max: 5 },
+    comment: { type: String, maxlength: 500 },
+    ratedAt: { type: Date }
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

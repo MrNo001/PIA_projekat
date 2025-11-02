@@ -1,39 +1,117 @@
 import { Request, Response } from 'express';
 import Reservation from '../models/reservation';
-import Vikendica from '../models/vikendica';
+import Cottage from '../models/cottage';
 import User from '../models/user';
+import { v4 as uuidv4 } from 'uuid';
 
 export class ReservationController {
   
-  // Create a new reservation
-  static createReservation = async (req: Request, res: Response) => {
-    try {
-      const { cottageId, userId, startDate, endDate, adults, children, specialRequests } = req.body;
 
-      // Validate required fields
-      if (!cottageId || !userId || !startDate || !endDate || !adults) {
+
+  static autoUpdateCompletedReservations = async () => {
+    try {
+      const now = new Date();
+      console.log(`Auto-updating reservations at ${now.toISOString()}`);
+      
+
+
+      const completedResult = await Reservation.updateMany(
+        {
+          status: 'confirmed',
+          $expr: { $lt: [{ $toDate: "$endDate" }, now] }
+        },
+        {
+          $set: { 
+            status: 'completed',
+            updatedAt: now
+          }
+        }
+      );
+      console.log(`Auto-updated ${completedResult.modifiedCount} reservations to completed status`);
+      
+
+
+      const expiredResult = await Reservation.updateMany(
+        {
+          status: 'pending',
+          $expr: { $lt: [{ $toDate: "$startDate" }, now] }
+        },
+        {
+          $set: { 
+            status: 'expired',
+            updatedAt: now
+          }
+        }
+      );
+      console.log(`Auto-updated ${expiredResult.modifiedCount} reservations to expired status`);
+      
+
+      const pendingCheck = await Reservation.find({ status: 'pending' });
+      console.log(`Found ${pendingCheck.length} pending reservations total`);
+      pendingCheck.forEach(res => {
+        const startDate = new Date(res.startDate);
+        const shouldExpire = startDate < now;
+        console.log(`Reservation ${res._id}: startDate=${startDate.toISOString()}, now=${now.toISOString()}, shouldExpire=${shouldExpire}`);
+      });
+      
+      return completedResult.modifiedCount + expiredResult.modifiedCount;
+    } catch (error) {
+      console.error('Error auto-updating reservations:', error);
+      return 0;
+    }
+  };
+  
+
+  static createReservation = async (req: Request, res: Response) => {
+    console.log('ReservationController.createReservation called');
+    console.log('Request body:', req.body);
+    try {
+      const { cottageId, userUsername, startDate, endDate, adults, children, specialRequests } = req.body;
+
+
+      if (!cottageId || !userUsername || !startDate || !endDate || !adults) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      // Check if cottage exists
-      const cottage = await Vikendica.findById(cottageId);
+      console.log('Cottage ID:', cottageId);
+
+      const cottage = await Cottage.findOne({_id: cottageId});
       if (!cottage) {
         return res.status(404).json({ message: 'Cottage not found' });
       }
 
-      // Check if user exists
-      const user = await User.findById(userId);
+
+      const user = await User.findOne({ username: userUsername });
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      // Calculate nights and total price
+
       const start = new Date(startDate);
       const end = new Date(endDate);
       const nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
-      const totalPrice = nights * cottage.PriceSummer;
+      
 
-      // Check for date conflicts (optional - you might want to implement this)
+      const startMonth = start.getMonth() + 1; // 1-12
+      const isSummer = startMonth >= 5 && startMonth <= 8;
+      const pricePerNight = isSummer ? cottage.PriceSummer : cottage.PriceWinter;
+      
+
+      const basePrice = pricePerNight * nights;
+      
+
+      let multiplier = 1;
+      if (adults === 1) {
+        multiplier = 1;
+      } else if (adults === 2) {
+        multiplier = 1.5;
+      } else {
+        multiplier = 2;
+      }
+      
+      const totalPrice = Math.round(basePrice * multiplier);
+
+
       const existingReservation = await Reservation.findOne({
         cottageId,
         $or: [
@@ -49,10 +127,11 @@ export class ReservationController {
         return res.status(409).json({ message: 'Cottage is already reserved for these dates' });
       }
 
-      // Create reservation
+
       const reservation = new Reservation({
+        _id: uuidv4(), // Generate UUID for _id
         cottageId,
-        userId,
+        userUsername,
         startDate: start,
         endDate: end,
         adults,
@@ -71,13 +150,16 @@ export class ReservationController {
     }
   };
 
-  // Get all reservations for a user
+
   static getUserReservations = async (req: Request, res: Response) => {
     try {
-      const { userId } = req.params;
+
+      await this.autoUpdateCompletedReservations();
       
-      const reservations = await Reservation.find({ userId })
-        .populate('cottageId', 'Title Photos PriceSummer')
+      const { userUsername } = req.params;
+      
+      const reservations = await Reservation.find({ userUsername })
+        .populate('cottageId', 'Title Photos PriceSummer Location')
         .sort({ createdAt: -1 });
       
       res.json(reservations);
@@ -87,13 +169,59 @@ export class ReservationController {
     }
   };
 
-  // Get all reservations for a cottage (for owners)
+
+  static getCurrentReservations = async (req: Request, res: Response) => {
+    try {
+
+      await this.autoUpdateCompletedReservations();
+      
+      const { userUsername } = req.params;
+      
+      const reservations = await Reservation.find({ 
+        userUsername,
+        status: { $in: ['pending', 'confirmed'] }
+      })
+        .populate('cottageId', 'Title Photos PriceSummer Location')
+        .sort({ startDate: 1 });
+      
+      res.json(reservations);
+    } catch (error) {
+      console.error('Error fetching current reservations:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+
+  static getArchivedReservations = async (req: Request, res: Response) => {
+    try {
+
+      await this.autoUpdateCompletedReservations();
+      
+      const { userUsername } = req.params;
+      
+      const reservations = await Reservation.find({ 
+        userUsername,
+        status: 'completed'
+      })
+        .populate('cottageId', 'Title Photos PriceSummer Location')
+        .sort({ startDate: -1 }); // Most recent first
+      
+      res.json(reservations);
+    } catch (error) {
+      console.error('Error fetching archived reservations:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+
   static getCottageReservations = async (req: Request, res: Response) => {
     try {
+
+      await this.autoUpdateCompletedReservations();
+      
       const { cottageId } = req.params;
       
       const reservations = await Reservation.find({ cottageId })
-        .populate('userId', 'firstName lastName email')
         .sort({ startDate: 1 });
       
       res.json(reservations);
@@ -103,13 +231,13 @@ export class ReservationController {
     }
   };
 
-  // Update reservation status
+
   static updateReservationStatus = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
       const { status } = req.body;
 
-      if (!['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
+      if (!['pending', 'confirmed', 'cancelled', 'completed', 'expired'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status' });
       }
 
@@ -130,23 +258,23 @@ export class ReservationController {
     }
   };
 
-  // Cancel reservation
+
   static cancelReservation = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
-      const { userId } = req.body; // To verify ownership
+      const { userUsername } = req.body; // To verify ownership
 
       const reservation = await Reservation.findById(reservationId);
       if (!reservation) {
         return res.status(404).json({ message: 'Reservation not found' });
       }
 
-      // Check if user owns this reservation
-      if (reservation.userId.toString() !== userId) {
+
+      if (reservation.userUsername !== userUsername) {
         return res.status(403).json({ message: 'Not authorized to cancel this reservation' });
       }
 
-      // Check if cancellation is allowed (e.g., not too close to start date)
+
       const now = new Date();
       const startDate = new Date(reservation.startDate);
       const daysUntilStart = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 3600 * 24));
@@ -166,14 +294,13 @@ export class ReservationController {
     }
   };
 
-  // Get reservation by ID
+
   static getReservationById = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
       
       const reservation = await Reservation.findById(reservationId)
-        .populate('cottageId', 'Title Photos PriceSummer Description')
-        .populate('userId', 'firstName lastName email phone');
+        .populate('cottageId', 'Title Photos PriceSummer Description');
       
       if (!reservation) {
         return res.status(404).json({ message: 'Reservation not found' });
@@ -182,6 +309,29 @@ export class ReservationController {
       res.json(reservation);
     } catch (error) {
       console.error('Error fetching reservation:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+
+  static updateReservationCottage = async (req: Request, res: Response) => {
+    try {
+      const { reservationId } = req.params;
+      const { cottageId } = req.body;
+
+      const reservation = await Reservation.findByIdAndUpdate(
+        reservationId,
+        { cottageId, updatedAt: new Date() },
+        { new: true }
+      );
+
+      if (!reservation) {
+        return res.status(404).json({ message: 'Reservation not found' });
+      }
+
+      res.json({ message: 'Reservation cottage updated', reservation });
+    } catch (error) {
+      console.error('Error updating reservation cottage:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   };

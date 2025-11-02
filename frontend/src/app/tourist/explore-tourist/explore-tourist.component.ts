@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Vikendica } from '../../_models/vikendica';
-import { VikendicaService } from '../../services/vikendica/vikendica.service';
+import { Cottage } from '../../_models/cottage';
+import { CottageService } from '../../services/cottage/cottage.service';
 
 @Component({
   selector: 'app-explore-tourist',
@@ -13,30 +13,30 @@ export class ExploreTouristComponent implements OnInit{
 
   searchText:string = "" ;
 
-  SveVikendice:Vikendica[] = [];
+  allCottages:Cottage[] = [];
 
-  VidljiveVikendice:Vikendica[] = [];
+  visibleCottages:Cottage[] = [];
 
-  constructor(private vikendicaService:VikendicaService){
+  constructor(private cottageService:CottageService){
 
   }
 
   ngOnInit(): void {
-      this.GetVikendice();
+      this.getCottages();
   }
 
   Search():void{
     const text = this.searchText.trim().toLowerCase();
-    this.VidljiveVikendice = this.SveVikendice.filter(vikendica => {
-      vikendica.Title.toLowerCase().includes(text);
+    this.visibleCottages = this.allCottages.filter(cottage => {
+      return cottage.Title.toLowerCase().includes(text);
     })
   }
 
-  GetVikendice():void{
-    this.vikendicaService.GetAllV_().subscribe({
-      next: (vikendice) => {
-        this.SveVikendice = vikendice;
-        this.VidljiveVikendice = vikendice;
+  getCottages():void{
+    this.cottageService.GetAllV_().subscribe({
+      next: (cottages) => {
+        this.allCottages = cottages;
+        this.visibleCottages = cottages;
       }
     });
   }

@@ -8,7 +8,14 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
 
-  constructor() { }
+  constructor() {
+    // Restore login state from localStorage
+    this.loggedIn = localStorage.getItem('key') != null;
+  }
+
+  isLoggedIn(): boolean {
+    return this.loggedIn;
+  }
 
   private httpClient = inject(HttpClient)
   apiUrl="http://localhost:4000"
@@ -33,7 +40,9 @@ export class UserService {
   }
 
   changePassword(oldPass: string, newPass: string): Observable<any> {
-  return this.httpClient.post(`${this.apiUrl}/change-password`, {
+  const username = localStorage.getItem('key');
+  return this.httpClient.post(`${this.apiUrl}/auth/change-password`, {
+    username: username,
     oldPassword: oldPass,
     newPassword: newPass
   });
@@ -42,27 +51,31 @@ export class UserService {
     return this.httpClient.get<User>(`http://localhost:4000/users/getUser/${username}`);
   }
 
-   // update user: send multipart/form-data (fields + optional profileImage)
+   // update user: send multipart/form-data (only changed fields + optional profileImage)
   updateUser(user: User, file?: File | null): Observable<any> {
     const formData = new FormData();
 
-    // Append user fields (exclude undefined)
-    Object.keys(user).forEach(key => {
+    // Only send allowed fields that can be updated through profile
+    const allowedFields = ['firstName', 'lastName', 'email', 'address', 'phone', 'creditCard'];
+    
+    allowedFields.forEach(key => {
       const value = (user as any)[key];
-      if (value !== undefined && value !== null) formData.append(key, String(value));
+      if (value !== undefined && value !== null && value !== '') {
+        formData.append(key, String(value));
+      }
     });
 
     if (file) {
       formData.append('profileImage', file);
     }
 
-    // Endpoint should be implemented server-side to accept multipart/form-data
-    return this.httpClient.post(`${this.apiUrl}/users/update`, formData);
+    // Use PATCH method and include username in the URL
+    return this.httpClient.patch(`${this.apiUrl}/users/update/${user.username}`, formData);
   }
 
   // helper to build full uploads URL
   getUploadUrl(filename: string | null | undefined): string | null {
     if (!filename) return null;
-    return `${this.apiUrl}/uploads/${filename}`;
+    return `${this.apiUrl}/uploads/profile_photos/${filename}`;
   }
 }

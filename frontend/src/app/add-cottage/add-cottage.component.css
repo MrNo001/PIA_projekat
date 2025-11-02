@@ -221,6 +221,26 @@ input:focus, textarea:focus, select:focus {
   margin-top: 4px;
 }
 
+.import-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px dashed #3498db;
+  margin-bottom: 20px;
+}
+
+.import-section h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.form-divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  margin: 20px 0;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .add-cottage {

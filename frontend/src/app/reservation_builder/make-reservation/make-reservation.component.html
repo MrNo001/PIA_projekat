@@ -1,18 +1,18 @@
 <div class="make-reservation-container">
   <div class="reservation-header">
     <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
-      <i class="bi bi-arrow-left"></i> Nazad
+      <i class="bi bi-arrow-left"></i> Back
     </button>
     
     <div class="step-indicator">
       <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
         <span class="step-number">1</span>
-        <span class="step-label">Detalji rezervacije</span>
+        <span class="step-label">Reservation Details</span>
       </div>
       <div class="step-connector" [class.completed]="currentStep > 1"></div>
       <div class="step" [class.active]="currentStep === 2">
         <span class="step-number">2</span>
-        <span class="step-label">Potvrda rezervacije</span>
+        <span class="step-label">Confirmation</span>
       </div>
     </div>
   </div>
@@ -24,12 +24,6 @@
         (reservationData)="onReservationDataReceived($event)"
         (validationStatus)="onValidationStatusChanged($event)">
       </app-build-reservation>
-      
-      <div class="step-actions" *ngIf="reservationData">
-        <button class="btn btn-primary" (click)="currentStep = 2">
-          Nastavi na potvrdu
-        </button>
-      </div>
     </div>
 
     <!-- Step 2: Confirm Reservation -->

@@ -1,0 +1,15 @@
+<div class="star-rating" [class.readonly]="readonly">
+  <span 
+    *ngFor="let star of stars" 
+    [class]="getStarClass(star)"
+    (click)="onStarClick(star)"
+    (mouseenter)="onStarHover(star)"
+    [attr.aria-label]="'Rate ' + star + ' out of ' + maxRating + ' stars'"
+    role="button"
+    [attr.tabindex]="readonly ? -1 : 0"
+    (keydown.enter)="onStarClick(star)"
+    (keydown.space)="onStarClick(star)"
+  >
+    ★
+  </span>
+</div>

@@ -1,0 +1,42 @@
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.star:hover:not(.readonly) {
+  transform: scale(1.1);
+}
+
+.star-filled {
+  color: #ffc107;
+}
+
+.star-empty {
+  color: #e0e0e0;
+}
+
+.star-small {
+  font-size: 16px;
+}
+
+.star-medium {
+  font-size: 24px;
+}
+
+.star-large {
+  font-size: 32px;
+}
+
+.readonly .star {
+  cursor: default;
+}
+
+.readonly .star:hover {
+  transform: none;
+}

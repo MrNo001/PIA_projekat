@@ -5,6 +5,18 @@
   <div class="add-cottage">
     <!-- Left column: form -->
     <div class="form-section">
+      <!-- JSON Import Section -->
+      <div class="import-section">
+        <h3>Import Cottage Data (Optional)</h3>
+        <div class="form-group">
+          <label for="jsonFile">Import from JSON:</label>
+          <input type="file" id="jsonFile" accept=".json" (change)="onJsonFileSelected($event)">
+          <div class="info-text">Select a JSON file to automatically fill the form</div>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
       <div class="form-group">
         <label for="title" class="required">Title:</label>
         <input type="text" id="title" placeholder="Cottage Name" [(ngModel)]="title" #titleInput="ngModel" required>
