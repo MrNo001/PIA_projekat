@@ -1,62 +1,86 @@
-<div class="cottage-card" (click)="showDetails()">
-  <!-- Cottage Image -->
-  <div class="cottage-image">
-    <img [src]="getCottageImageUrl(cottage.Photos[0] || '')" 
-         [alt]="cottage.Title"
-         (error)="handleImageError($event)">
-    <div class="image-overlay">
-      <div class="overlay-actions">
-        <button class="btn btn-sm btn-light" (click)="showDetails()" title="View Details">
-          <i class="bi bi-eye"></i>
+@if (minimal) {
+  <!-- Minimal Format: Photo, Name and Rating on same line -->
+  <div class="cottage-card minimal" 
+       [class.selected]="selected"
+       (click)="showDetails($event)">
+    <!-- Cottage Image -->
+    <div class="cottage-image-minimal">
+      <img [src]="getCottageImageUrl(cottage.Photos[0] || '')" 
+           [alt]="cottage.Title"
+           (error)="handleImageError($event)">
+    </div>
+    <!-- Name and Rating on same line -->
+    <div class="cottage-header-minimal">
+      <h4 class="cottage-title-minimal">{{ cottage.Title }}</h4>
+      <span class="rating-number-minimal">{{ getStarRatingDisplay() }}</span>
+    </div>
+  </div>
+} @else {
+  <!-- Default Format: Full Card with Star Rating Component -->
+  <div class="cottage-card" 
+       [class.compact]="compact"
+       [class.selected]="selected">
+    <!-- Cottage Image -->
+    <div class="cottage-image" [class.compact]="compact">
+      <img [src]="getCottageImageUrl(cottage.Photos[0] || '')" 
+           [alt]="cottage.Title"
+           (error)="handleImageError($event)">
+      <div class="image-overlay">
+        <div class="overlay-actions">
+          <button class="btn btn-sm btn-light" (click)="showDetails($event)" title="View Details">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cottage Info -->
+    <div class="cottage-info" [class.compact]="compact">
+      <h4 class="cottage-title">{{ cottage.Title }}</h4>
+      @if (!compact) {
+        <p class="cottage-description">{{ cottage.Description | slice:0:100 }}{{ cottage.Description.length > 100 ? '...' : '' }}</p>
+      }
+      
+      <!-- Rating Display (only for logged in users) - Original Star Rating Component -->
+      <div class="cottage-rating" *ngIf="isLoggedIn">
+        @if (cottage.Ocena === -1) {
+          <span class="no-ratings-text">No ratings yet</span>
+        } @else {
+          <div class="rating-content">
+            <span class="rating-number">{{ cottage.Ocena.toFixed(1) }}</span>
+            <app-star-rating 
+              [rating]="cottage.Ocena" 
+              [readonly]="true" 
+              [size]="'small'">
+            </app-star-rating>
+          </div>
+        }
+      </div>
+      
+      <div class="cottage-details">
+        <div class="detail-item">
+          <i class="bi bi-geo-alt"></i>
+          <span>Location: {{ cottage.Location.lat.toFixed(2) || 'N/A' }}, {{ cottage.Location.lng.toFixed(2) || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="bi bi-currency-euro"></i>
+          <span>Summer: {{ cottage.PriceSummer || 0 }}€/night</span>
+        </div>
+        <div class="detail-item">
+          <i class="bi bi-currency-euro"></i>
+          <span>Winter: {{ cottage.PriceWinter || 0 }}€/night</span>
+        </div>
+        <div class="detail-item">
+          <i class="bi bi-images"></i>
+          <span>{{ cottage.Photos.length || 0 }} photos</span>
+        </div>
+      </div>
+
+      <div class="cottage-actions">
+        <button class="btn btn-outline-primary btn-sm" (click)="showDetails($event)">
+          <i class="bi bi-eye"></i> View Details
         </button>
       </div>
     </div>
   </div>
-
-  <!-- Cottage Info -->
-  <div class="cottage-info">
-    <h4 class="cottage-title">{{ cottage.Title }}</h4>
-    <p class="cottage-description">{{ cottage.Description | slice:0:100 }}{{ cottage.Description.length > 100 ? '...' : '' }}</p>
-    
-    <!-- Rating Display (only for logged in users) -->
-    <div class="cottage-rating" *ngIf="isLoggedIn">
-      @if (cottage.Ocena === -1) {
-        <span class="no-ratings-text">No ratings yet</span>
-      } @else {
-        <div class="rating-content">
-          <span class="rating-number">{{ cottage.Ocena.toFixed(1) }}</span>
-          <app-star-rating 
-            [rating]="cottage.Ocena" 
-            [readonly]="true" 
-            [size]="'small'">
-          </app-star-rating>
-        </div>
-      }
-    </div>
-    
-    <div class="cottage-details">
-      <div class="detail-item">
-        <i class="bi bi-geo-alt"></i>
-        <span>Location: {{ cottage.Location.lat.toFixed(2) || 'N/A' }}, {{ cottage.Location.lng.toFixed(2) || 'N/A' }}</span>
-      </div>
-      <div class="detail-item">
-        <i class="bi bi-currency-euro"></i>
-        <span>Summer: {{ cottage.PriceSummer || 0 }}€/night</span>
-      </div>
-      <div class="detail-item">
-        <i class="bi bi-currency-euro"></i>
-        <span>Winter: {{ cottage.PriceWinter || 0 }}€/night</span>
-      </div>
-      <div class="detail-item">
-        <i class="bi bi-images"></i>
-        <span>{{ cottage.Photos.length || 0 }} photos</span>
-      </div>
-    </div>
-
-    <div class="cottage-actions">
-      <button class="btn btn-outline-primary btn-sm" (click)="showDetails()">
-        <i class="bi bi-eye"></i> View Details
-      </button>
-    </div>
-  </div>
-</div>
+}

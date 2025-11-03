@@ -16,10 +16,91 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+.cottage-card.selected {
+  outline: 3px solid #2a7bbf;
+  outline-offset: 4px;
+}
+
+.cottage-card.compact {
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* Minimal Format - Photo, Name and Rating on same line */
+.cottage-card.minimal {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  min-width: 150px;
+  max-width: 150px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.cottage-card.minimal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cottage-card.minimal.selected {
+  border-color: #2a7bbf;
+  background-color: #f0f7ff;
+}
+
+.cottage-image-minimal {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cottage-image-minimal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cottage-header-minimal {
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.cottage-title-minimal {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  line-height: 1.2;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rating-number-minimal {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #495057;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .cottage-image {
   position: relative;
   height: 200px;
   overflow: hidden;
+}
+
+.cottage-image.compact {
+  height: 120px;
 }
 
 .cottage-image img {
@@ -71,6 +152,10 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+}
+
+.cottage-info.compact {
+  padding: 1rem;
 }
 
 .cottage-title {

@@ -16,6 +16,9 @@ import { StarRatingComponent } from '../common_templates/star-rating/star-rating
 export class CottageCardComponent implements OnInit {
 
    @Input() cottage: Cottage = new Cottage();
+   @Input() compact: boolean = false;
+   @Input() minimal: boolean = false;
+   @Input() selected: boolean = false;
    private router = inject(Router);
    private userService = inject(UserService);
 
@@ -28,7 +31,18 @@ export class CottageCardComponent implements OnInit {
        this.isLoggedIn = this.userService.isLoggedIn();
    }
 
-   showDetails(){
+   getStarRatingDisplay(): string {
+     if (this.cottage.Ocena === -1) {
+       return 'No ratings';
+     }
+     const roundedRating = Math.round(this.cottage.Ocena);
+     return `${roundedRating}-⭐`;
+   }
+
+   showDetails(event?: Event){
+      if (event) {
+        event.stopPropagation();
+      }
       //this.router.navigate(["/cottage"],{ queryParams: { id: this.cottage._id } });
       this.router.navigate(["cottage/",this.cottage._id]);
    }

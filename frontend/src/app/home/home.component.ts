@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
 import { Cottage } from '../_models/cottage';
 import { CottageService } from '../services/cottage/cottage.service';
 import { EventEmitter } from '@angular/core';
@@ -6,6 +6,8 @@ import { Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CottageCardComponent } from '../cottage_card/cottage_card.component';
 import { NavBarComponent } from '../common_templates/nav-bar/nav-bar.component';
+import * as L from 'leaflet';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -13,7 +15,7 @@ import { NavBarComponent } from '../common_templates/nav-bar/nav-bar.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('cottagesScrollContainer', { static: false }) cottagesScrollContainer!: ElementRef<HTMLDivElement>;
 
@@ -27,6 +29,11 @@ export class HomeComponent implements OnInit {
 
   sortField = 'title';
   sortDirection: 'asc' | 'desc' = 'asc';
+
+  mapExpanded = false;
+  selectedCottageId: string | undefined;
+  private map: L.Map | null = null;
+  private markers: L.Marker[] = [];
 
   @Output() search = new EventEmitter<{ field: string, term: string }>();
 
@@ -58,6 +65,7 @@ export class HomeComponent implements OnInit {
     
     this.filtersApplied = true;
     this.sortCottages();
+    this.updateMapIfVisible();
   }
 
   getFieldValue(cottage: Cottage, field: string): string {
@@ -78,6 +86,7 @@ export class HomeComponent implements OnInit {
     this.searchTerm = '';
     this.filtersApplied = false;
     this.sortCottages();
+    this.updateMapIfVisible();
   }
 
   toggleSortDirection() {
@@ -94,15 +103,12 @@ export class HomeComponent implements OnInit {
           comparison = a.Title.localeCompare(b.Title);
           break;
         case 'price':
-          comparison = (a.PriceSummer || 0) - (b.PriceSummer || 0);
+          const currentPriceA = this.getCurrentSeasonPrice(a);
+          const currentPriceB = this.getCurrentSeasonPrice(b);
+          comparison = currentPriceA - currentPriceB;
           break;
         case 'rating':
           comparison = (a.Ocena || 0) - (b.Ocena || 0);
-          break;
-        case 'location':
-          const aLoc = `${a.Location.lat},${a.Location.lng}`;
-          const bLoc = `${b.Location.lat},${b.Location.lng}`;
-          comparison = aLoc.localeCompare(bLoc);
           break;
         default:
           comparison = 0;
@@ -110,6 +116,11 @@ export class HomeComponent implements OnInit {
       
       return this.sortDirection === 'asc' ? comparison : -comparison;
     });
+  }
+
+  getCurrentSeasonPrice(cottage: Cottage): number {
+    const month = new Date().getMonth() + 1;
+    return (month >= 6 && month <= 8) ? cottage.PriceSummer : cottage.PriceWinter;
   }
 
   onSortFieldChange() {
@@ -126,6 +137,109 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  toggleMap() {
+    this.mapExpanded = !this.mapExpanded;
+    if (this.mapExpanded) {
+      setTimeout(() => this.initializeMap(), 100);
+    } else {
+      this.destroyMap();
+      this.selectedCottageId = undefined;
+    }
+  }
+
+  updateMapIfVisible() {
+    if (this.mapExpanded && this.map) {
+      this.destroyMap();
+      setTimeout(() => this.initializeMap(), 100);
+    }
+  }
+
+  initializeMap() {
+    if (this.map) {
+      this.destroyMap();
+    }
+    if (this.Cottages.length === 0) return;
+
+    const firstCottage = this.Cottages[0];
+    const defaultLat = firstCottage?.Location?.lat || 44.8176;
+    const defaultLng = firstCottage?.Location?.lng || 20.4569;
+
+    this.map = L.map('cottage-map').setView([defaultLat, defaultLng], 8);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    this.markers = [];
+    this.Cottages.forEach(cottage => {
+      if (cottage.Location && cottage.Location.lat && cottage.Location.lng) {
+        const price = this.getCurrentSeasonPrice(cottage);
+        const marker = L.marker([cottage.Location.lat, cottage.Location.lng])
+          .addTo(this.map!)
+          .bindPopup(`<b>${cottage.Title}</b><br>€${price}/night`);
+        
+        marker.on('click', () => {
+          this.selectCottage(cottage._id);
+          this.scrollToCottage(cottage._id);
+        });
+        
+        this.markers.push(marker);
+      }
+    });
+
+    if (this.Cottages.length > 0) {
+      const bounds = L.latLngBounds(this.Cottages
+        .filter(c => c.Location && c.Location.lat && c.Location.lng)
+        .map(c => [c.Location.lat, c.Location.lng] as [number, number]));
+      if (bounds.isValid()) {
+        this.map.fitBounds(bounds, { padding: [50, 50] });
+      }
+    }
+
+    setTimeout(() => this.map?.invalidateSize(), 200);
+  }
+
+  destroyMap() {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+      this.markers = [];
+    }
+  }
+
+  selectCottage(cottageId: string | undefined) {
+    this.selectedCottageId = cottageId;
+    if (cottageId && this.map) {
+      const cottage = this.Cottages.find(c => c._id === cottageId);
+      if (cottage && cottage.Location && cottage.Location.lat && cottage.Location.lng) {
+        this.map.setView([cottage.Location.lat, cottage.Location.lng], 12);
+        const marker = this.markers.find((m, idx) => this.Cottages[idx]._id === cottageId);
+        if (marker) {
+          marker.openPopup();
+        }
+      }
+    }
+  }
+
+  scrollToCottage(cottageId: string | undefined) {
+    if (!cottageId) return;
+    
+    const scrollContainer = this.cottagesScrollContainer?.nativeElement;
+    if (!scrollContainer) return;
+
+    const index = this.Cottages.findIndex(c => c._id === cottageId);
+    if (index === -1) return;
+
+    const cardWidth = 300;
+    const gap = 20;
+    const scrollPosition = index * (cardWidth + gap) - scrollContainer.clientWidth / 2 + cardWidth / 2;
+    
+    scrollContainer.scrollTo({
+      left: Math.max(0, scrollPosition),
+      behavior: 'smooth'
+    });
+  }
+
   ngOnInit(){
     this.cottageService.GetAllV_().subscribe(data => {
       this.all_cottages = data;
@@ -135,5 +249,11 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+  }
+
+  ngOnDestroy() {
+    this.destroyMap();
+  }
 
 }

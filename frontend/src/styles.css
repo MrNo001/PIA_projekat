@@ -7,3 +7,13 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f5f6fa;
 }
+
+/* Ensure Leaflet map controls are always visible */
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1000 !important;
+}
+
+.leaflet-control {
+  z-index: 1000 !important;
+}

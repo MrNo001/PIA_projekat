@@ -29,20 +29,42 @@
         <option value="title">Title</option>
         <option value="price">Price</option>
         <option value="rating">Rating</option>
-        <option value="location">Location</option>
       </select>
 
       <button (click)="toggleSortDirection()" class="sort-btn" [title]="sortDirection === 'asc' ? 'Sort ascending' : 'Sort descending'">
         <span class="arrow">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
       </button>
+
+      <button (click)="toggleMap()" class="map-preview-btn" [class.active]="mapExpanded" [title]="mapExpanded ? 'Hide map' : 'Show on map'">
+        <div class="map-preview">
+          <span class="map-preview-text">Show on map</span>
+        </div>
+      </button>
     </div>
   </div>
 
+  <!-- Map Container -->
+  @if (mapExpanded) {
+    <div class="map-container">
+      <div id="cottage-map" class="map-view"></div>
+    </div>
+  }
+
   <!-- Scrollable Cottages List -->
-  <div class="cottages-scroll-container" #cottagesScrollContainer>
+  <div class="cottages-scroll-container" 
+       [class.map-visible]="mapExpanded"
+       #cottagesScrollContainer>
     <div class="cottages-list">
-      @for (cottage of Cottages; track $index) {
-        <app-cottage_card [cottage]="cottage"></app-cottage_card>
+      @for (cottage of Cottages; track cottage._id) {
+        <div class="cottage-wrapper" 
+             (click)="selectCottage(cottage._id)"
+             [class.selected]="selectedCottageId === cottage._id">
+          <app-cottage_card 
+            [cottage]="cottage" 
+            [minimal]="mapExpanded"
+            [selected]="selectedCottageId === cottage._id">
+          </app-cottage_card>
+        </div>
       }
     </div>
   </div>
