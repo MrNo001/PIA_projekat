@@ -8,7 +8,6 @@ import { AddCottageComponent } from './add-cottage/add-cottage.component';
 import { MakeReservationComponent } from './reservation_builder/make-reservation/make-reservation.component';
 import { MyCottagesComponent } from './owner/my-cottages/my-cottages.component';
 import { EditCottageComponent } from './owner/edit-cottage/edit-cottage.component';
-import { OwnerDashboardComponent } from './owner/owner-dashboard/owner-dashboard.component';
 import { OwnerReservationsComponent } from './owner/owner-reservations/owner-reservations.component';
 import { OwnerStatisticsComponent } from './owner/owner-statistics/owner-statistics.component';
 import { TouristReservationsComponent } from './tourist/tourist-reservations/tourist-reservations.component';
@@ -17,6 +16,7 @@ import { AdminUsersComponent } from './administrator/admin-users.component';
 import { AdminEditUserComponent } from './administrator/admin-edit-user.component';
 import { AdminRequestsComponent } from './administrator/admin-requests.component';
 import { AdminCottagesComponent } from './administrator/admin-cottages.component';
+import { AdminLoginComponent } from './administrator/admin-login.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 
 export const routes: Routes = [
@@ -24,16 +24,16 @@ export const routes: Routes = [
     {path: "",component:HomeComponent},
     {path: "login", component:LoginComponent},
     {path: "cottage/:id",component:CottageDetailsComponent},
-    {path:"profile",component:ProfileComponent},
+    {path:"profile",component:ProfileComponent, data: { animation: 'owner' }},
     {path:"change-password",component:ChangePasswordComponent},
     {path:"addCottage",component:AddCottageComponent},
     {path:"makeReservation/:CottageId",component:MakeReservationComponent},
-    {path:"my-cottages",component:MyCottagesComponent},
-    {path:"edit-cottage/:id",component:EditCottageComponent},
-    {path:"owner-dashboard",component:OwnerDashboardComponent},
-    {path:"owner-reservations",component:OwnerReservationsComponent},
-    {path:"owner-statistics",component:OwnerStatisticsComponent},
+    {path:"my-cottages",component:MyCottagesComponent, data: { animation: 'owner' }},
+    {path:"edit-cottage/:id",component:EditCottageComponent, data: { animation: 'owner' }},
+    {path:"owner-reservations",component:OwnerReservationsComponent, data: { animation: 'owner' }},
+    {path:"owner-statistics",component:OwnerStatisticsComponent, data: { animation: 'owner' }},
     {path:"reservations",component:TouristReservationsComponent},
+    {path:"admin/login",component:AdminLoginComponent},
     {path:"admin",component:AdminDashboardComponent},
     {path:"admin/users",component:AdminUsersComponent},
     {path:"admin/users/edit/:username",component:AdminEditUserComponent},

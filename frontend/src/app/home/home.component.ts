@@ -1,7 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Cottage } from '../_models/cottage';
 import { CottageService } from '../services/cottage/cottage.service';
-import { StatisticsService, Statistics } from '../services/statistics/statistics.service';
 import { EventEmitter } from '@angular/core';
 import { Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -16,17 +15,11 @@ import { NavBarComponent } from '../common_templates/nav-bar/nav-bar.component';
 })
 export class HomeComponent implements OnInit {
 
-  numOfCottages:number = 0;
-  numOfOwners:number = 0;
-  numOfTourists:number = 0;
-  numOfReservationsLastDay:number = 0;
-  numOfReservationsLastWeek:number = 0;
-  numOfReservationsLastMonth:number = 0;
+  @ViewChild('cottagesScrollContainer', { static: false }) cottagesScrollContainer!: ElementRef<HTMLDivElement>;
 
   Cottages:Cottage[] = [];
   all_cottages:Cottage[] = [];
   cottageService = inject(CottageService);
-  statisticsService = inject(StatisticsService);
 
   searchField = 'title';
   searchTerm = '';
@@ -123,23 +116,22 @@ export class HomeComponent implements OnInit {
     this.sortCottages();
   }
 
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    const scrollContainer = this.cottagesScrollContainer?.nativeElement;
+    if (scrollContainer) {
+      event.preventDefault();
+      event.stopPropagation();
+      scrollContainer.scrollLeft += event.deltaY*4;
+    }
+  }
+
   ngOnInit(){
     this.cottageService.GetAllV_().subscribe(data => {
       this.all_cottages = data;
       this.Cottages = [...this.all_cottages];
       this.sortCottages();
       console.log(this.Cottages);
-    });
-
-    // Load statistics
-    this.statisticsService.getAllStatistics().subscribe((stats: Statistics) => {
-      this.numOfCottages = stats.cottages;
-      this.numOfOwners = stats.owners;
-      this.numOfTourists = stats.tourists;
-      this.numOfReservationsLastDay = stats.reservationsLastDay;
-      this.numOfReservationsLastWeek = stats.reservationsLastWeek;
-      this.numOfReservationsLastMonth = stats.reservationsLastMonth;
-      console.log('Statistics loaded:', stats);
     });
   }
 

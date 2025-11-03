@@ -34,7 +34,7 @@ export class AdminDashboardComponent implements OnInit {
     // Check if user is logged in and is an administrator
     const username = localStorage.getItem('key');
     if (!username) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/admin/login']);
       return;
     }
 
@@ -50,7 +50,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to fetch user:', err);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/admin/login']);
       }
     });
   }

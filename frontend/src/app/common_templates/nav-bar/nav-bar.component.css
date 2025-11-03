@@ -64,11 +64,22 @@
 }
 
 /* User Info */
+.user-info-link {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.user-info-link:hover .user-info {
+  opacity: 0.8;
+}
+
 .user-info {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   margin-right: 1rem;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .user-name {
@@ -124,6 +135,12 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  .user-info-link {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .user-info {

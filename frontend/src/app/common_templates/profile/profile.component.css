@@ -1,27 +1,15 @@
 :host {
   display: block;
-  padding: 20px;
   font-family: Arial, sans-serif;
 }
 
-/* top bar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
+.profile-wrapper {
+  min-height: 100vh;
 }
 
-.topbar h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.top-actions .link {
-  margin-left: 12px;
-  text-decoration: none;
-  color: #2a7bbf;
-  font-weight: 500;
+/* Override navbar to be transparent on profile page */
+::ng-deep .profile-wrapper app-nav-bar .navbar {
+  background: linear-gradient(90deg, rgba(76, 175, 239, 0.7), rgba(42, 123, 191, 0.7)) !important;
 }
 
 /* profile card */
@@ -30,7 +18,7 @@
   border-radius: 10px;
   padding: 18px;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 20px auto;
   box-shadow: 0 6px 20px rgba(0,0,0,0.07);
 }
 

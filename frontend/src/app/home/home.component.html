@@ -1,53 +1,49 @@
- <!-- Navigation Bar -->
- <nav>
-  <app-nav-bar ></app-nav-bar>
-</nav>
+<div class="home-container">
+  <!-- Navigation Bar -->
+  <nav class="nav-container">
+    <app-nav-bar></app-nav-bar>
+  </nav>
 
-<!-- Main Content -->
-<div class="stats">
-  <p>Ukupan broj Cottages: {{ numOfCottages }}</p>
-  <p>Ukupan broj vlasnika: {{ numOfOwners }}</p>
-  <p>Ukupan broj turista: {{ numOfTourists }}</p>
-  <p>Ukupan broj rezervisanih cottages u poslednjih 24h: {{ numOfReservationsLastDay }}</p>
-  <p>Ukupan broj rezervisanih cottages u poslednjih 7 dana: {{ numOfReservationsLastWeek }}</p>
-  <p>Ukupan broj rezervisanih cottages u poslednjih 30 dana: {{ numOfReservationsLastMonth }}</p>
-</div>
+  <!-- Fixed Search Tools Section -->
+  <div class="search-tools-container">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <select [(ngModel)]="searchField">
+        <option value="title">Title</option>
+        <option value="description">Description</option>
+        <option value="location">Location</option>
+      </select>
 
-<!-- Sort Bar -->
-<div class="sort-bar">
-  <select [(ngModel)]="sortField" (change)="onSortFieldChange()">
-    <option value="title">Title</option>
-    <option value="price">Price</option>
-    <option value="rating">Rating</option>
-    <option value="location">Location</option>
-  </select>
+      <input type="text" [(ngModel)]="searchTerm" placeholder="Search..." />
 
-  <button (click)="toggleSortDirection()" class="sort-btn" [title]="sortDirection === 'asc' ? 'Sort ascending' : 'Sort descending'">
-    <span class="arrow">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
-  </button>
-</div>
+      <button (click)="onSearch()">Search</button>
+      
+      @if (filtersApplied) {
+        <button (click)="clearFilters()" class="clear-btn">Clear Filters</button>
+      }
+    </div>
 
-<!-- Search Bar -->
-<div class="search-bar">
-  <select [(ngModel)]="searchField">
-    <option value="title">Title</option>
-    <option value="description">Description</option>
-    <option value="location">Location</option>
-  </select>
+    <!-- Sort Bar -->
+    <div class="sort-bar">
+      <select [(ngModel)]="sortField" (change)="onSortFieldChange()">
+        <option value="title">Title</option>
+        <option value="price">Price</option>
+        <option value="rating">Rating</option>
+        <option value="location">Location</option>
+      </select>
 
-  <input type="text" [(ngModel)]="searchTerm" placeholder="Search..." />
+      <button (click)="toggleSortDirection()" class="sort-btn" [title]="sortDirection === 'asc' ? 'Sort ascending' : 'Sort descending'">
+        <span class="arrow">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+      </button>
+    </div>
+  </div>
 
-  <button (click)="onSearch()">Search</button>
-  
-  @if (filtersApplied) {
-    <button (click)="clearFilters()" class="clear-btn">Clear Filters</button>
-  }
-</div>
-
-<!-- Cottages List -->
-<div class="cottages-list">
-  @for (cottage of Cottages; track $index) {
-    <app-cottage_card [cottage]="cottage"></app-cottage_card>
-  }
-  
+  <!-- Scrollable Cottages List -->
+  <div class="cottages-scroll-container" #cottagesScrollContainer>
+    <div class="cottages-list">
+      @for (cottage of Cottages; track $index) {
+        <app-cottage_card [cottage]="cottage"></app-cottage_card>
+      }
+    </div>
+  </div>
 </div>

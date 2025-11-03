@@ -231,12 +231,4 @@ export class ProfileComponent implements OnInit {
     target.onerror = null;
   }
 
-  logOut(): void {
-    localStorage.removeItem("key");
-    this.userService.loggedIn = false;
-    this.userService.currentUser = null;
-    this.router.navigate(['/login']);
-    console.log("logged out");
-  }
-
 }

@@ -1,11 +1,10 @@
 <nav class="navbar">
   <div class="nav-left">
-    <a class="nav-logo" [routerLink]="isOwner() ? '/owner-dashboard' : '/'">Mountain Cottage</a>
+    <a class="nav-logo" routerLink="/">Mountain Cottage</a>
     
     <!-- Tourist Navigation -->
     @if(isTourist()) {
       <a class="nav-link" routerLink="/reservations" [class.active]="activePage === 'reservations'">Reservations</a>
-      <a class="nav-link" routerLink="/profile">Profile</a>
     }
     
     <!-- Owner Navigation -->
@@ -13,7 +12,6 @@
       <a class="nav-link" routerLink="/my-cottages" [class.active]="activePage === 'my-cottages'">My Cottages</a>
       <a class="nav-link" routerLink="/owner-reservations" [class.active]="activePage === 'reservations'">Reservations</a>
       <a class="nav-link" routerLink="/owner-statistics" [class.active]="activePage === 'statistics'">Statistics</a>
-      <a class="nav-link" routerLink="/profile">Profile</a>
     }
     
     <!-- Admin Navigation -->
@@ -27,10 +25,12 @@
   
   <div class="nav-right">
     @if(isLoggedIn) {
-      <div class="user-info">
-        <span class="user-name">{{ currentUser?.firstName || currentUser?.username }}</span>
-        <span class="user-role" [class]="'role-' + userRole">{{ userRole | titlecase }}</span>
-      </div>
+      <a routerLink="/profile" class="user-info-link">
+        <div class="user-info">
+          <span class="user-name">{{ currentUser?.firstName || currentUser?.username }}</span>
+          <span class="user-role" [class]="'role-' + userRole">{{ userRole | titlecase }}</span>
+        </div>
+      </a>
       <button class="btn btn-outline" (click)="LogOut()">Log Out</button>
     } @else {
       <a routerLink="/register"><button class="btn">Register</button></a>

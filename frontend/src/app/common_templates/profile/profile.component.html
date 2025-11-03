@@ -1,16 +1,6 @@
 
-<div class="tourist-wrapper">
-
-  <header class="topbar">
-    <h2>Welcome, {{ user.firstName || user.username }}</h2>
-    <div class="top-actions">
-      <a routerLink="/" class="link">Home</a>
-      <!-- Owner-specific navigation -->
-      <a *ngIf="user.role === 'owner'" routerLink="/my-cottages" class="link">My Cottages</a>
-      <a *ngIf="user.role === 'owner'" routerLink="/addCottage" class="link">Add Cottage</a>
-      <a (click)="logOut()" class="link" style="cursor: pointer;">Logout</a>
-    </div>
-  </header>
+<div class="profile-wrapper">
+  <app-nav-bar [activePage]="'profile'"></app-nav-bar>
 
   <main class="profile-card">
     <div class="profile-header">

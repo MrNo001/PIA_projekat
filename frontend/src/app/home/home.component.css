@@ -1,4 +1,27 @@
+/* Home Container - Prevents vertical scrolling */
+.home-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Navigation Bar */
+.nav-container {
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+}
+
 .navbar {
   background: linear-gradient(90deg, #4cafef, #2a7bbf);
   color: white;
@@ -63,18 +86,64 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* Page Content */
-.stats {
-  background: #f9f9f9;
-  padding: 16px;
-  border-radius: 8px;
-  margin: 20px auto;
-  max-width: 800px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+/* Fixed Search Tools Container */
+.search-tools-container {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.stats p {
-  margin: 6px 0;
+/* Search Bar */
+.search-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.search-bar select,
+.search-bar input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-bar input {
+  flex: 1;
+  max-width: 300px;
+}
+
+.search-bar button {
+  padding: 8px 16px;
+  background-color: #2a7bbf;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-bar button:hover {
+  background-color: #2468a6;
+}
+
+.clear-btn {
+  background-color: #dc3545 !important;
+}
+
+.clear-btn:hover {
+  background-color: #c82333 !important;
 }
 
 /* Sort Bar */
@@ -82,17 +151,18 @@
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 20px 0;
+  width: 100%;
+  max-width: 800px;
 }
 
 .sort-bar select {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 .sort-btn {
-  padding: 6px 14px;
+  padding: 8px 16px;
   background-color: #2a7bbf;
   color: white;
   border: none;
@@ -101,7 +171,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
+  min-width: 48px;
+  transition: background-color 0.2s;
 }
 
 .sort-btn:hover {
@@ -113,38 +184,49 @@
   font-weight: bold;
 }
 
-/* Search Bar */
-.search-bar {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 20px 0;
-}
-
-.search-bar select,
-.search-bar input {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.search-bar button {
-  padding: 6px 14px;
-  background-color: #2a7bbf;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  background-color: #2468a6;
-}
-
-/* Cottages List */
-.cottages-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+/* Scrollable Cottages Container */
+.cottages-scroll-container {
+  position: fixed;
+  top: 180px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(100vh - 180px);
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 20px;
+  scroll-behavior: smooth;
+  background-color: #f5f5f5;
+}
+
+.cottages-scroll-container::-webkit-scrollbar {
+  height: 12px;
+}
+
+.cottages-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.cottages-scroll-container::-webkit-scrollbar-thumb {
+  background: #2a7bbf;
+  border-radius: 6px;
+}
+
+.cottages-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #2468a6;
+}
+
+/* Cottages List - Conveyor Belt Style */
+.cottages-list {
+  display: flex;
+  gap: 20px;
+  min-width: min-content;
+  padding: 10px 0;
+}
+
+.cottages-list app-cottage_card {
+  flex: 0 0 auto;
+  min-width: 280px;
+  max-width: 280px;
 }

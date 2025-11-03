@@ -4,11 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { CottageService } from '../../services/cottage/cottage.service';
 import { UserService } from '../../services/user/user.service';
 import { Cottage } from '../../_models/cottage';
+import { NavBarComponent } from '../../common_templates/nav-bar/nav-bar.component';
 
 @Component({
   selector: 'app-my-cottages',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NavBarComponent],
   templateUrl: './my-cottages.component.html',
   styleUrl: './my-cottages.component.css'
 })

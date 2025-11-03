@@ -1,15 +1,13 @@
 <div class="my-cottages-wrapper">
-  <header class="topbar">
-    <h2>My Cottages</h2>
-    <div class="top-actions">
+  <app-nav-bar [activePage]="'my-cottages'"></app-nav-bar>
+
+  <main class="cottages-container">
+    <div class="page-header">
+      <h2>My Cottages</h2>
       <button class="btn btn-primary" (click)="addNewCottage()">
         <i class="bi bi-plus-circle"></i> Add New Cottage
       </button>
-      <a routerLink="/profile" class="link">Back to Profile</a>
     </div>
-  </header>
-
-  <main class="cottages-container">
     <!-- Loading State -->
     <div *ngIf="loading" class="loading-state">
       <div class="spinner-border" role="status">

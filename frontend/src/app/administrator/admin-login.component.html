@@ -1,0 +1,39 @@
+<div class="admin-login-wrapper">
+  <div class="admin-login-container">
+    <div class="admin-header">
+      <h1>Administrator Access</h1>
+      <p class="admin-notice">Administrative Panel - Authorized Personnel Only</p>
+    </div>
+
+    <div class="form-container">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          id="username" 
+          type="text" 
+          [(ngModel)]="username" 
+          placeholder="Enter administrator username"
+          (keyup.enter)="login()">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          id="password" 
+          type="password" 
+          [(ngModel)]="password" 
+          placeholder="Enter password"
+          (keyup.enter)="login()">
+      </div>
+
+      <button class="admin-login-btn" (click)="login()">Login</button>
+
+      <p class="error-message" *ngIf="message">{{ message }}</p>
+    </div>
+
+    <div class="footer-note">
+      <p>This is a restricted access area. Unauthorized access is prohibited.</p>
+    </div>
+  </div>
+</div>
+
