@@ -270,7 +270,7 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
   }
 
   getPhotoUrl(photoPath: string): string {
-    if (!photoPath) return '/default-house.png';
+    if (!photoPath) return '/media/default-house.png';
     // Extract just the filename if path contains directories
     const filename = photoPath.includes('/') ? photoPath.split('/').pop() : photoPath;
     return `http://localhost:4000/uploads/cottage_photos/${filename}`;

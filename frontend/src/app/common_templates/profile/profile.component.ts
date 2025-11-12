@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit {
           this.imagePreviewUrl = this.userService.getUploadUrl((u as any).profileImg) as string;
           console.log(this.imagePreviewUrl);
         } else {
-          this.imagePreviewUrl = '/default-profile.png';
+          this.imagePreviewUrl = '/media/default-profile.png';
         }
         this.loading = false;
       },

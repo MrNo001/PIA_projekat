@@ -184,7 +184,7 @@ export class TouristReservationsComponent implements OnInit {
   }
 
   getCottageImageUrl(photoPath: string): string {
-    if (!photoPath) return '/default-house.png';
+    if (!photoPath) return '/media/default-house.png';
     return `http://localhost:4000/uploads/cottage_photos/${photoPath}`;
   }
 

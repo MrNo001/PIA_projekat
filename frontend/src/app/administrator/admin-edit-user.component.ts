@@ -67,7 +67,7 @@ export class AdminEditUserComponent implements OnInit {
         if ((u as any).profileImg) {
           this.imagePreviewUrl = this.userService.getUploadUrl((u as any).profileImg) as string;
         } else {
-          this.imagePreviewUrl = '/default-profile.png';
+          this.imagePreviewUrl = '/media/default-profile.png';
         }
         this.loading = false;
       },

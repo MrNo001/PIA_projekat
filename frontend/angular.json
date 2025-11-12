@@ -22,7 +22,12 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
                 "src/assets",
-                "src/favicon.ico"
+                "src/favicon.ico",
+                {
+                  "glob": "**/*",
+                  "input": "public",
+                  "output": "/media"
+                }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -37,13 +42,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "512kB",
+                  "maximumError": "1.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumError": "6kB"
                 }
               ],
               "outputHashing": "all"
@@ -82,7 +87,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/media"
               }
             ],
             "styles": [

@@ -1,0 +1,24 @@
+{
+    "files.exclude": {
+        "backend/dist": true,
+        ".vscode": true,
+        "backend/node_modules": true,
+        "backend/package.json": true,
+        "backend/tsconfig.json": true,
+        "backend/package-lock.json": true,
+        "frontend/dist": true,
+        "frontend/.vscode": true,
+        "frontend/.angular/cache/18.2.20": true,
+        "frontend/.angular/cache": true,
+        "frontend/.angular": true,
+        "frontend/.editorconfig": true,
+        "frontend/angular.json": false,
+        "frontend/package-lock.json": true,
+        "frontend/package.json": true,
+        "frontend/tsconfig.spec.json": true,
+        "frontend/tsconfig.json": true,
+        "frontend/tsconfig.app.json": true,
+        "PIA_2425_projekat (2).docx": true,
+        "frontend/node_modules": false
+    }
+}
