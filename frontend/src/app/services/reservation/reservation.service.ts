@@ -5,11 +5,11 @@ import { ReservationData } from '../../_models/reservation';
 
 export interface Reservation {
   _id?: string;
-  cottageId: string | any; // Can be string ID or populated cottage object
+  cottageId: string | any; 
   userUsername: string;
   startDate: Date;
   endDate: Date;
-  adults: number;
+  adults: number; 
   children: number;
   totalPrice: number;
   nights: number;
@@ -42,49 +42,40 @@ export class ReservationService {
 
   constructor(private http: HttpClient) { }
 
-  // Create a new reservation
   createReservation(reservationData: CreateReservationRequest): Observable<any> {
     console.log('ReservationService.createReservation - URL:', `${this.apiUrl}/create`);
     console.log('ReservationService.createReservation - Data:', reservationData);
     return this.http.post(`${this.apiUrl}/create`, reservationData);
   }
 
-  // Get all reservations for a user
   getUserReservations(userUsername: string): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}`);
   }
 
-  // Get current reservations for a user (pending, confirmed)
   getCurrentReservations(userUsername: string): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}/current`);
   }
 
-  // Get archived reservations for a user (completed, cancelled)
   getArchivedReservations(userUsername: string): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userUsername}/archived`);
   }
 
-  // Get all reservations for a cottage
   getCottageReservations(cottageId: string): Observable<Reservation[]> {
     return this.http.get<Reservation[]>(`${this.apiUrl}/cottage/${cottageId}`);
   }
 
-  // Get reservation by ID
   getReservationById(reservationId: string): Observable<Reservation> {
     return this.http.get<Reservation>(`${this.apiUrl}/${reservationId}`);
   }
 
-  // Update reservation status
   updateReservationStatus(reservationId: string, status: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/${reservationId}/status`, { status });
   }
 
-  // Cancel reservation
   cancelReservation(reservationId: string, userUsername: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/${reservationId}/cancel`, { userUsername });
   }
 
-  // Calculate nights between two dates
   calculateNights(startDate: Date, endDate: Date): number {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -92,12 +83,10 @@ export class ReservationService {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   }
 
-  // Calculate total price
   calculateTotalPrice(nights: number, pricePerNight: number): number {
     return nights * pricePerNight;
   }
 
-  // Format date for display
   formatDate(date: Date): string {
     return new Intl.DateTimeFormat('sr-RS', {
       day: '2-digit',
@@ -106,13 +95,11 @@ export class ReservationService {
     }).format(new Date(date));
   }
 
-  // Validate reservation dates
   validateReservationDates(startDate: Date, endDate: Date): { isValid: boolean; error?: string } {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const now = new Date();
     
-    // Set time to start of day for comparison
     start.setHours(0, 0, 0, 0);
     end.setHours(0, 0, 0, 0);
     now.setHours(0, 0, 0, 0);
@@ -133,7 +120,6 @@ export class ReservationService {
     return { isValid: true };
   }
 
-  // Validate guest count
   validateGuestCount(adults: number, children: number): { isValid: boolean; error?: string } {
     if (adults < 1) {
       return { isValid: false, error: 'At least one adult is required' };

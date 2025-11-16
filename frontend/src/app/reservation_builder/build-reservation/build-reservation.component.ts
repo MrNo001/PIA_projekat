@@ -82,7 +82,6 @@ export class BuildReservationComponent implements OnInit {
   }
 
   updateReservationData() {
-    // Only validate form, don't emit data automatically
     this.validateForm();
   }
 
@@ -90,7 +89,7 @@ export class BuildReservationComponent implements OnInit {
     if (this.validateForm()) {
       const reservationData: ReservationData = {
         cottageId: this.cottageId,
-        cottage: this.cottage, // Include cottage data
+        cottage: this.cottage, 
         startDate: this.startDate,
         endDate: this.endDate,
         adults: this.adults,
@@ -106,7 +105,6 @@ export class BuildReservationComponent implements OnInit {
 
   getPricePerNight(): number {
     const startMonth = new Date(this.startDate).getMonth() + 1; // 1-12
-    // Months 5,6,7,8 are summer (May, June, July, August)
     const isSummer = startMonth >= 5 && startMonth <= 8;
     return isSummer ? (this.cottage.PriceSummer || 85) : (this.cottage.PriceWinter || 100);
   }
@@ -114,7 +112,6 @@ export class BuildReservationComponent implements OnInit {
   get totalPrice(): number {
     const pricePerNight = this.getPricePerNight();
     const basePrice = pricePerNight * this.nights;
-    // Price is proportional to number of adults (e.g., 1 adult = 100%, 2 adults = 150%, 3+ adults = 200%)
     let multiplier = 1;
     if (this.adults === 1) {
       multiplier = 1;

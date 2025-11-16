@@ -12,10 +12,10 @@ const userSchema = new mongoose.Schema({
   creditCard: String,          
   profileImg: { type: String, default: '/uploads/default.png' },
   role:       { type: String, enum: ['tourist', 'owner', 'administrator'], default: 'tourist' },
-  isActive:   { type: Boolean, default: false },        // true after admin approval
-  pending:    { type: Boolean, default: true },         // awaiting admin
-  rejectionReason: String,                               // reason for rejection
-  rejectedAt: Date,                                       // when rejected
+  isActive:   { type: Boolean, default: false },        
+  pending:    { type: Boolean, default: true },         
+  rejectionReason: String,                               
+  rejectedAt: Date,                                       
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

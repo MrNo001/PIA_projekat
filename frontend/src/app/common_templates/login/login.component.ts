@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("key",data);
           console.log("Login with "+data);
           
-          // Fetch user details and set currentUser
           this.userService.getUser(this.username).subscribe({
             next: (user) => {
               this.userService.currentUser = user;
@@ -56,7 +55,6 @@ export class LoginComponent implements OnInit {
         }
       },
       error: err => {
-        // Check if it's a 403 error (not active)
         if(err.status === 403 && err.error?.error){
           this.message = err.error.error;
         } else {

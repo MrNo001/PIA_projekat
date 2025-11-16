@@ -38,7 +38,6 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Destroy existing map if it exists
     if (this.map) {
       this.map.remove();
     }
@@ -58,7 +57,6 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
       .addTo(this.map)
       .bindPopup(this.cottage.Title);
 
-    // Invalidate size multiple times to ensure proper rendering
     setTimeout(() => {
       if (this.map) {
         this.map.invalidateSize();
@@ -71,7 +69,6 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
       }
     }, 500);
 
-    // Handle window resize
     window.addEventListener('resize', () => {
       if (this.map) {
         setTimeout(() => {
@@ -82,7 +79,6 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(){
-    // Fetch current user if logged in
     const username = this.userService.getAuthUsername();
     if (username) {
       this.userService.getUser(username).subscribe({
@@ -101,17 +97,14 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
       console.log('Cottage data received:', data);
       console.log('Amenities:', this.cottage.Amenities);
       
-      // Handle case sensitivity - check for both 'Amenities' and 'amenities'
       if (!this.cottage.Amenities && (data as any).amenities) {
         this.cottage.Amenities = (data as any).amenities;
       }
       
-      // Initialize map after data is loaded and view is ready
       setTimeout(() => {
         this.initMap();
       }, 300);
       
-      // Fetch owner details
       if (this.cottage.OwnerUsername) {
         this.userService.getUser(this.cottage.OwnerUsername).subscribe({
           next: (owner) => {
@@ -123,13 +116,11 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
         });
       }
 
-      // Fetch ratings for this cottage
       if (this.cottage._id) {
         this.ratingService.getCottageRatings(this.cottage._id).subscribe({
           next: (ratings) => {
             this.ratings = ratings;
             console.log(this.ratings);
-            // Fetch user details for each rating
             ratings.forEach((rating: any) => {
               if (rating.userUsername) {
                 this.userService.getUser(rating.userUsername).subscribe({
@@ -161,9 +152,7 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
 
   handleImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    // Use a data URL to prevent infinite loops
     target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-    // Remove the error handler to prevent infinite loops
     target.onerror = null;
   }
 
@@ -178,8 +167,7 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getCurrentSeasonPrice(): number {
-    const currentMonth = new Date().getMonth() + 1; // 1-12
-    // Months 5,6,7,8 are summer (May, June, July, August)
+    const currentMonth = new Date().getMonth() + 1; 
     const isSummer = currentMonth >= 5 && currentMonth <= 8;
     return isSummer ? this.cottage.PriceSummer : this.cottage.PriceWinter;
   }
@@ -195,7 +183,6 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // If cottage data is already loaded, initialize map
     if (this.cottage && this.cottage.Location && this.mapContainer) {
       setTimeout(() => {
         this.initMap();

@@ -26,7 +26,6 @@ export class MakeReservationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Check if user is logged in
     const username = this.userService.getAuthUsername();
     if (!username) {
       this.router.navigate(['/login']);
@@ -46,12 +45,10 @@ export class MakeReservationComponent implements OnInit {
   }
 
   onValidationStatusChanged(isValid: boolean) {
-    // Handle validation status if needed
   }
 
   onReservationComplete(success: boolean) {
     if (success) {
-      // Reservation completed successfully
       this.router.navigate(['/']);
     }
   }

@@ -35,14 +35,12 @@ export class ConfirmReservationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Check if user is logged in
     const username = this.userService.getAuthUsername();
     if (!username) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Load cottage data if not provided
     if (this.reservationData.cottage) {
       this.cottage = this.reservationData.cottage;
     } else if (this.reservationData.cottageId) {
@@ -56,7 +54,6 @@ export class ConfirmReservationComponent implements OnInit {
       });
     }
 
-    // Fetch user details to get credit card
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user;
@@ -79,8 +76,7 @@ export class ConfirmReservationComponent implements OnInit {
 
   getPricePerNight(): number {
     if (!this.cottage) return 85;
-    const startMonth = new Date(this.reservationData.startDate).getMonth() + 1; // 1-12
-    // Months 5,6,7,8 are summer (May, June, July, August)
+        const startMonth = new Date(this.reservationData.startDate).getMonth() + 1; 
     const isSummer = startMonth >= 5 && startMonth <= 8;
     return isSummer ? (this.cottage.PriceSummer || 85) : (this.cottage.PriceWinter || 100);
   }
@@ -88,7 +84,6 @@ export class ConfirmReservationComponent implements OnInit {
   get totalPrice(): number {
     const pricePerNight = this.getPricePerNight();
     const basePrice = pricePerNight * this.nights;
-    // Price is proportional to number of adults (e.g., 1 adult = 100%, 2 adults = 150%, 3+ adults = 200%)
     let multiplier = 1;
     if (this.reservationData.adults === 1) {
       multiplier = 1;
@@ -108,9 +103,7 @@ export class ConfirmReservationComponent implements OnInit {
     return `${this.reservationData.adults} odraslih, ${this.reservationData.children} dece`;
   }
 
-  validateCard(): boolean {
-    // Simple validation - in a real app, use a proper validation library
-    // return this.cardNumber.replace(/\s+/g, '').length === 16;
+  validateCard(): boolean { 
     return true;
   }
 
@@ -144,7 +137,6 @@ export class ConfirmReservationComponent implements OnInit {
       next: (response) => {
         this.isSubmitting = false;
         this.reservationComplete.emit(true);
-        // Navigate to success page or back to home
         this.router.navigate(['/']);
       },
       error: (error) => {

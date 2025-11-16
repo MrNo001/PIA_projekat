@@ -5,9 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { AdminService, User } from '../services/admin/admin.service';
 import { NavBarComponent } from '../common_templates/nav-bar/nav-bar.component';
-
-// User interface is now imported from AdminService
-
+  
 @Component({
   selector: 'app-admin-users',
   standalone: true,
@@ -26,12 +24,10 @@ export class AdminUsersComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   
-  // Filters
   roleFilter: string = 'all';
   statusFilter: string = 'all';
   searchTerm: string = '';
 
-  // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 0;
@@ -68,7 +64,6 @@ export class AdminUsersComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredUsers = this.users.filter(user => {
-      // Filter out administrators - admins shouldn't be visible on this page
       if (user.role === 'administrator') {
         return false;
       }
@@ -131,7 +126,6 @@ export class AdminUsersComponent implements OnInit {
   }
 
   editUser(user: User): void {
-    // Navigate to admin edit user page
     this.router.navigate(['/admin/users/edit', user.username]);
   }
 

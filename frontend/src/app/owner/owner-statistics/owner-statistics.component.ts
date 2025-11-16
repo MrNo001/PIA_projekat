@@ -48,7 +48,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
   private viewInitialized: boolean = false;
 
   ngOnInit(): void {
-    // Check if user is logged in and is an owner
     const username = this.userService.getAuthUsername();
     const role = this.userService.getAuthRole();
     if (!username) {
@@ -61,7 +60,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    // Fetch user details optionally; proceed even on error
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user || { username };
@@ -84,7 +82,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
     this.loading = true;
     this.error = '';
 
-    // Load user's cottages
     this.cottageService.getCottagesByOwnerUsername(this.currentUser.username).subscribe({
       next: (cottages) => {
         this.userCottages = cottages;
@@ -110,7 +107,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    // Get all reservations for user's cottages
     Promise.all(
       cottageIds.map(cottageId => 
         this.reservationService.getCottageReservations(cottageId).toPromise()
@@ -133,9 +129,7 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
     console.log('checkAndCreateCharts called - dataLoaded:', this.dataLoaded, 'viewInitialized:', this.viewInitialized);
     if (this.dataLoaded && this.viewInitialized) {
       console.log('Both conditions met, triggering change detection and creating charts');
-      // Force change detection to ensure canvas elements are rendered
       this.cdr.detectChanges();
-      // Use setTimeout to ensure DOM is fully updated
       setTimeout(() => {
         this.createCharts();
       }, 0);
@@ -165,12 +159,10 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    // Destroy existing chart if it exists
     if (this.monthlyBookingsChart) {
       this.monthlyBookingsChart.destroy();
     }
 
-    // Prepare data for monthly bookings
     const monthlyData = this.prepareMonthlyBookingsData();
     console.log('Monthly chart data:', monthlyData);
     
@@ -228,12 +220,10 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    // Destroy existing chart if it exists
     if (this.weekendWeekdayChart) {
       this.weekendWeekdayChart.destroy();
     }
 
-    // Prepare data for weekend vs weekday bookings
     const weekendData = this.prepareWeekendWeekdayData();
     console.log('Weekend/Weekday chart data:', weekendData);
     
@@ -266,7 +256,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
 
-    // Aggregate reservations across all cottages by month
     const monthlyCounts = new Array(12).fill(0);
     
     console.log('Preparing monthly data from', this.allReservations.length, 'reservations');
@@ -301,7 +290,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       const startDate = new Date(reservation.startDate);
       const endDate = new Date(reservation.endDate);
       
-      // Check if reservation includes weekend (Friday, Saturday, Sunday)
       let includesWeekend = false;
       let includesWeekday = false;
       
@@ -315,8 +303,7 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       }
 
       if (includesWeekend && includesWeekday) {
-        // If reservation spans both weekend and weekday, count as both
-        weekendBookings++;
+          weekendBookings++;
         weekdayBookings++;
       } else if (includesWeekend) {
         weekendBookings++;

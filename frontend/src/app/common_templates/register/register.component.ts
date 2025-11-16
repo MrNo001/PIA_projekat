@@ -37,17 +37,14 @@ export class RegisterComponent {
 
   register(){
 
-    // Validate all required fields
     if (!this.validateRequiredFields()) {
       return;
     }
 
-    // Validate password length
     if (!this.validatePassword()) {
       return;
     }
 
-    // Validate credit card
     this.validateCreditCard();
     if (this.creditCardError) {
       this.message = this.creditCardError;
@@ -59,13 +56,11 @@ export class RegisterComponent {
       return;
     }
 
-    // Validate file type
     if (!this.validateFileType(this.selectedFile)) {
       alert("Not supported file type");
       return;
     }
 
-    // Validate file dimensions
     this.validateFileDimensions(this.selectedFile).then(isValid => {
       if (!isValid) {
         alert("Please provide a photo not smaller than 100x100 pixels and not larger than 300x300 pixels");
@@ -74,7 +69,6 @@ export class RegisterComponent {
 
 
 
-      // Proceed with registra  tion if validation passes
       this.userService.register(this.user,this.selectedFile as File).subscribe({
         next: (response: any) => {
           this.message = "Registration successful!";
@@ -103,7 +97,6 @@ export class RegisterComponent {
         const width = img.width;
         const height = img.height;
         
-        // Check if dimensions are within 100x100 to 300x300 range
         const isValid = width >= 100 && width <= 300 && height >= 100 && height <= 300;
         resolve(isValid);
       };
@@ -130,38 +123,32 @@ export class RegisterComponent {
   private validatePassword(): boolean {
     const password = this.user.password;
     
-    // Check length
     if (password.length < 6 || password.length > 10) {
       this.passwordError = "Password must be 6-10 characters";
       return false;
     }
     
-    // Check if starts with letter
     if (!/^[a-zA-Z]/.test(password)) {
       this.passwordError = "Password must start with a letter";
       return false;
     }
     
-    // Count lowercase letters
     const lowercaseCount = (password.match(/[a-z]/g) || []).length;
     if (lowercaseCount < 3) {
       this.passwordError = "Password must contain at least 3 lowercase letters";
       return false;
     }
     
-    // Check for uppercase letter
     if (!/[A-Z]/.test(password)) {
       this.passwordError = "Password must contain at least 1 uppercase letter";
       return false;
     }
     
-    // Check for number
     if (!/\d/.test(password)) {
       this.passwordError = "Password must contain at least 1 number";
       return false;
     }
     
-    // Check for special character
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       this.passwordError = "Password must contain at least 1 special character";
       return false;
@@ -172,37 +159,32 @@ export class RegisterComponent {
   }
 
   validateCreditCard(): void {
-    const cardNumber = this.user.creditCard.replace(/\s/g, ''); // Remove spaces
+    const cardNumber = this.user.creditCard.replace(/\s/g, ''); 
     
-    // Check Diners Club cards starting with 36 or 38 (15 digits total)
     if (/^(36|38)\d{13}$/.test(cardNumber)) {
       this.creditCardType = 'diners';
       this.creditCardError = '';
       return;
     }
     
-    // Check Diners Club cards starting with 300, 301, 302, or 303 (15 digits total)
     if (/^(300|301|302|303)\d{12}$/.test(cardNumber)) {
       this.creditCardType = 'diners';
       this.creditCardError = '';
       return;
     }
     
-    // MasterCard: starts with 51, 52, 53, 54, or 55, exactly 16 digits
     if (/^(51|52|53|54|55)\d{14}$/.test(cardNumber)) {
       this.creditCardType = 'mastercard';
       this.creditCardError = '';
       return;
     }
     
-    // Visa: starts with 4539, 4556, 4916, 4532, 4929, 4485, 4716, exactly 16 digits
     if (/^(4539|4556|4916|4532|4929|4485|4716)\d{12}$/.test(cardNumber)) {
       this.creditCardType = 'visa';
       this.creditCardError = '';
       return;
     }
     
-    // No match
     this.creditCardType = '';
     if (cardNumber.length > 0) {
       this.creditCardError = 'Invalid credit card number';
@@ -216,14 +198,12 @@ export class RegisterComponent {
   }
 
   onCreditCardFocus(): void {
-    // Clear error when user focuses on the input
     if (this.creditCardError) {
       this.creditCardError = '';
     }
   }
 
   onPasswordChange(): void {
-    // Clear error when user starts typing
     if (this.passwordError) {
       this.passwordError = '';
     }

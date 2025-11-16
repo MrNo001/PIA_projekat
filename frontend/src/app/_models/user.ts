@@ -19,5 +19,5 @@ export class User {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  // Add other helpful methods here as needed
+
 }

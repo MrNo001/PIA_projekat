@@ -33,13 +33,11 @@ export class OwnerReservationsComponent implements OnInit {
   selectedCottage: string = 'all';
   statusFilter: string = 'all';
   
-  // Calendar and modal state
   selectedReservation: Reservation | null = null;
   selectedReservationId: string | null = null;
   showModal: boolean = false;
 
   ngOnInit(): void {
-    // Check if user is logged in and is an owner
     const username = this.userService.getAuthUsername();
     const role = this.userService.getAuthRole();
     if (!username) {
@@ -81,7 +79,6 @@ export class OwnerReservationsComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    // Get all reservations for all user's cottages
     const cottageIds = this.userCottages.map(cottage => cottage._id);
     
     if (cottageIds.length === 0) {
@@ -89,8 +86,6 @@ export class OwnerReservationsComponent implements OnInit {
       return;
     }
 
-    // For now, we'll get all reservations and filter by cottage IDs
-    // In a real app, you'd want a backend endpoint for this
     Promise.all(
       cottageIds.map(cottageId => 
         this.reservationService.getCottageReservations(cottageId).toPromise()
@@ -108,12 +103,10 @@ export class OwnerReservationsComponent implements OnInit {
   getFilteredReservations(): Reservation[] {
     let filtered = this.reservations;
 
-    // Filter by cottage
     if (this.selectedCottage !== 'all') {
       filtered = filtered.filter(r => r.cottageId === this.selectedCottage);
     }
 
-    // Filter by status
     if (this.statusFilter !== 'all') {
       filtered = filtered.filter(r => r.status === this.statusFilter);
     }
@@ -152,9 +145,8 @@ export class OwnerReservationsComponent implements OnInit {
     this.reservationService.updateReservationStatus(reservationId, newStatus).subscribe({
       next: (response) => {
         console.log('Status updated successfully:', response);
-        this.loadReservations(); // Reload reservations
+        this.loadReservations(); 
         this.closeModal();
-        // Clear selection if this was the selected reservation
         if (this.selectedReservationId === reservationId) {
           this.selectedReservationId = null;
           this.selectedReservation = null;
@@ -204,7 +196,6 @@ export class OwnerReservationsComponent implements OnInit {
     return this.getFilteredReservations().filter(r => r.status === 'pending').length;
   }
 
-  // Calendar and modal methods
   onReservationClick(reservation: Reservation): void {
     this.selectedReservation = reservation;
     this.selectedReservationId = reservation._id || null;
@@ -214,8 +205,6 @@ export class OwnerReservationsComponent implements OnInit {
   selectReservationFromList(reservation: Reservation): void {
     this.selectedReservation = reservation;
     this.selectedReservationId = reservation._id || null;
-    // Optionally open modal
-    // this.showModal = true;
   }
 
   closeModal(): void {

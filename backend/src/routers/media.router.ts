@@ -32,7 +32,6 @@ mediaRouter.post('/upload_cottage_photo', upload_cottage_photo.single('file'), f
 
 export default mediaRouter; 
 
-
 /* const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/'); // Folder to store uploaded files
@@ -44,3 +43,4 @@ export default mediaRouter;
 });
 
 const upload = multer({ storage: storage }); */ 
+

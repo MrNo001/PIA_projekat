@@ -50,13 +50,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const searchTermLower = this.searchTerm.toLowerCase();
     
     if (!this.filtersApplied) {
-      // First search - filter from all cottages
       this.Cottages = this.all_cottages.filter(cottage => {
         const fieldValue = this.getFieldValue(cottage, this.searchField);
         return fieldValue.toLowerCase().includes(searchTermLower);
       });
     } else {
-      // Subsequent search - filter from already filtered cottages
       this.Cottages = this.Cottages.filter(cottage => {
         const fieldValue = this.getFieldValue(cottage, this.searchField);
         return fieldValue.toLowerCase().includes(searchTermLower);

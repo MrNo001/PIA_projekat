@@ -25,7 +25,6 @@ const reservationSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-// Update the updatedAt field before saving
 reservationSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   next();

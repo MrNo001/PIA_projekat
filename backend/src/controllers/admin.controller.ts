@@ -4,7 +4,6 @@ import Cottage from '../models/cottage';
 import Reservation from '../models/reservation';
 import mongoose from 'mongoose';
 
-// Get dashboard statistics
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -12,13 +11,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     const totalTourists = await User.countDocuments({ role: 'tourist' });
     const totalCottages = await Cottage.countDocuments();
     
-    // Count pending registration requests (users with isActive: false)
     const pendingRequests = await User.countDocuments({ 
       isActive: false,
       role: { $in: ['owner', 'tourist'] }
     });
     
-    // Count blocked cottages
     const blockedCottages = await Cottage.countDocuments({ 
       isBlocked: true,
       blockedUntil: { $gt: new Date() }
@@ -38,7 +35,6 @@ export const getDashboardStats = async (req: Request, res: Response) => {
   }
 };
 
-// Get all users with pagination and filtering
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const { 
@@ -53,7 +49,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const limitNum = parseInt(limit as string);
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object
     const filter: any = {};
     
     if (role !== 'all') {
@@ -95,7 +90,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// Update user (activate/deactivate and profile fields)
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username } = req.params;
@@ -128,27 +122,22 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// Delete user permanently
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username } = req.params;
 
-    // Check if user exists
     const user = await User.findOne({ username });
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
 
-    // Delete user and all related data
     await User.findOneAndDelete({ username });
     
-    // Delete user's cottages if they're an owner
     if (user.role === 'owner') {
       await Cottage.deleteMany({ OwnerUsername: user.username });
     }
     
-    // Delete user's reservations
     await Reservation.deleteMany({ userUsername: user.username });
 
     res.json({ message: 'User deleted successfully' });
@@ -158,7 +147,6 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// Get pending registration requests
 export const getPendingRequests = async (req: Request, res: Response) => {
   try {
     const { 
@@ -173,7 +161,6 @@ export const getPendingRequests = async (req: Request, res: Response) => {
     const limitNum = parseInt(limit as string);
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object
     const filter: any = { isActive: false };
     
     if (role !== 'all') {
@@ -216,7 +203,6 @@ export const getPendingRequests = async (req: Request, res: Response) => {
   }
 };
 
-// Approve registration request
 export const approveRequest = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username } = req.params;
@@ -243,7 +229,6 @@ export const approveRequest = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// Reject registration request
 export const rejectRequest = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username } = req.params;
@@ -278,7 +263,6 @@ export const rejectRequest = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// Get all cottages with rating information
 export const getAllCottages = async (req: Request, res: Response) => {
   try {
     const { 
@@ -293,7 +277,6 @@ export const getAllCottages = async (req: Request, res: Response) => {
     const limitNum = parseInt(limit as string);
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object
     const filter: any = {};
     
     if (statusFilter === 'blocked') {
@@ -319,10 +302,9 @@ export const getAllCottages = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limitNum);
 
-    // Get rating information for each cottage
     const cottagesWithRatings = await Promise.all(
       cottages.map(async (cottage) => {
-        // Get completed reservations with ratings for this cottage
+        
         const reservations = await Reservation.find({
           cottageId: cottage._id,
           status: 'completed',
@@ -344,7 +326,6 @@ export const getAllCottages = async (req: Request, res: Response) => {
       })
     );
 
-    // Apply rating filter
     let filteredCottages = cottagesWithRatings;
     if (ratingFilter === 'low') {
       filteredCottages = cottagesWithRatings.filter(c => c.hasLowRatings);
@@ -366,7 +347,6 @@ export const getAllCottages = async (req: Request, res: Response) => {
   }
 };
 
-// Block cottage temporarily
 export const blockCottage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { cottageId } = req.params;
@@ -400,7 +380,6 @@ export const blockCottage = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-// Unblock cottage
 export const unblockCottage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { cottageId } = req.params;

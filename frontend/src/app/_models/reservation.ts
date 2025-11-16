@@ -2,7 +2,7 @@ import { Cottage } from './cottage';
 
 export interface ReservationData {
   cottageId: string;
-  cottage?: Cottage; // Include cottage data for display purposes
+  cottage?: Cottage; 
   startDate: Date;
   endDate: Date;
   adults: number;

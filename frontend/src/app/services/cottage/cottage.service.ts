@@ -45,7 +45,6 @@ export class CottageService {
     return this.http.delete(`${this.apiUrl}/${cottageId}`);
   }
 
-  // Admin methods
   getAllCottagesAdmin(params: any): Observable<any> {
     return this.http.get(`${this.adminApiUrl}/cottages`, { params });
   }

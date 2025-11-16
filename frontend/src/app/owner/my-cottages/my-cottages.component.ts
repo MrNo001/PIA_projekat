@@ -25,7 +25,6 @@ export class MyCottagesComponent implements OnInit {
   currentUser: any = null;
 
   ngOnInit(): void {
-    // Check if user is logged in and is an owner
     const username = this.userService.getAuthUsername();
     const role = this.userService.getAuthRole();
     if (!username) {
@@ -38,7 +37,6 @@ export class MyCottagesComponent implements OnInit {
       return;
     }
 
-    // Optionally fetch current user for display; proceed even if it fails
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user || { username };
@@ -77,7 +75,7 @@ export class MyCottagesComponent implements OnInit {
       this.cottageService.deleteCottage(cottageId).subscribe({
         next: (response) => {
           console.log('Cottage deleted successfully:', response);
-          this.loadCottages(); // Reload the list
+          this.loadCottages(); 
         },
         error: (err) => {
           console.error('Failed to delete cottage:', err);
@@ -101,20 +99,16 @@ export class MyCottagesComponent implements OnInit {
   }
 
   getStatusBadgeClass(cottage: Cottage): string {
-    // You can add status logic here based on cottage properties
     return 'badge-success';
   }
 
   getStatusText(cottage: Cottage): string {
-    // You can add status logic here
     return 'Active';
   }
 
   handleImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    // Use a data URL to prevent infinite loops
     target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-    // Remove the error handler to prevent infinite loops
     target.onerror = null;
   }
 }

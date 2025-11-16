@@ -26,25 +26,21 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
   cottage: Cottage = new Cottage();
   cottageId: string = '';
   
-  // Form fields
   title: string = '';
   description: string = '';
   priceSummer: number = 0;
-  priceWinter: number = 0;
-  location = { lat: 44.7866, lng: 20.4489 }; // Default to Belgrade
+  priceWinter: number = 0;  
+  location = { lat: 44.7866, lng: 20.4489 }; 
   
-  // File handling
   photos: File[] = [];
-  existingPhotos: string[] = []; // For display purposes
-  originalPhotos: string[] = []; // Original photos from database - never modified
+  existingPhotos: string[] = []; 
+  originalPhotos: string[] = []; 
   photosToDelete: string[] = [];
-  photoBlobUrls: Map<File, string> = new Map(); // Cache blob URLs for file previews
-  
-  // Map
+  photoBlobUrls: Map<File, string> = new Map(); 
+      
   map: any;
   marker: any;
   
-  // UI state
   loading: boolean = false;
   saving: boolean = false;
   error: string = '';
@@ -61,7 +57,6 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Map will be initialized after cottage data loads
   }
 
   loadCottage(): void {
@@ -72,7 +67,6 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
         this.populateForm();
         this.loading = false;
         
-        // Initialize map after data loads and view updates
         setTimeout(() => {
           if (!this.map && this.mapContainer) {
             this.initMap();
@@ -99,9 +93,8 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
       lng: this.cottage.Location?.lng || 20.4489
     };
     this.existingPhotos = this.cottage.Photos || [];
-    this.originalPhotos = [...this.cottage.Photos || []]; // Copy for backend - never modified
+    this.originalPhotos = [...this.cottage.Photos || []]; 
     
-    // Update map if it exists
     if (this.map) {
       this.updateMapLocation();
     }
@@ -166,7 +159,6 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
 
   removeNewPhoto(index: number): void {
     const file = this.photos[index];
-    // Revoke blob URL to prevent memory leak
     const blobUrl = this.photoBlobUrls.get(file);
     if (blobUrl) {
       URL.revokeObjectURL(blobUrl);
@@ -176,9 +168,7 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
   }
 
   removeExistingPhoto(photoPath: string): void {
-    // Remove from display
     this.existingPhotos = this.existingPhotos.filter(p => p !== photoPath);
-    // Add to deletion list if not already there
     if (!this.photosToDelete.includes(photoPath)) {
       this.photosToDelete.push(photoPath);
     }
@@ -234,17 +224,14 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
     formData.append('OwnerUsername', username);
     formData.append('cottageId', this.cottageId);
 
-    // Add new photos
     this.photos.forEach(photo => {
       formData.append('photos', photo);
     });
 
-    // Add photos to delete
     this.photosToDelete.forEach(photoPath => {
       formData.append('photosToDelete', photoPath);
     });
 
-    // Add original photos to keep (send all original photos to backend)
     this.originalPhotos.forEach(photoPath => {
       formData.append('existingPhotos', photoPath);
     });
@@ -271,27 +258,21 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
 
   getPhotoUrl(photoPath: string): string {
     if (!photoPath) return '/media/default-house.png';
-    // Extract just the filename if path contains directories
     const filename = photoPath.includes('/') ? photoPath.split('/').pop() : photoPath;
     return `http://localhost:4000/uploads/cottage_photos/${filename}`;
   }
 
   getPhotoPreview(file: File): string {
-    // Return cached blob URL if exists
     if (this.photoBlobUrls.has(file)) {
       return this.photoBlobUrls.get(file)!;
     }
-    // Create and cache new blob URL
     const blobUrl = URL.createObjectURL(file);
     this.photoBlobUrls.set(file, blobUrl);
     return blobUrl;
   }
 
   handleImageError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    // Use a data URL to prevent infinite loops
-    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-    // Remove the error handler to prevent infinite loops
+    const target = event.target as HTMLImageElement;    
     target.onerror = null;
   }
 }

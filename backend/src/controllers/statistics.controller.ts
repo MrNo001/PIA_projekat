@@ -5,7 +5,6 @@ import Reservation from '../models/reservation';
 
 class StatisticsController {
     
-    // Get total number of cottages
     static getTotalCottages(req: Request, res: Response) {
         Cottage.countDocuments({})
             .then(count => {
@@ -17,7 +16,6 @@ class StatisticsController {
             });
     }
 
-    // Get total number of owners
     static getTotalOwners(req: Request, res: Response) {
         User.countDocuments({ role: 'owner', isActive: true })
             .then(count => {
@@ -29,7 +27,6 @@ class StatisticsController {
             });
     }
 
-    // Get total number of tourists
     static getTotalTourists(req: Request, res: Response) {
         User.countDocuments({ role: 'tourist', isActive: true })
             .then(count => {
@@ -41,7 +38,6 @@ class StatisticsController {
             });
     }
 
-    // Get reservations from last day
     static getReservationsLastDay(req: Request, res: Response) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
@@ -59,7 +55,6 @@ class StatisticsController {
             });
     }
 
-    // Get reservations from last week
     static getReservationsLastWeek(req: Request, res: Response) {
         const lastWeek = new Date();
         lastWeek.setDate(lastWeek.getDate() - 7);
@@ -77,7 +72,6 @@ class StatisticsController {
             });
     }
 
-    // Get reservations from last month
     static getReservationsLastMonth(req: Request, res: Response) {
         const lastMonth = new Date();
         lastMonth.setMonth(lastMonth.getMonth() - 1);
@@ -95,7 +89,6 @@ class StatisticsController {
             });
     }
 
-    // Get all statistics in one call
     static getAllStatistics(req: Request, res: Response) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);

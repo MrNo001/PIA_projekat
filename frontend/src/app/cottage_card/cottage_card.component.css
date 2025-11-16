@@ -1,4 +1,4 @@
-/* Cottage Card */
+  
 .cottage-card {
   background: white;
   border-radius: 12px;
@@ -26,7 +26,6 @@
   max-width: 200px;
 }
 
-/* Minimal Format - Photo, Name and Rating on same line */
 .cottage-card.minimal {
   background: white;
   border-radius: 8px;
@@ -40,12 +39,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid transparent;
-  margin-bottom: 100px;
-  transform: translateY(-4px);
 }
 
 .cottage-card.minimal:hover {
-  transform: translateY(-6px);
+  transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -236,7 +233,6 @@
   padding: 0.5rem;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .cottage-actions {
     flex-direction: column;

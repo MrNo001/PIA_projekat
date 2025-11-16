@@ -3,7 +3,7 @@ export class Cottage {
   Title: string = "";
   Description: string = "";
   Ocena: number = -1;
-  OwnerUsername: string | any = ""; // Can be string or populated user object
+  OwnerUsername: string | any = ""; 
   Location: { lat: number, lng: number } = { lat: 0, lng: 0 };
   PriceSummer: number = 0;
   PriceWinter: number = 0;

@@ -1,26 +1,21 @@
 @if (minimal) {
-  <!-- Minimal Format: Photo, Name and Rating on same line -->
   <div class="cottage-card minimal" 
        [class.selected]="selected"
        (click)="showDetails($event)">
-    <!-- Cottage Image -->
     <div class="cottage-image-minimal">
       <img [src]="getCottageImageUrl(cottage.Photos[0] || '')" 
            [alt]="cottage.Title"
            (error)="handleImageError($event)">
     </div>
-    <!-- Name and Rating on same line -->
     <div class="cottage-header-minimal">
       <h4 class="cottage-title-minimal">{{ cottage.Title }}</h4>
       <span class="rating-number-minimal">{{ getStarRatingDisplay() }}</span>
     </div>
   </div>
 } @else {
-  <!-- Default Format: Full Card with Star Rating Component -->
   <div class="cottage-card" 
        [class.compact]="compact"
        [class.selected]="selected">
-    <!-- Cottage Image -->
     <div class="cottage-image" [class.compact]="compact">
       <img [src]="getCottageImageUrl(cottage.Photos[0] || '')" 
            [alt]="cottage.Title"
@@ -34,14 +29,12 @@
       </div>
     </div>
 
-    <!-- Cottage Info -->
     <div class="cottage-info" [class.compact]="compact">
       <h4 class="cottage-title">{{ cottage.Title }}</h4>
       @if (!compact) {
         <p class="cottage-description">{{ cottage.Description | slice:0:100 }}{{ cottage.Description.length > 100 ? '...' : '' }}</p>
       }
       
-      <!-- Rating Display (only for logged in users) - Original Star Rating Component -->
       <div class="cottage-rating" *ngIf="isLoggedIn">
         @if (cottage.Ocena === -1) {
           <span class="no-ratings-text">No ratings yet</span>

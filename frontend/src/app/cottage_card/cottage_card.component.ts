@@ -16,7 +16,7 @@ import { StarRatingComponent } from '../common_templates/star-rating/star-rating
 export class CottageCardComponent implements OnInit {
 
    @Input() cottage: Cottage = new Cottage();
-   @Input() compact: boolean = false;
+   @Input() compact: boolean = false; 
    @Input() minimal: boolean = false;
    @Input() selected: boolean = false;
    private router = inject(Router);
@@ -43,7 +43,6 @@ export class CottageCardComponent implements OnInit {
       if (event) {
         event.stopPropagation();
       }
-      //this.router.navigate(["/cottage"],{ queryParams: { id: this.cottage._id } });
       this.router.navigate(["cottage/",this.cottage._id]);
    }
 
@@ -56,9 +55,7 @@ export class CottageCardComponent implements OnInit {
 
   handleImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    // Use a data URL to prevent infinite loops
     target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-    // Remove the error handler to prevent infinite loops
     target.onerror = null;
   }
 

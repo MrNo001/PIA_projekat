@@ -71,12 +71,10 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
-  // Dashboard
   getDashboardStats(): Observable<DashboardStats> {
     return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/stats`);
   }
 
-  // User Management
   getAllUsers(params: any = {}): Observable<{users: User[], total: number, page: number, pages: number}> {
     return this.http.get<{users: User[], total: number, page: number, pages: number}>(`${this.baseUrl}/users`, { params });
   }
@@ -89,7 +87,6 @@ export class AdminService {
     return this.http.delete<{message: string}>(`${this.baseUrl}/users/${username}`);
   }
 
-  // Registration Requests
   getPendingRequests(params: any = {}): Observable<{requests: User[], total: number, page: number, pages: number}> {
     return this.http.get<{requests: User[], total: number, page: number, pages: number}>(`${this.baseUrl}/requests`, { params });
   }
@@ -101,8 +98,7 @@ export class AdminService {
   rejectRequest(username: string, rejectionReason: string): Observable<{message: string, user: User}> {
     return this.http.put<{message: string, user: User}>(`${this.baseUrl}/requests/${username}/reject`, { rejectionReason });
   }
-
-  // Cottage Management
+    
   getAllCottages(params: any = {}): Observable<{cottages: Cottage[], total: number, page: number, pages: number}> {
     return this.http.get<{cottages: Cottage[], total: number, page: number, pages: number}>(`${this.baseUrl}/cottages`, { params });
   }

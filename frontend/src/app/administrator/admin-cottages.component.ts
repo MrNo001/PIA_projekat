@@ -48,12 +48,10 @@ export class AdminCottagesComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   
-  // Filters
   ratingFilter: string = 'all';
   statusFilter: string = 'all';
   searchTerm: string = '';
 
-  // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 0;
@@ -94,7 +92,6 @@ export class AdminCottagesComponent implements OnInit {
   }
 
   applyFilters(): void {
-    // Filters are now applied on the backend, so we just need to reload
     this.currentPage = 1;
     this.loadCottages();
   }
@@ -150,7 +147,6 @@ export class AdminCottagesComponent implements OnInit {
       this.cottageService.blockCottageAdmin(cottage._id, 48).subscribe({
         next: (response) => {
           console.log('Cottage blocked:', response);
-          // Reload the list to reflect changes
           this.loadCottages();
         },
         error: (err) => {
@@ -168,7 +164,6 @@ export class AdminCottagesComponent implements OnInit {
       this.cottageService.unblockCottageAdmin(cottage._id).subscribe({
         next: (response) => {
           console.log('Cottage unblocked:', response);
-          // Reload the list to reflect changes
           this.loadCottages();
         },
         error: (err) => {
@@ -190,21 +185,18 @@ export class AdminCottagesComponent implements OnInit {
 
   handleImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    // Use a data URL to prevent infinite loops
     target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-    // Remove the error handler to prevent infinite loops
     target.onerror = null;
   }
 
   get paginatedCottages(): Cottage[] {
-    // Backend handles pagination, so just return filtered cottages
     return this.filteredCottages;
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.loadCottages(); // Reload data for the new page
+          this.loadCottages(); 
     }
   }
 
