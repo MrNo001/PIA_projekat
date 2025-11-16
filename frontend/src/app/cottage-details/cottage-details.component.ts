@@ -16,15 +16,16 @@ import { StarRatingComponent } from '../common_templates/star-rating/star-rating
   templateUrl: './cottage-details.component.html',
   styleUrl: './cottage-details.component.css'
 })
-export class CottageDetailsComponent implements OnInit {
+export class CottageDetailsComponent implements OnInit, AfterViewInit {
 
   cottage:Cottage=new Cottage();
   owner: User | null = null;
   ratings: any[] = [];
   ratingUsers: Map<string, User> = new Map();
   currentUser: User | null = null;
+  private map: L.Map | null = null;
 
-  @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
   cottageService = inject(CottageService);
   route = inject(ActivatedRoute);
@@ -33,17 +34,51 @@ export class CottageDetailsComponent implements OnInit {
   ratingService = inject(RatingService)
 
   initMap() {
-    const map = L.map(this.mapContainer.nativeElement).setView(
+    if (!this.mapContainer || !this.cottage.Location) {
+      return;
+    }
+
+    // Destroy existing map if it exists
+    if (this.map) {
+      this.map.remove();
+    }
+
+    this.map = L.map(this.mapContainer.nativeElement, {
+      preferCanvas: false
+    }).setView(
       [this.cottage.Location.lat, this.cottage.Location.lng],
       14
     );
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    }).addTo(map);
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
 
     L.marker([this.cottage.Location.lat, this.cottage.Location.lng])
-      .addTo(map)
+      .addTo(this.map)
       .bindPopup(this.cottage.Title);
+
+    // Invalidate size multiple times to ensure proper rendering
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    }, 100);
+    
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    }, 500);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (this.map) {
+        setTimeout(() => {
+          this.map?.invalidateSize();
+        }, 100);
+      }
+    });
   }
 
   ngOnInit(){
@@ -63,7 +98,18 @@ export class CottageDetailsComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.cottageService.getById(id || undefined).subscribe((data:Cottage) => {
       this.cottage = data; 
-      this.initMap();
+      console.log('Cottage data received:', data);
+      console.log('Amenities:', this.cottage.Amenities);
+      
+      // Handle case sensitivity - check for both 'Amenities' and 'amenities'
+      if (!this.cottage.Amenities && (data as any).amenities) {
+        this.cottage.Amenities = (data as any).amenities;
+      }
+      
+      // Initialize map after data is loaded and view is ready
+      setTimeout(() => {
+        this.initMap();
+      }, 300);
       
       // Fetch owner details
       if (this.cottage.OwnerUsername) {
@@ -146,6 +192,19 @@ export class CottageDetailsComponent implements OnInit {
 
   isTourist(): boolean {
     return this.currentUser?.role === 'tourist';
+  }
+
+  ngAfterViewInit() {
+    // If cottage data is already loaded, initialize map
+    if (this.cottage && this.cottage.Location && this.mapContainer) {
+      setTimeout(() => {
+        this.initMap();
+      }, 100);
+    }
+  }
+
+  hasAmenities(): boolean {
+    return this.cottage.Amenities !== undefined && this.cottage.Amenities !== null;
   }
 }
 

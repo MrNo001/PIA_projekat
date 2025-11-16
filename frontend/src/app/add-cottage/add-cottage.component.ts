@@ -23,6 +23,19 @@ export class AddCottageComponent implements AfterViewInit {
   location: { lat: number, lng: number } = { lat: 0, lng: 0 };
   mapInitialized: boolean = false;
   formSubmitted: boolean = false;
+  amenities: {
+    WiFi: boolean;
+    Kitchen: boolean;
+    Laundry: boolean;
+    Parking: boolean;
+    PetFriendly: boolean;
+  } = {
+    WiFi: false,
+    Kitchen: false,
+    Laundry: false,
+    Parking: false,
+    PetFriendly: false
+  };
 
   private map!: L.Map;
   private marker!: L.Marker;
@@ -150,6 +163,15 @@ export class AddCottageComponent implements AfterViewInit {
       }
     }
 
+    // Import amenities
+    if (data.amenities) {
+      if (data.amenities.WiFi !== undefined) this.amenities.WiFi = data.amenities.WiFi;
+      if (data.amenities.Kitchen !== undefined) this.amenities.Kitchen = data.amenities.Kitchen;
+      if (data.amenities.Laundry !== undefined) this.amenities.Laundry = data.amenities.Laundry;
+      if (data.amenities.Parking !== undefined) this.amenities.Parking = data.amenities.Parking;
+      if (data.amenities.PetFriendly !== undefined) this.amenities.PetFriendly = data.amenities.PetFriendly;
+    }
+
     // Show success message
     alert('Cottage data imported successfully! Please add photos before submitting.');
   }
@@ -181,6 +203,7 @@ export class AddCottageComponent implements AfterViewInit {
     formData.append('lat', this.location.lat.toString());
     formData.append('lng', this.location.lng.toString());
     formData.append('OwnerUsername',Owner);
+    formData.append('Amenities', JSON.stringify(this.amenities));
 
     this.photos.forEach(photo => {
       formData.append('photos', photo);
@@ -209,6 +232,13 @@ export class AddCottageComponent implements AfterViewInit {
     this.priceWinter = null;
     this.photos = [];
     this.location = { lat: 0, lng: 0 };
+    this.amenities = {
+      WiFi: false,
+      Kitchen: false,
+      Laundry: false,
+      Parking: false,
+      PetFriendly: false
+    };
 
     this.formSubmitted = false;
 

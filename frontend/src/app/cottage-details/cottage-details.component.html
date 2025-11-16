@@ -1,5 +1,10 @@
-<div class="cottage-details-container">
-  <div id="cottageCarousel" class="carousel slide" data-bs-ride="carousel">
+<div class="cottage-details-wrapper">
+  <button class="btn-return" (click)="router.navigate(['/'])">
+    ← Return to Search
+  </button>
+  
+  <div class="cottage-details-container">
+    <div id="cottageCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
       @for (photo of cottage.Photos; track $index) {
         <button type="button"
@@ -50,10 +55,49 @@
     </div>
     <p class="description">{{ cottage.Description }}</p>
 
+    @if (hasAmenities()) {
+      <div class="amenities-section">
+        <h3>Amenities</h3>
+        <div class="amenities-grid">
+          <div class="amenity-item" [class.available]="cottage.Amenities?.WiFi">
+            <span class="amenity-icon">📶</span>
+            <span class="amenity-name">WiFi</span>
+            <span class="amenity-status">{{ cottage.Amenities?.WiFi ? '✓' : '✗' }}</span>
+          </div>
+          <div class="amenity-item" [class.available]="cottage.Amenities?.Kitchen">
+            <span class="amenity-icon">🍳</span>
+            <span class="amenity-name">Kitchen</span>
+            <span class="amenity-status">{{ cottage.Amenities?.Kitchen ? '✓' : '✗' }}</span>
+          </div>
+          <div class="amenity-item" [class.available]="cottage.Amenities?.Laundry">
+            <span class="amenity-icon">🧺</span>
+            <span class="amenity-name">Laundry</span>
+            <span class="amenity-status">{{ cottage.Amenities?.Laundry ? '✓' : '✗' }}</span>
+          </div>
+          <div class="amenity-item" [class.available]="cottage.Amenities?.Parking">
+            <span class="amenity-icon">🅿️</span>
+            <span class="amenity-name">Parking</span>
+            <span class="amenity-status">{{ cottage.Amenities?.Parking ? '✓' : '✗' }}</span>
+          </div>
+          <div class="amenity-item" [class.available]="cottage.Amenities?.PetFriendly">
+            <span class="amenity-icon">🐾</span>
+            <span class="amenity-name">Pet Friendly</span>
+            <span class="amenity-status">{{ cottage.Amenities?.PetFriendly ? '✓' : '✗' }}</span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="amenities-section">
+        <h3>Amenities</h3>
+        <p class="no-amenities">No amenities information available.</p>
+      </div>
+    }
+
     @if (isTourist()) {
       <button class="btn btn-primary" (click)="BookCottage()">Book Now</button>
     }
   </div>
+</div>
 </div>
 
 <!-- Ratings Section -->

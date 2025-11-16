@@ -19,6 +19,6 @@
         "frontend/tsconfig.json": true,
         "frontend/tsconfig.app.json": true,
         "PIA_2425_projekat (2).docx": true,
-        "frontend/node_modules": false
+        "frontend/node_modules": true
     }
 }

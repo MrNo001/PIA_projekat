@@ -4,44 +4,6 @@
   </nav>
 
   <main class="reservations-container">
-    <header class="page-header">
-      <h1>Reservations Management</h1>
-      <p>Manage reservations for your cottages</p>
-    </header>
-
-    <!-- Statistics Cards -->
-    <div class="stats-cards">
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="bi bi-calendar-check"></i>
-        </div>
-        <div class="stat-content">
-          <h3>{{ getTotalReservations() }}</h3>
-          <p>Total Reservations</p>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="bi bi-clock"></i>
-        </div>
-        <div class="stat-content">
-          <h3>{{ getPendingReservations() }}</h3>
-          <p>Pending Reservations</p>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="bi bi-currency-euro"></i>
-        </div>
-        <div class="stat-content">
-          <h3>{{ getTotalRevenue() }}€</h3>
-          <p>Total Revenue</p>
-        </div>
-      </div>
-    </div>
-
     <!-- Filters -->
     <div class="controls-section">
       <div class="filters-section">
@@ -117,54 +79,51 @@
              class="reservation-card"
              [class.selected-card]="selectedReservationId === reservation._id"
              (click)="selectReservationFromList(reservation)">
-          <div class="reservation-header">
-            <div class="reservation-info">
-              <h4>{{ getCottageName(reservation.cottageId) }}</h4>
-              <span class="reservation-id">#{{ reservation._id?.slice(-8) }}</span>
-            </div>
-            <div class="status-badge" [class]="getStatusBadgeClass(reservation.status)">
-              {{ getStatusText(reservation.status) }}
-            </div>
-          </div>
+          <div class="reservation-content">
+            <div class="reservation-main">
+              <div class="reservation-header">
+                <div class="reservation-info">
+                  <h4>{{ getCottageName(reservation.cottageId) }}</h4>
+                  <span class="reservation-id">#{{ reservation._id?.slice(-8) }}</span>
+                </div>
+                <div class="status-badge" [class]="getStatusBadgeClass(reservation.status)">
+                  {{ getStatusText(reservation.status) }}
+                </div>
+              </div>
 
-          <div class="reservation-details">
-            <div class="detail-row">
-              <i class="bi bi-calendar-event"></i>
-              <span>{{ formatDate(reservation.startDate) }} - {{ formatDate(reservation.endDate) }}</span>
+              <div class="reservation-details-wrapper">
+                <div class="reservation-details">
+                  <div class="detail-row">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>{{ formatDate(reservation.startDate) }} - {{ formatDate(reservation.endDate) }}</span>
+                    <span class="detail-separator">•</span>
+                    <i class="bi bi-moon"></i>
+                    <span>{{ reservation.nights }} nights</span>
+                  </div>
+                  <div class="detail-row">
+                    <i class="bi bi-people"></i>
+                    <span>{{ reservation.adults }} adults{{ reservation.children > 0 ? ', ' + reservation.children + ' children' : '' }}</span>
+                    <span class="detail-separator">•</span>
+                    <i class="bi bi-currency-euro"></i>
+                    <span><strong>{{ reservation.totalPrice }}€</strong></span>
+                  </div>
+                  <div class="detail-row" *ngIf="reservation.specialRequests">
+                    <i class="bi bi-chat-left-text"></i>
+                    <span class="special-requests">{{ reservation.specialRequests }}</span>
+                  </div>
+                </div>
+                <div class="reservation-actions" *ngIf="reservation.status === 'pending'">
+                  <button class="btn btn-success btn-sm" 
+                          (click)="confirmReservation(reservation._id || ''); $event.stopPropagation()">
+                    <i class="bi bi-check-circle"></i> Accept
+                  </button>
+                  <button class="btn btn-danger btn-sm" 
+                          (click)="rejectReservation(reservation._id || ''); $event.stopPropagation()">
+                    <i class="bi bi-x-circle"></i> Reject
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="detail-row">
-              <i class="bi bi-people"></i>
-              <span>{{ reservation.adults }} adults, {{ reservation.children }} children</span>
-            </div>
-            <div class="detail-row">
-              <i class="bi bi-moon"></i>
-              <span>{{ reservation.nights }} nights</span>
-            </div>
-            <div class="detail-row">
-              <i class="bi bi-currency-euro"></i>
-              <span><strong>{{ reservation.totalPrice }}€</strong></span>
-            </div>
-            <div class="detail-row" *ngIf="reservation.specialRequests">
-              <i class="bi bi-chat-left-text"></i>
-              <span>{{ reservation.specialRequests }}</span>
-            </div>
-          </div>
-
-          <div class="reservation-actions" *ngIf="reservation.status === 'pending'">
-            <button class="btn btn-success btn-sm" 
-                    (click)="confirmReservation(reservation._id || ''); $event.stopPropagation()">
-              <i class="bi bi-check-circle"></i> Confirm
-            </button>
-            <button class="btn btn-danger btn-sm" 
-                    (click)="rejectReservation(reservation._id || ''); $event.stopPropagation()">
-              <i class="bi bi-x-circle"></i> Reject
-            </button>
-          </div>
-
-          <div class="reservation-footer">
-            <small class="text-muted">
-              Created: {{ formatDate(reservation.createdAt) }}
-            </small>
           </div>
         </div>
       </div>

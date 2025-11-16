@@ -53,6 +53,32 @@
       </div>
 
       <div class="form-group">
+        <label>Amenities:</label>
+        <div class="amenities-checkboxes">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="amenities.WiFi">
+            <span>WiFi</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="amenities.Kitchen">
+            <span>Kitchen</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="amenities.Laundry">
+            <span>Laundry</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="amenities.Parking">
+            <span>Parking</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="amenities.PetFriendly">
+            <span>Pet Friendly</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="photos" class="required">Photos:</label>
         <input type="file" id="photos" multiple (change)="onFilesSelected($event)">
         <div class="info-text">Select up to 5 photos (JPEG or PNG)</div>

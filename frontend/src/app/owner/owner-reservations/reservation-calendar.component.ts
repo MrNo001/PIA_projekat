@@ -80,10 +80,19 @@ export class ReservationCalendarComponent implements OnInit {
   }
 
   getReservationColor(reservation: Reservation): string {
-    // Generate consistent colors based on cottage ID
-    const colors = ['#ffc107', '#28a745', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14'];
-    const cottageIndex = this.cottages.findIndex(c => c._id === reservation.cottageId);
-    return colors[cottageIndex % colors.length];
+    // Return color based on reservation status
+    switch (reservation.status) {
+      case 'completed':
+        return '#007bff'; // Blue
+      case 'confirmed':
+        return '#28a745'; // Green
+      case 'cancelled':
+        return '#dc3545'; // Red
+      case 'pending':
+        return '#ffc107'; // Yellow
+      default:
+        return '#6c757d'; // Gray for unknown status
+    }
   }
 
   isReservationSelected(reservation: Reservation): boolean {

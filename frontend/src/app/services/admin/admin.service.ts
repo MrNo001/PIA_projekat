@@ -48,6 +48,13 @@ export interface Cottage {
   PriceSummer: number;
   PriceWinter: number;
   Photos: string[];
+  Amenities?: {
+    WiFi: boolean;
+    Kitchen: boolean;
+    Laundry: boolean;
+    Parking: boolean;
+    PetFriendly: boolean;
+  };
   isBlocked: boolean;
   blockedUntil?: Date;
   lastThreeRatings: number[];

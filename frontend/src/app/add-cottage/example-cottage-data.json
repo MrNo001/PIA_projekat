@@ -6,6 +6,13 @@
   "location": {
     "lat": 43.8563,
     "lng": 18.4131
+  },
+  "amenities": {
+    "WiFi": true,
+    "Kitchen": true,
+    "Laundry": false,
+    "Parking": true,
+    "PetFriendly": true
   }
 }
 

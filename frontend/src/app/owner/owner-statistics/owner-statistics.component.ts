@@ -428,28 +428,6 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
     return Math.round((weekendBookings / this.allReservations.length) * 100);
   }
 
-  getGrowthTrend(): string {
-    if (this.allReservations.length === 0) return 'No data available';
-    
-    // Simple trend calculation based on recent vs older bookings
-    const now = new Date();
-    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
-    
-    const recentBookings = this.allReservations.filter(r => 
-      new Date(r.startDate) >= threeMonthsAgo
-    ).length;
-    
-    const olderBookings = this.allReservations.filter(r => {
-      const date = new Date(r.startDate);
-      return date >= sixMonthsAgo && date < threeMonthsAgo;
-    }).length;
-    
-    if (olderBookings === 0) return 'Growing';
-    if (recentBookings > olderBookings) return 'Growing';
-    if (recentBookings < olderBookings) return 'Declining';
-    return 'Stable';
-  }
 
   ngOnDestroy(): void {
     if (this.monthlyBookingsChart) {

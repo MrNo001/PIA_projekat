@@ -20,6 +20,8 @@
   left: 0;
   right: 0;
   z-index: 200;
+  background-color: transparent;
+  min-height: 70px;
 }
 
 .navbar {
@@ -30,6 +32,8 @@
   align-items: center;
   padding: 12px 24px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  min-height: 70px;
+  box-sizing: border-box;
 }
 
 .nav-left {
@@ -89,19 +93,21 @@
 /* Fixed Search Tools Container */
 .search-tools-container {
   position: fixed;
-  top: 60px;
+  top: 70px;
   left: 0;
   right: 0;
   background-color: #fff;
   padding: 16px 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  z-index: 100;
+  z-index: 150;
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
   flex-shrink: 0;
-  min-height: 130px;
+  height: 170px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Search Bar */
@@ -230,7 +236,7 @@
 /* Map Container */
 .map-container {
   position: fixed;
-  top: 210px;
+  top: 240px;
   left: 0;
   right: 0;
   height: 55%;
@@ -255,11 +261,11 @@
 /* Scrollable Cottages Container */
 .cottages-scroll-container {
   position: fixed;
-  top: 210px;
+  top: 240px;
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 240px);
   overflow-x: auto;
   overflow-y: hidden;
   padding: 20px;
@@ -269,8 +275,9 @@
 }
 
 .cottages-scroll-container.map-visible {
-  top: calc(210px + 55vh);
-  height: calc(100vh - 210px - 55vh);
+  top: calc(240px + 55vh);
+  height: calc(100vh - 240px - 55vh);
+  padding-bottom: 40px;
 }
 
 .cottages-scroll-container::-webkit-scrollbar {
@@ -299,6 +306,11 @@
   padding: 10px 0;
 }
 
+.cottages-scroll-container.map-visible .cottages-list {
+  padding: 20px 0 60px 0;
+  align-items: flex-start;
+}
+
 .cottage-wrapper {
   flex: 0 0 auto;
   min-width: 280px;
@@ -310,6 +322,8 @@
 .cottages-scroll-container.map-visible .cottage-wrapper {
   min-width: 150px;
   max-width: 150px;
+  transform: translateY(-20px);
+  margin-bottom: 10px;
 }
 
 .cottage-wrapper.selected {

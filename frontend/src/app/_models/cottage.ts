@@ -8,6 +8,13 @@ export class Cottage {
   PriceSummer: number = 0;
   PriceWinter: number = 0;
   Photos: string[] = [];
+  Amenities?: {
+    WiFi: boolean;
+    Kitchen: boolean;
+    Laundry: boolean;
+    Parking: boolean;
+    PetFriendly: boolean;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 

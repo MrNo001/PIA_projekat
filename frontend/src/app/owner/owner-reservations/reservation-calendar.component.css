@@ -1,21 +1,26 @@
 .calendar-container {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-header .btn {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
 }
 
 .calendar-title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #2c3e50;
 }
@@ -33,10 +38,10 @@
 
 .weekday {
   background: #f8f9fa;
-  padding: 0.75rem 0.5rem;
+  padding: 0.5rem 0.4rem;
   text-align: center;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #6c757d;
   border-radius: 4px 4px 0 0;
 }
@@ -48,11 +53,11 @@
 }
 
 .calendar-day {
-  min-height: 120px;
+  min-height: 80px;
   background: white;
   border-right: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
-  padding: 0.5rem;
+  padding: 0.4rem;
   position: relative;
   transition: background-color 0.2s ease;
   overflow: visible;
@@ -80,47 +85,48 @@
   background-color: #2196f3;
   color: white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  font-size: 0.75rem;
 }
 
 .day-number {
   font-weight: 500;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
 }
 
 .reservations-container {
   position: absolute;
-  top: 2rem;
+  top: 1.5rem;
   left: -1px;
   right: -1px;
-  bottom: 0.5rem;
+  bottom: 0.3rem;
   overflow: visible;
   pointer-events: none;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .reservation-bar {
   background-color: #007bff;
   color: white;
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.4rem;
   margin: 0;
   border-radius: 0;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
   position: relative;
   z-index: 1;

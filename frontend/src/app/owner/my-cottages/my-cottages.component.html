@@ -2,12 +2,6 @@
   <app-nav-bar [activePage]="'my-cottages'"></app-nav-bar>
 
   <main class="cottages-container">
-    <div class="page-header">
-      <h2>My Cottages</h2>
-      <button class="btn btn-primary" (click)="addNewCottage()">
-        <i class="bi bi-plus-circle"></i> Add New Cottage
-      </button>
-    </div>
     <!-- Loading State -->
     <div *ngIf="loading" class="loading-state">
       <div class="spinner-border" role="status">
@@ -43,14 +37,9 @@
     <div *ngIf="!loading && !error && cottages.length > 0" class="cottages-grid">
       <div class="cottages-header">
         <h3>Your Cottages ({{ cottages.length }})</h3>
-        <div class="view-options">
-          <button class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-grid"></i> Grid
-          </button>
-          <button class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-list"></i> List
-          </button>
-        </div>
+        <button class="btn btn-primary" (click)="addNewCottage()">
+          <i class="bi bi-plus-circle"></i> Add New Cottage
+        </button>
       </div>
 
       <div class="row">

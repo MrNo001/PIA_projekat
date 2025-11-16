@@ -9,23 +9,6 @@
   padding: 2rem;
 }
 
-.page-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.page-header h1 {
-  color: #2c3e50;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 2.5rem;
-}
-
-.page-header p {
-  color: #6c757d;
-  font-size: 1.2rem;
-}
-
 /* Loading State */
 .loading-state {
   text-align: center;
@@ -44,53 +27,52 @@
   padding: 2rem;
 }
 
+/* Stats Section */
+.stats-section {
+  margin-bottom: 3rem;
+}
+
 /* Summary Cards */
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .summary-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: transform 0.2s ease;
-}
-
-.summary-card:hover {
-  transform: translateY(-2px);
-}
-
-.summary-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: white;
-  flex-shrink: 0;
+  transition: all 0.2s ease;
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.summary-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.summary-content {
+  width: 100%;
 }
 
 .summary-content h3 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 600;
   color: #2c3e50;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .summary-content p {
   color: #6c757d;
   margin: 0;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 /* Charts Section */
@@ -138,80 +120,80 @@
   max-width: 100%;
 }
 
-/* Insights Section */
-.insights-section {
-  margin-bottom: 2rem;
-}
-
-.insights-section h2 {
-  color: #2c3e50;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-}
-
-.insights-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.insight-card {
+/* Insights Row */
+.insights-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.3s ease;
-  border-left: 4px solid #667eea;
-}
-
-.insight-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.insight-icon {
-  width: 50px;
-  height: 50px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  color: white;
-  flex-shrink: 0;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
 }
 
-.insight-content h4 {
+.insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-item i {
+  font-size: 1.5rem;
+  color: #495057;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.insight-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-text h4 {
   margin: 0 0 0.5rem 0;
   color: #2c3e50;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
-.insight-content p {
+.insight-text p {
   margin: 0;
   color: #6c757d;
   font-size: 0.9rem;
+  word-wrap: break-word;
 }
 
 /* Responsive Design */
+@media (max-width: 992px) {
+  .insights-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .insight-item {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1.5rem;
+  }
+  
+  .insight-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .statistics-container {
     padding: 1rem;
   }
 
-  .page-header h1 {
-    font-size: 2rem;
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 
-  .summary-cards {
-    grid-template-columns: 1fr;
-  }
 
   .chart-wrapper {
     padding: 1rem;
@@ -221,22 +203,14 @@
   .chart-header {
     padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
-
-  .insights-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 576px) {
-  .summary-card {
-    flex-direction: column;
-    text-align: center;
+  .summary-cards {
+    grid-template-columns: 1fr;
   }
 
-  .insight-card {
-    flex-direction: column;
-    text-align: center;
-  }
+
 
   .chart-wrapper {
     height: 250px;

@@ -14,11 +14,11 @@
 
 .modal-container {
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
+  max-width: 450px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -26,13 +26,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid #e9ecef;
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #2c3e50;
 }
@@ -40,12 +40,12 @@
 .btn-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: #6c757d;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,18 +59,19 @@
 }
 
 .modal-body {
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .reservation-info {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .info-row:last-child {
@@ -80,17 +81,19 @@
 .label {
   font-weight: 500;
   color: #6c757d;
+  font-size: 0.85rem;
 }
 
 .value {
   color: #2c3e50;
   font-weight: 500;
+  font-size: 0.85rem;
 }
 
 .badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -122,170 +125,184 @@
 }
 
 .dates-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .dates-section h5 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #2c3e50;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .date-range {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .date-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   flex: 1;
 }
 
 .date-item i {
   color: #007bff;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .date-label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #6c757d;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .date-value {
   display: block;
   font-weight: 600;
   color: #2c3e50;
+  font-size: 0.85rem;
 }
 
 .date-separator {
   color: #6c757d;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .nights-info {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   color: #6c757d;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .guest-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .guest-section h5 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #2c3e50;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .guest-details {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .guest-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   color: #495057;
+  font-size: 0.85rem;
 }
 
 .guest-item i {
   color: #007bff;
+  font-size: 0.9rem;
 }
 
 .pricing-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .pricing-section h5 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #2c3e50;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .price-breakdown {
   background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 6px;
 }
 
 .price-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   color: #495057;
+  font-size: 0.85rem;
 }
 
 .price-total {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
   border-top: 1px solid #dee2e6;
   font-weight: 600;
   color: #2c3e50;
+  font-size: 0.9rem;
 }
 
 .total-amount {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #28a745;
 }
 
 .requests-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .requests-section h5 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #2c3e50;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .requests-content {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.5rem;
   background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 6px;
   color: #495057;
+  font-size: 0.85rem;
 }
 
 .requests-content i {
   color: #007bff;
   margin-top: 0.125rem;
+  font-size: 0.9rem;
 }
 
 .created-info {
   text-align: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
   border-top: 1px solid #e9ecef;
+  font-size: 0.75rem;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
   border-top: 1px solid #e9ecef;
   background-color: #f8f9fa;
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 8px 8px;
 }
 
 .modal-footer .btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
 }
 
 /* Responsive Design */

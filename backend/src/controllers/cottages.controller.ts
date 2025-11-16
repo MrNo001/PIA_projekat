@@ -39,6 +39,32 @@ class CottagesController{
 
             console.log("Photos:", photos);
 
+            // Parse amenities from JSON string if provided
+            let amenities = {
+                WiFi: false,
+                Kitchen: false,
+                Laundry: false,
+                Parking: false,
+                PetFriendly: false
+            };
+            
+            if (req.body.Amenities) {
+                try {
+                    const parsedAmenities = typeof req.body.Amenities === 'string' 
+                        ? JSON.parse(req.body.Amenities) 
+                        : req.body.Amenities;
+                    amenities = {
+                        WiFi: parsedAmenities.WiFi || false,
+                        Kitchen: parsedAmenities.Kitchen || false,
+                        Laundry: parsedAmenities.Laundry || false,
+                        Parking: parsedAmenities.Parking || false,
+                        PetFriendly: parsedAmenities.PetFriendly || false
+                    };
+                } catch (err) {
+                    console.error('Error parsing amenities:', err);
+                }
+            }
+
             const newCottage = new Cottage({
                 _id: uuidv4(), // Generate UUID for _id
                 Title: req.body.Title,
@@ -47,7 +73,8 @@ class CottagesController{
                 Location: {lng: req.body.lng, lat: req.body.lat},
                 PriceSummer: req.body.PriceSummer,
                 PriceWinter: req.body.PriceWinter,
-                Photos: photos
+                Photos: photos,
+                Amenities: amenities
             });
 
             console.log("Creating cottage:", newCottage);
@@ -150,6 +177,24 @@ class CottagesController{
                 lng: req.body.lng
             }
         };
+
+        // Handle amenities update if provided
+        if (req.body.Amenities) {
+            try {
+                const parsedAmenities = typeof req.body.Amenities === 'string' 
+                    ? JSON.parse(req.body.Amenities) 
+                    : req.body.Amenities;
+                updateData.Amenities = {
+                    WiFi: parsedAmenities.WiFi || false,
+                    Kitchen: parsedAmenities.Kitchen || false,
+                    Laundry: parsedAmenities.Laundry || false,
+                    Parking: parsedAmenities.Parking || false,
+                    PetFriendly: parsedAmenities.PetFriendly || false
+                };
+            } catch (err) {
+                console.error('Error parsing amenities:', err);
+            }
+        }
 
         // Handle photo updates
         const files = req.files as Express.Multer.File[] | undefined;

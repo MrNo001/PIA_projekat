@@ -4,11 +4,6 @@
   </nav>
 
   <main class="statistics-container">
-    <header class="page-header">
-      <h1>Statistics & Analytics</h1>
-      <p>Analyze your cottage booking performance and trends</p>
-    </header>
-
     <!-- Loading State -->
     <div *ngIf="loading" class="loading-state">
       <div class="spinner-border" role="status">
@@ -30,45 +25,63 @@
 
     <!-- Statistics Content -->
     <div *ngIf="!loading && !error" class="statistics-content">
-      <!-- Summary Cards -->
-      <div class="summary-cards">
-        <div class="summary-card">
-          <div class="summary-icon">
-            <i class="bi bi-calendar-check"></i>
+      <!-- Statistics Overview -->
+      <div class="stats-section">
+        <!-- Summary Cards - Main Stats -->
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="summary-content">
+              <h3>{{ getTotalBookings() }}</h3>
+              <p>Total Bookings</p>
+            </div>
           </div>
-          <div class="summary-content">
-            <h3>{{ getTotalBookings() }}</h3>
-            <p>Total Bookings</p>
+
+          <div class="summary-card">
+            <div class="summary-content">
+              <h3>{{ getTotalRevenue() }}€</h3>
+              <p>Total Revenue</p>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-content">
+              <h3>{{ getAverageBookingValue() | number:'1.0-0' }}€</h3>
+              <p>Average Booking Value</p>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-content">
+              <h3>{{ userCottages.length }}</h3>
+              <p>Total Cottages</p>
+            </div>
           </div>
         </div>
 
-        <div class="summary-card">
-          <div class="summary-icon">
-            <i class="bi bi-currency-euro"></i>
+        <!-- Key Insights -->
+        <div class="insights-row">
+          <div class="insight-item">
+            <i class="bi bi-trophy"></i>
+            <div class="insight-text">
+              <h4>Top Performing Cottage</h4>
+              <p>{{ getTopPerformingCottage() }}</p>
+            </div>
           </div>
-          <div class="summary-content">
-            <h3>{{ getTotalRevenue() }}€</h3>
-            <p>Total Revenue</p>
-          </div>
-        </div>
 
-        <div class="summary-card">
-          <div class="summary-icon">
-            <i class="bi bi-graph-up"></i>
+          <div class="insight-item">
+            <i class="bi bi-calendar-month"></i>
+            <div class="insight-text">
+              <h4>Peak Booking Month</h4>
+              <p>{{ getPeakBookingMonth() }}</p>
+            </div>
           </div>
-          <div class="summary-content">
-            <h3>{{ getAverageBookingValue() | number:'1.0-0' }}€</h3>
-            <p>Average Booking Value</p>
-          </div>
-        </div>
 
-        <div class="summary-card">
-          <div class="summary-icon">
-            <i class="bi bi-house-door"></i>
-          </div>
-          <div class="summary-content">
-            <h3>{{ userCottages.length }}</h3>
-            <p>Total Cottages</p>
+          <div class="insight-item">
+            <i class="bi bi-weekend"></i>
+            <div class="insight-text">
+              <h4>Weekend Preference</h4>
+              <p>{{ getWeekendPreference() }}% of bookings include weekends</p>
+            </div>
           </div>
         </div>
       </div>
@@ -98,51 +111,6 @@
         </div>
       </div>
 
-      <!-- Additional Insights -->
-      <div class="insights-section">
-        <h2>Key Insights</h2>
-        <div class="insights-grid">
-          <div class="insight-card">
-            <div class="insight-icon">
-              <i class="bi bi-trophy"></i>
-            </div>
-            <div class="insight-content">
-              <h4>Top Performing Cottage</h4>
-              <p>{{ getTopPerformingCottage() }}</p>
-            </div>
-          </div>
-
-          <div class="insight-card">
-            <div class="insight-icon">
-              <i class="bi bi-calendar-month"></i>
-            </div>
-            <div class="insight-content">
-              <h4>Peak Booking Month</h4>
-              <p>{{ getPeakBookingMonth() }}</p>
-            </div>
-          </div>
-
-          <div class="insight-card">
-            <div class="insight-icon">
-              <i class="bi bi-weekend"></i>
-            </div>
-            <div class="insight-content">
-              <h4>Weekend Preference</h4>
-              <p>{{ getWeekendPreference() }}% of bookings include weekends</p>
-            </div>
-          </div>
-
-          <div class="insight-card">
-            <div class="insight-icon">
-              <i class="bi bi-trending-up"></i>
-            </div>
-            <div class="insight-content">
-              <h4>Growth Trend</h4>
-              <p>{{ getGrowthTrend() }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 </div>

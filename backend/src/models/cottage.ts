@@ -16,6 +16,13 @@ const CottageSchema = new mongoose.Schema({
     PriceSummer: { type: Number, required: true },
     PriceWinter: { type: Number, required: true },
     Photos: { type: [String], default: [] },
+    Amenities: {
+        WiFi: { type: Boolean, default: false },
+        Kitchen: { type: Boolean, default: false },
+        Laundry: { type: Boolean, default: false },
+        Parking: { type: Boolean, default: false },
+        PetFriendly: { type: Boolean, default: false }
+    },
     isBlocked: { type: Boolean, default: false },
     blockedUntil: Date,
     blockedReason: String,
