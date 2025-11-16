@@ -31,14 +31,12 @@ export class AdminDashboardComponent implements OnInit {
   error: string = '';
 
   ngOnInit(): void {
-    // Check if user is logged in and is an administrator
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     if (!username) {
       this.router.navigate(['/admin/login']);
       return;
     }
 
-    // Get current user details
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user;

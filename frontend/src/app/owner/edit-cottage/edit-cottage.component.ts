@@ -217,7 +217,7 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
     this.error = '';
     this.success = '';
 
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     if (!username) {
       this.error = 'User not authenticated.';
       this.saving = false;

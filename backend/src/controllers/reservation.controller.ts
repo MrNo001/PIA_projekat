@@ -73,6 +73,12 @@ export class ReservationController {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
+      // ensure authenticated user matches userUsername
+      const authUser = (req as any).user as { username: string, role: string } | undefined;
+      if (!authUser || authUser.username !== userUsername) {
+        return res.status(403).json({ message: 'Not authorized to create reservation for this user' });
+      }
+
       console.log('Cottage ID:', cottageId);
 
       const cottage = await Cottage.findOne({_id: cottageId});
@@ -262,7 +268,7 @@ export class ReservationController {
   static cancelReservation = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
-      const { userUsername } = req.body; // To verify ownership
+      const authUser = (req as any).user as { username: string, role: string } | undefined; // To verify ownership
 
       const reservation = await Reservation.findById(reservationId);
       if (!reservation) {
@@ -270,7 +276,7 @@ export class ReservationController {
       }
 
 
-      if (reservation.userUsername !== userUsername) {
+      if (!authUser || reservation.userUsername !== authUser.username) {
         return res.status(403).json({ message: 'Not authorized to cancel this reservation' });
       }
 

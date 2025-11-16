@@ -49,25 +49,27 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnInit(): void {
     // Check if user is logged in and is an owner
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
+    const role = this.userService.getAuthRole();
     if (!username) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Get current user details
+    if (role !== 'owner') {
+      this.router.navigate(['/profile']);
+      return;
+    }
+
+    // Fetch user details optionally; proceed even on error
     this.userService.getUser(username).subscribe({
       next: (user) => {
-        this.currentUser = user;
-        if (user.role !== 'owner') {
-          this.router.navigate(['/profile']);
-          return;
-        }
+        this.currentUser = user || { username };
         this.loadData();
       },
-      error: (err) => {
-        console.error('Failed to fetch user:', err);
-        this.router.navigate(['/login']);
+      error: () => {
+        this.currentUser = { username };
+        this.loadData();
       }
     });
   }

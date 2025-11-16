@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '../../_models/user';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,36 @@ export class UserService {
   public loggedIn:boolean = false
   public currentUser: User | null = null
 
+  private decodeTokenPayload<T = any>(token: string | null): T | null {
+    if (!token) return null;
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    try {
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, '=');
+      const json = atob(padded);
+      return JSON.parse(json) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  getAuthUsername(): string | null {
+    const token = localStorage.getItem('key');
+    const payload = this.decodeTokenPayload<{ username?: string }>(token);
+    return payload?.username ?? null;
+  }
+
+  getAuthRole(): string | null {
+    const token = localStorage.getItem('key');
+    const payload = this.decodeTokenPayload<{ role?: string }>(token);
+    return payload?.role ?? null;
+  }
+
   login(username: string, password: string): Observable<any> {
-  return this.httpClient.post(`${this.apiUrl}/auth/login`, { username, password });
+  return this.httpClient.post<{token: string}>(`${this.apiUrl}/auth/login`, { username, password }).pipe(
+    map(res => res?.token ?? null)
+  );
 }
 
     register(user: User,file:File): Observable<any> {
@@ -40,9 +68,7 @@ export class UserService {
   }
 
   changePassword(oldPass: string, newPass: string): Observable<any> {
-  const username = localStorage.getItem('key');
   return this.httpClient.post(`${this.apiUrl}/auth/change-password`, {
-    username: username,
     oldPassword: oldPass,
     newPassword: newPass
   });

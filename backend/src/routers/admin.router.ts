@@ -11,8 +11,11 @@ import {
   blockCottage,
   unblockCottage
 } from '../controllers/admin.controller';
+import { authenticateJWT, authorizeRoles } from '../middleware/auth';
 
 const router = express.Router();
+
+router.use(authenticateJWT as any, authorizeRoles('administrator') as any);
 
 router.get('/dashboard/stats', getDashboardStats);
 

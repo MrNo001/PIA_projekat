@@ -83,7 +83,7 @@ export class CottageDetailsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(){
     // Fetch current user if logged in
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     if (username) {
       this.userService.getUser(username).subscribe({
         next: (user) => {

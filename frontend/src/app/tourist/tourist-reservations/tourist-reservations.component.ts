@@ -45,25 +45,29 @@ export class TouristReservationsComponent implements OnInit {
 
   ngOnInit(): void {
     // Check if user is logged in and is a tourist
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
+    const role = this.userService.getAuthRole();
     if (!username) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Get current user details
+    // Use role from token first to avoid null access
+    if (role !== 'tourist') {
+      this.router.navigate(['/profile']);
+      return;
+    }
+
+    // Optionally fetch full user object (not strictly needed for reservations)
     this.userService.getUser(username).subscribe({
       next: (user) => {
-        this.currentUser = user;
-        if (user.role !== 'tourist') {
-          this.router.navigate(['/profile']);
-          return;
-        }
+        this.currentUser = user || { username };
         this.loadReservations();
       },
-      error: (err) => {
-        console.error('Failed to fetch user:', err);
-        this.router.navigate(['/login']);
+      error: () => {
+        // Proceed with username from token even if fetching user fails
+        this.currentUser = { username };
+        this.loadReservations();
       }
     });
   }

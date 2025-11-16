@@ -4,10 +4,8 @@ import Cottage from '../models/cottage';
 
 export class RatingController {
   
-  // Helper method to update cottage's average rating
   static updateCottageRating = async (cottageId: any) => {
     try {
-      // Get all completed reservations with ratings for this cottage
       const reservations = await Reservation.find({
         cottageId: cottageId,
         status: 'completed',
@@ -15,19 +13,16 @@ export class RatingController {
       });
 
       if (reservations.length === 0) {
-        // No ratings yet, set Ocena to -1
         await Cottage.findByIdAndUpdate(cottageId, { Ocena: -1 });
         return;
       }
 
-      // Calculate average rating
       const totalRating = reservations.reduce((sum, reservation) => {
         return sum + (reservation.rating?.score || 0);
       }, 0);
 
       const averageRating = totalRating / reservations.length;
 
-      // Update the cottage's Ocena field
       await Cottage.findByIdAndUpdate(cottageId, { Ocena: averageRating });
     } catch (error) {
       console.error('Error updating cottage rating:', error);
@@ -35,36 +30,36 @@ export class RatingController {
     }
   };
 
-  // Create or update a rating for a specific reservation
   static createOrUpdateRating = async (req: Request, res: Response) => {
     try {
       const { reservationId, rating, comment } = req.body;
 
-      // Validate required fields
       if (!reservationId || !rating) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      // Validate rating range
       if (rating < 1 || rating > 5) {
         return res.status(400).json({ message: 'Rating must be between 1 and 5' });
       }
 
-      // Find the reservation
       const reservation = await Reservation.findById(reservationId);
 
       if (!reservation) {
         return res.status(404).json({ message: 'Reservation not found' });
       }
 
-      // Check if reservation is completed
+      // Only the reservation owner can rate
+      const authUser = (req as any).user as { username: string, role: string } | undefined;
+      if (!authUser || reservation.userUsername !== authUser.username) {
+        return res.status(403).json({ message: 'Not authorized to rate this reservation' });
+      }
+
       if (reservation.status !== 'completed') {
         return res.status(403).json({ 
           message: 'You can only rate completed reservations' 
         });
       }
 
-      // Update the reservation with rating
       reservation.rating = {
         score: rating,
         comment: comment || '',
@@ -73,7 +68,6 @@ export class RatingController {
 
       await reservation.save();
 
-      // Update the cottage's Ocena (average rating)
       await RatingController.updateCottageRating(reservation.cottageId);
 
       res.status(201).json({ 
@@ -86,7 +80,6 @@ export class RatingController {
     }
   };
 
-  // Get rating for a specific reservation
   static getReservationRating = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
@@ -108,7 +101,6 @@ export class RatingController {
     }
   };
 
-  // Get all ratings for a cottage (from completed reservations)
   static getCottageRatings = async (req: Request, res: Response) => {
     try {
       const { cottageId } = req.params;
@@ -137,7 +129,6 @@ export class RatingController {
     }
   };
 
-  // Get all ratings by a user (from their completed reservations)
   static getUserRatings = async (req: Request, res: Response) => {
     try {
       const { username } = req.params;
@@ -166,7 +157,6 @@ export class RatingController {
     }
   };
 
-  // Delete a rating (remove rating from reservation)
   static deleteRating = async (req: Request, res: Response) => {
     try {
       const { reservationId } = req.params;
@@ -181,13 +171,17 @@ export class RatingController {
         return res.status(404).json({ message: 'No rating found for this reservation' });
       }
 
+      // Only the reservation owner can delete their rating
+      const authUser = (req as any).user as { username: string, role: string } | undefined;
+      if (!authUser || reservation.userUsername !== authUser.username) {
+        return res.status(403).json({ message: 'Not authorized to delete this rating' });
+      }
+
       const cottageId = reservation.cottageId;
 
-      // Remove the rating
       reservation.rating = undefined;
       await reservation.save();
 
-      // Update the cottage's Ocena (average rating)
       await RatingController.updateCottageRating(cottageId);
 
       res.json({ message: 'Rating deleted successfully' });

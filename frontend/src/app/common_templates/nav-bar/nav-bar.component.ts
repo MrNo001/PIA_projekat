@@ -24,19 +24,26 @@ export class NavBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.isLoggedIn) {
-      const username = localStorage.getItem('key');
-      if (username) {
-        this.userService.getUser(username).subscribe({
-          next: (user) => {
-            this.currentUser = user;
+    this.isLoggedIn = this.userService.isLoggedIn();
+    if (!this.isLoggedIn) return;
+
+    const username = this.userService.getAuthUsername();
+    const role = this.userService.getAuthRole();
+    if (role) this.userRole = role;
+
+    if (username) {
+      this.userService.getUser(username).subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          // prefer role from token, but fallback to user record if missing
+          if (!this.userRole && user?.role) {
             this.userRole = user.role;
-          },
-          error: (err) => {
-            console.error('Failed to fetch user:', err);
           }
-        });
-      }
+        },
+        error: (err) => {
+          console.error('Failed to fetch user:', err);
+        }
+      });
     }
   }
 

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { RatingController } from '../controllers/rating.controller';
+import { authenticateJWT } from '../middleware/auth';
 
 const router = Router();
       
@@ -9,7 +10,7 @@ const asyncHandler = (fn: (req: Request, res: Response) => Promise<any>) => {
   };
 };
 
-router.post('/', asyncHandler(RatingController.createOrUpdateRating));
+router.post('/', authenticateJWT as any, asyncHandler(RatingController.createOrUpdateRating));
 
 router.get('/reservation/:reservationId', asyncHandler(RatingController.getReservationRating));
 
@@ -17,6 +18,6 @@ router.get('/cottage/:cottageId', asyncHandler(RatingController.getCottageRating
 
 router.get('/user/:username', asyncHandler(RatingController.getUserRatings));
 
-router.delete('/reservation/:reservationId', asyncHandler(RatingController.deleteRating));
+router.delete('/reservation/:reservationId', authenticateJWT as any, asyncHandler(RatingController.deleteRating));
 
 export default router;

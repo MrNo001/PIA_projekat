@@ -36,7 +36,7 @@ export class ConfirmReservationComponent implements OnInit {
 
   ngOnInit() {
     // Check if user is logged in
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     if (!username) {
       this.router.navigate(['/login']);
       return;

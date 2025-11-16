@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../models/user.js';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 
 const  passRx = /^[A-Za-z](?=(?:.*[a-z]){3,})(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{5,9}$/;
@@ -34,8 +35,15 @@ export class AuthController{
         console.log("User not active");
         return;
       }
-      
-      res.json(user.username).status(200);
+
+      const secret = process.env.JWT_SECRET || 'dev_secret_change_me';
+      const token = jwt.sign(
+        { username: user.username, role: user.role },
+        secret,
+        { expiresIn: '2h' }
+      );
+
+      res.status(200).json({ token });
       console.log("Found the user");
     } catch (err) {
       console.log(err);
@@ -83,11 +91,19 @@ export class AuthController{
   }
 
   static changePassword = async (req:Request,res:Response) => {
-    const username = req.body.username;
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
 
+    // username comes from verified JWT
+    const authUser = (req as any).user as { username: string, role: string } | undefined;
+    const username = authUser?.username;
+
     try {
+      if(!username){
+        res.status(401).json({message:"Unauthorized"});
+        return;
+      }
+
       const user = await User.findOne({username:username});
       
       if(!user){

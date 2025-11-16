@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
   creditCardError: string = '';
 
   ngOnInit(): void {
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     console.log(username)
     if (!username) {
       // not logged in — redirect to login (or show message)
@@ -118,7 +118,7 @@ export class ProfileComponent implements OnInit {
   }
 
   private performUpdate() {
-    const username = localStorage.getItem('key');
+    const username = this.userService.getAuthUsername();
     if (!username) {
       this.message = 'No username found';
       this.loading = false;

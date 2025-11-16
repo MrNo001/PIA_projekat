@@ -3,6 +3,7 @@ import { AuthController } from '../controllers/auth.controller.js';
 import multer from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { authenticateJWT } from '../middleware/auth';
 
 const authRouter = express.Router();
 
@@ -26,6 +27,7 @@ authRouter.route('/login').post(
     (req,res) => AuthController.login(req,res));
 
 authRouter.route('/change-password').post(
+    authenticateJWT,
     (req,res) => AuthController.changePassword(req,res));
 
 authRouter.route('/test').get(
