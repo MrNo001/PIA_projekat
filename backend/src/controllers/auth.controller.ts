@@ -22,7 +22,6 @@ export class AuthController{
         return;
       }
 
-      // Compare the plaintext password with the hashed password
       const isPasswordValid = await bcrypt.compare(p, user.password);
       
       if(!isPasswordValid){
@@ -30,7 +29,6 @@ export class AuthController{
         return;
       }
 
-      // Check if user is active
       if(!user.isActive){
         res.status(403).json({error: "Account is not active. Please wait for administrator approval."});
         console.log("User not active");
@@ -47,7 +45,6 @@ export class AuthController{
 
   static register = async (req:Request,res:Response) =>
   {
-     /* const {username,password,email,firstName,lastName,gender,address,phone,creditCard,role='tourist'}=req.body; */
       const username = req.body.username;
       const password = req.body.password;
       const email = req.body.email;
@@ -61,7 +58,6 @@ export class AuthController{
       const profileImage = req.file ? req.file.filename : 'default.png';
 
       try {
-        // Hash the password with bcrypt (salt rounds = 10)
         const hashedPassword = await bcrypt.hash(password, 10);
 
         let user = {
@@ -92,7 +88,6 @@ export class AuthController{
     const newPassword = req.body.newPassword;
 
     try {
-      // Find the user
       const user = await User.findOne({username:username});
       
       if(!user){
@@ -100,18 +95,15 @@ export class AuthController{
         return;
       }
 
-      // Verify the old password
       const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
       
       if(!isOldPasswordValid){
         res.status(401).json({message:"Old password is incorrect"});
         return;
       }
-
-      // Hash the new password
+      
       const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-      // Update the password using findOneAndUpdate with username
       const result = await User.findOneAndUpdate(
         { username: username },
         { password: hashedNewPassword },

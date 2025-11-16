@@ -19,7 +19,6 @@ class CottagesController{
 
         let OwnerUsername = req.body.OwnerUsername;
         
-        // Find user by username to get their _id
         User.findOne({username: OwnerUsername}).then(user => {
             if (!user) {
                 res.status(400).json({message: "User not found"});
@@ -34,12 +33,10 @@ class CottagesController{
                 return;
             }
             
-            // Store just filenames without path prefix
             const photos = files.map((file: Express.Multer.File) => file.filename);
 
             console.log("Photos:", photos);
 
-            // Parse amenities from JSON string if provided
             let amenities = {
                 WiFi: false,
                 Kitchen: false,
@@ -66,10 +63,10 @@ class CottagesController{
             }
 
             const newCottage = new Cottage({
-                _id: uuidv4(), // Generate UUID for _id
+                    _id: uuidv4(), 
                 Title: req.body.Title,
                 Description: req.body.Description,
-                OwnerUsername: OwnerUsername, // Use username directly
+                OwnerUsername: OwnerUsername, 
                 Location: {lng: req.body.lng, lat: req.body.lat},
                 PriceSummer: req.body.PriceSummer,
                 PriceWinter: req.body.PriceWinter,
@@ -114,13 +111,11 @@ class CottagesController{
     static getCottage(req:Request,res:Response){
         const cottageId = req.params.cottageId;
         
-        // First try with the exact ID as string
         Cottage.findOne({_id: cottageId})
             .then(cottage=>{
                 if (cottage) {
                     res.status(200).json(cottage);
-                } else {
-                    // If not found, try to find by string comparison
+                } else {    
                     Cottage.find({})
                         .then(allCottages => {
                             const foundCottage = allCottages.find(c => c._id.toString() === cottageId);
@@ -144,7 +139,6 @@ class CottagesController{
     static getCottagesByOwner(req:Request,res:Response){
         let ownerUsername = req.params.ownerUsername;
 
-        // Find cottages by owner username
         Cottage.find({OwnerUsername: ownerUsername})
             .then(cottages=>{
                 res.json(cottages).status(200);
@@ -178,7 +172,6 @@ class CottagesController{
             }
         };
 
-        // Handle amenities update if provided
         if (req.body.Amenities) {
             try {
                 const parsedAmenities = typeof req.body.Amenities === 'string' 
@@ -196,36 +189,28 @@ class CottagesController{
             }
         }
 
-        // Handle photo updates
         const files = req.files as Express.Multer.File[] | undefined;
         
-        // Handle FormData arrays - they can be arrays or single values
         const photosToDeleteRaw = req.body.photosToDelete || [];
         const existingPhotosRaw = req.body.existingPhotos || [];
         
-        // Ensure arrays (FormData might send single strings)
         const photosToDelete = Array.isArray(photosToDeleteRaw) ? photosToDeleteRaw : photosToDeleteRaw ? [photosToDeleteRaw] : [];
         const existingPhotos = Array.isArray(existingPhotosRaw) ? existingPhotosRaw : existingPhotosRaw ? [existingPhotosRaw] : [];
         
-        // Helper function to extract filename from path
         const extractFilename = (path: string): string => {
             return path.includes('/') ? path.split('/').pop() || path : path;
         };
         
-        // Extract filenames from existing photos (remove path prefix if present)
         const existingPhotoFilenames = existingPhotos.map(extractFilename);
         const photosToDeleteFilenames = photosToDelete.map(extractFilename);
         
-        // Start with existing photos
         let updatedPhotos = [...existingPhotoFilenames];
         
-        // Add new photos
         if (files && files.length > 0) {
             const newPhotos = files.map((file: Express.Multer.File) => file.filename);
             updatedPhotos = [...updatedPhotos, ...newPhotos];
         }
         
-        // Filter out photos to delete
         updatedPhotos = updatedPhotos.filter(photo => !photosToDeleteFilenames.includes(photo));
         
         updateData.Photos = updatedPhotos;
