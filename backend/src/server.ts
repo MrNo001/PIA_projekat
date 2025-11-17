@@ -24,7 +24,8 @@ app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uplo
 
 
 //mongoose.connect('mongodb://127.0.0.1:27017/projectPIA')
-mongoose.connect('mongodb+srv://no001here:<8phEn2MqIVVtnpti>@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA')
+mongoose.connect('mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA/projectPIA')
+
 const conn = mongoose.connection
 conn.once('open', ()=>{
     console.log("DB ok")
@@ -46,7 +47,7 @@ router.get("/test",(req,res) => {
     res.json({message:"nesto"});
 })
 
-
+const PORT = process.env.PORT || 4000;
 
 app.use('/', router)
-app.listen(4000, ()=>console.log('Express running on port 4000'))
+app.listen(PORT, ()=>console.log(`Express running on port ${PORT}`))
