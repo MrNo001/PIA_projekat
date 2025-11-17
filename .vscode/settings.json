@@ -6,7 +6,7 @@
         "backend/package.json": true,
         "backend/tsconfig.json": true,
         "backend/package-lock.json": true,
-        "frontend/dist": true,
+        "frontend/dist": false,
         "frontend/.vscode": true,
         "frontend/.angular/cache/18.2.20": true,
         "frontend/.angular/cache": true,
