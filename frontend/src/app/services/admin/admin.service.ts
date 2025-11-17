@@ -67,7 +67,8 @@ export interface Cottage {
   providedIn: 'root'
 })
 export class AdminService {
-  private baseUrl = 'http://localhost:4000/admin';
+  // private baseUrl = 'http://localhost:4000/admin';
+  private baseUrl = 'https://pia-projekat-backend.onrender.com/admin';
 
   constructor(private http: HttpClient) { }
 

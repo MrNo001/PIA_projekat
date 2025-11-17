@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import path from 'path';
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 //Routers
 import authRouter from './routers/auth.router'
@@ -24,7 +25,14 @@ app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uplo
 
 
 //mongoose.connect('mongodb://127.0.0.1:27017/projectPIA')
-mongoose.connect('mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA/projectPIA')
+
+//const uri = "mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA/projectPIA"
+
+// MongoDB Atlas connection string - database name should be before query parameters
+const uri = "mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/projectPIA?appName=Cluster-PIA&retryWrites=true&w=majority"
+
+// Connect to MongoDB
+mongoose.connect(uri)
 
 const conn = mongoose.connection
 conn.once('open', ()=>{
@@ -51,3 +59,26 @@ const PORT = process.env.PORT || 4000;
 
 app.use('/', router)
 app.listen(PORT, ()=>console.log(`Express running on port ${PORT}`))
+
+
+
+const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+  async function run() {
+    try {
+      // Connect the client to the server	(optional starting in v4.7)
+      await client.connect();
+      // Send a ping to confirm a successful connection
+      await client.db("admin").command({ ping: 1 });
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+      // Ensures that the client will close when you finish/error
+      await client.close();
+    }
+  }
+  run().catch(console.dir);

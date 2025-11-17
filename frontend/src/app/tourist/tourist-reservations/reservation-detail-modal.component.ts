@@ -61,7 +61,8 @@ export class ReservationDetailModalComponent {
 
   getCottageImageUrl(photoPath: string): string {
     if (!photoPath) return '/media/default-house.png';
-    return `http://localhost:4000/uploads/cottage_photos/${photoPath}`;
+    // return `http://localhost:4000/uploads/cottage_photos/${photoPath}`;
+    return `https://pia-projekat-backend.onrender.com/uploads/cottage_photos/${photoPath}`;
   }
 
   getCottagePhotos(reservation: Reservation): string[] {

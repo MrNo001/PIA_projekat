@@ -9,8 +9,10 @@ import { Observable } from 'rxjs';
 })
 export class CottageService {
 
-  private apiUrl = 'http://localhost:4000/cottages';
-  private adminApiUrl = 'http://localhost:4000/admin';
+  // private apiUrl = 'http://localhost:4000/cottages';
+  // private adminApiUrl = 'http://localhost:4000/admin';
+  private apiUrl = 'https://pia-projekat-backend.onrender.com/cottages';
+  private adminApiUrl = 'https://pia-projekat-backend.onrender.com/admin';
 
   constructor(private http:HttpClient) {}
 

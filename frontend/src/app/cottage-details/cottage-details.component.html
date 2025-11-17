@@ -17,7 +17,8 @@
     <div class="carousel-inner">
       @for (photo of cottage.Photos; track $index) {
         <div class="carousel-item" [class.active]="$index === 0">
-          <img src="http://localhost:4000/uploads/cottage_photos/{{photo}}" class="d-block w-100" alt="Photo of {{ cottage.Title }}" (error)="handleImageError($event)">
+          <!-- <img src="http://localhost:4000/uploads/cottage_photos/{{photo}}" class="d-block w-100" alt="Photo of {{ cottage.Title }}" (error)="handleImageError($event)"> -->
+          <img src="https://pia-projekat-backend.onrender.com/uploads/cottage_photos/{{photo}}" class="d-block w-100" alt="Photo of {{ cottage.Title }}" (error)="handleImageError($event)">
         </div>
       }
     </div>

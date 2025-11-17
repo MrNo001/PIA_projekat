@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+
+
 const CottageSchema = new mongoose.Schema({
     _id: { type: String, required: true ,ref: 'Cottage'},
     Ocena: { type: Number, default: -1 },

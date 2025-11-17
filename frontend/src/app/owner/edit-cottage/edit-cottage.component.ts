@@ -259,7 +259,8 @@ export class EditCottageComponent implements OnInit, AfterViewInit {
   getPhotoUrl(photoPath: string): string {
     if (!photoPath) return '/media/default-house.png';
     const filename = photoPath.includes('/') ? photoPath.split('/').pop() : photoPath;
-    return `http://localhost:4000/uploads/cottage_photos/${filename}`;
+    // return `http://localhost:4000/uploads/cottage_photos/${filename}`;
+    return `https://pia-projekat-backend.onrender.com/uploads/cottage_photos/${filename}`;
   }
 
   getPhotoPreview(file: File): string {

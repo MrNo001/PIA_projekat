@@ -18,7 +18,8 @@ export class UserService {
   }
 
   private httpClient = inject(HttpClient)
-  apiUrl="http://localhost:4000"
+  // apiUrl="http://localhost:4000"
+  apiUrl="https://pia-projekat-backend.onrender.com"
 
   public loggedIn:boolean = false
   public currentUser: User | null = null
@@ -74,7 +75,8 @@ export class UserService {
   });
 }
   getUser(username: string){
-    return this.httpClient.get<User>(`http://localhost:4000/users/getUser/${username}`);
+    // return this.httpClient.get<User>(`http://localhost:4000/users/getUser/${username}`);
+    return this.httpClient.get<User>(`${this.apiUrl}/users/getUser/${username}`);
   }
 
    // update user: send multipart/form-data (only changed fields + optional profileImage)

@@ -7,7 +7,8 @@ import { Rating, CreateRatingRequest } from '../../_models/rating';
   providedIn: 'root'
 })
 export class RatingService {
-  private apiUrl = 'http://localhost:4000/ratings';
+  // private apiUrl = 'http://localhost:4000/ratings';
+  private apiUrl = 'https://pia-projekat-backend.onrender.com/ratings';
 
   constructor(private http: HttpClient) {}
 

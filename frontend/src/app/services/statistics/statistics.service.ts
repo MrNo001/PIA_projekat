@@ -16,7 +16,8 @@ export interface Statistics {
 })
 export class StatisticsService {
 
-  private apiUrl = 'http://localhost:4000/statistics';
+  // private apiUrl = 'http://localhost:4000/statistics';
+  private apiUrl = 'https://pia-projekat-backend.onrender.com/statistics';
 
   constructor(private http: HttpClient) { }
 

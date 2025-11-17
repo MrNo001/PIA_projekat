@@ -7,8 +7,12 @@ import { v4 as uuidv4 } from 'uuid';
 class CottagesController{
 
     static getAllCottages(req:Request,res:Response){
+        console.log("Getting all cottages");    
         Cottage.find({}).then(
-            cottages => { res.json(cottages);}
+            cottages => { 
+                console.log("Cottages:", cottages);
+                res.json(cottages);
+            }
         );
         
     }

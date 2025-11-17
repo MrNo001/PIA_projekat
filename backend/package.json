@@ -15,7 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.11.0",
+    "mongodb": "^6.21.0",
     "mongoose": "^8.8.3",
     "multer": "^2.0.2",
     "uuid": "^11.1.0"

@@ -38,7 +38,8 @@ export interface CreateReservationRequest {
   providedIn: 'root'
 })
 export class ReservationService {
-  private apiUrl = 'http://localhost:4000/reservations';
+  // private apiUrl = 'http://localhost:4000/reservations';
+  private apiUrl = 'https://pia-projekat-backend.onrender.com/reservations';
 
   constructor(private http: HttpClient) { }
 
