@@ -23,7 +23,8 @@ app.use('/uploads/cottage_photos', express.static(path.join(process.cwd(), 'uplo
 app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uploads/profile_photos')));
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/projectPIA')
+//mongoose.connect('mongodb://127.0.0.1:27017/projectPIA')
+mongoose.connect('mongodb+srv://no001here:<8phEn2MqIVVtnpti>@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA')
 const conn = mongoose.connection
 conn.once('open', ()=>{
     console.log("DB ok")
