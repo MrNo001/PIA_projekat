@@ -50,7 +50,9 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit(): void {
     const username = this.userService.getAuthUsername();
     const role = this.userService.getAuthRole();
-    if (!username) {
+    const token = localStorage.getItem('key');
+    
+    if (!username || !token) {
       this.router.navigate(['/login']);
       return;
     }
@@ -63,9 +65,15 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user || { username };
+        // Ensure username is set
+        if (!this.currentUser.username) {
+          this.currentUser.username = username;
+        }
         this.loadData();
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load user:', err);
+        // Still try to load data with username from token
         this.currentUser = { username };
         this.loadData();
       }
@@ -79,8 +87,30 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   loadData(): void {
+    // Check if token exists before making request
+    const token = localStorage.getItem('key');
+    if (!token) {
+      console.error('No authentication token found');
+      this.error = 'Authentication required. Please log in again.';
+      this.loading = false;
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Prevent multiple simultaneous requests
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     this.error = '';
+
+    if (!this.currentUser || !this.currentUser.username) {
+      console.error('No username available');
+      this.error = 'User information not available.';
+      this.loading = false;
+      return;
+    }
 
     this.cottageService.getCottagesByOwnerUsername(this.currentUser.username).subscribe({
       next: (cottages) => {
@@ -89,7 +119,16 @@ export class OwnerStatisticsComponent implements OnInit, AfterViewInit, OnDestro
       },
       error: (err) => {
         console.error('Failed to load cottages:', err);
-        this.error = 'Failed to load cottage data.';
+        if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          localStorage.removeItem('key');
+          this.userService.loggedIn = false;
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else {
+          this.error = 'Failed to load cottage data.';
+        }
         this.loading = false;
       }
     });

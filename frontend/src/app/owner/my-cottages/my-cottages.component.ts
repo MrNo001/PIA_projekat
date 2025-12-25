@@ -27,7 +27,9 @@ export class MyCottagesComponent implements OnInit {
   ngOnInit(): void {
     const username = this.userService.getAuthUsername();
     const role = this.userService.getAuthRole();
-    if (!username) {
+    const token = localStorage.getItem('key');
+    
+    if (!username || !token) {
       this.router.navigate(['/login']);
       return;
     }
@@ -40,9 +42,15 @@ export class MyCottagesComponent implements OnInit {
     this.userService.getUser(username).subscribe({
       next: (user) => {
         this.currentUser = user || { username };
+        // Ensure username is set
+        if (!this.currentUser.username) {
+          this.currentUser.username = username;
+        }
         this.loadCottages();
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load user:', err);
+        // Still try to load data with username from token
         this.currentUser = { username };
         this.loadCottages();
       }
@@ -50,8 +58,30 @@ export class MyCottagesComponent implements OnInit {
   }
 
   loadCottages(): void {
+    // Check if token exists before making request
+    const token = localStorage.getItem('key');
+    if (!token) {
+      console.error('No authentication token found');
+      this.error = 'Authentication required. Please log in again.';
+      this.loading = false;
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Prevent multiple simultaneous requests
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     this.error = '';
+
+    if (!this.currentUser || !this.currentUser.username) {
+      console.error('No username available');
+      this.error = 'User information not available.';
+      this.loading = false;
+      return;
+    }
 
     this.cottageService.getCottagesByOwnerUsername(this.currentUser.username).subscribe({
       next: (cottages) => {
@@ -60,7 +90,16 @@ export class MyCottagesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load cottages:', err);
-        this.error = 'Failed to load your cottages. Please try again.';
+        if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          localStorage.removeItem('key');
+          this.userService.loggedIn = false;
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else {
+          this.error = 'Failed to load your cottages. Please try again.';
+        }
         this.loading = false;
       }
     });
