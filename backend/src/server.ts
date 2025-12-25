@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import path from 'path';
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-//Routers
+
 import authRouter from './routers/auth.router'
 import cottageRouter from './routers/cottages.router'
 import userRouter from './routers/user.router'
@@ -24,14 +24,9 @@ app.use('/uploads/cottage_photos', express.static(path.join(process.cwd(), 'uplo
 app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uploads/profile_photos')));
 
 
-//mongoose.connect('mongodb://127.0.0.1:27017/projectPIA')
-
-//const uri = "mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/?appName=Cluster-PIA/projectPIA"
-
-// MongoDB Atlas connection string - database name should be before query parameters
+//const uri = "mongodb://127.0.0.1:27017/projectPIA"
 const uri = "mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/projectPIA?appName=Cluster-PIA&retryWrites=true&w=majority"
 
-// Connect to MongoDB
 mongoose.connect(uri)
 
 const conn = mongoose.connection
@@ -51,8 +46,8 @@ router.use("/admin",adminRouter);
 router.use("/statistics",statisticsRouter);
 
 router.get("/test",(req,res) => {
-    console.log("jupiii");
-    res.json({message:"nesto"});
+    console.log("Test endpoint is working");
+    res.json({message:"Test endpoint is working"});
 })
 
 const PORT = process.env.PORT || 4000;
@@ -60,25 +55,24 @@ const PORT = process.env.PORT || 4000;
 app.use('/', router)
 app.listen(PORT, ()=>console.log(`Express running on port ${PORT}`))
 
+// const client = new MongoClient(uri, {
+//     serverApi: {
+//       version: ServerApiVersion.v1,
+//       strict: true,
+//       deprecationErrors: true,
+//     }});
+    
+//   async function run() {
+//     try {
+//       // Connect the client to the server	(optional starting in v4.7)
+//       await client.connect();
+//       // Send a ping to confirm a successful connection
+//       await client.db("admin").command({ ping: 1 });
+//       console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//     } finally {
+//       // Ensures that the client will close when you finish/error
+//       await client.close();
+//     }
+//   }
+//   run().catch(console.dir);
 
-
-const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    }
-  });
-  async function run() {
-    try {
-      // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
-      // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } finally {
-      // Ensures that the client will close when you finish/error
-      await client.close();
-    }
-  }
-  run().catch(console.dir);

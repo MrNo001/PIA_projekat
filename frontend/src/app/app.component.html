@@ -1,3 +1,7 @@
-<div [@routeAnimations]="prepareRoute(outlet)" class="route-container">
-  <router-outlet #outlet="outlet"></router-outlet>
-</div>
+@if (!backendReady) {
+  <app-loading></app-loading>
+} @else {
+  <div [@routeAnimations]="prepareRoute(outlet)" class="route-container">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+}
