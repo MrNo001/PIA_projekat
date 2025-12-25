@@ -25,7 +25,7 @@ app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uplo
 
 
 //const uri = "mongodb://127.0.0.1:27017/projectPIA"
-const uri = "mongodb+srv://root_user:OGycDjSemxE4O3fd@cluster-pia.z05e793.mongodb.net/projectPIA?appName=Cluster-PIA&retryWrites=true&w=majority"
+const uri = process.env.MONGO_URI || '';
 
 mongoose.connect(uri)
 
