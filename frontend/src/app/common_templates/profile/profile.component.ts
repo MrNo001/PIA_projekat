@@ -26,6 +26,11 @@ export class ProfileComponent implements OnInit {
   loading = false;
   creditCardError: string = '';
 
+  isEditing = false;
+  hasChanges = false;
+  private originalUserSnapshot: { firstName?: string; lastName?: string; address?: string; email?: string; phone?: string; creditCard?: string } | null = null;
+  private originalImagePreviewUrl: string | null = null;
+
   ngOnInit(): void {
     const username = this.userService.getAuthUsername();
     console.log(username)
@@ -45,6 +50,12 @@ export class ProfileComponent implements OnInit {
         } else {
           this.imagePreviewUrl = '/media/default-profile.png';
         }
+
+        this.originalUserSnapshot = this.pickComparableUserSnapshot(this.user);
+        this.originalImagePreviewUrl = this.imagePreviewUrl;
+        this.isEditing = false;
+        this.hasChanges = false;
+        this.selectedFile = null;
         this.loading = false;
       },
       error: (err) => {
@@ -55,10 +66,69 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  toggleEdit() {
+    if (!this.isEditing) {
+      this.isEditing = true;
+      this.message = '';
+      this.creditCardError = '';
+      this.recomputeHasChanges();
+      return;
+    }
+
+    // cancel edit: revert changes
+    if (this.originalUserSnapshot) {
+      this.user.firstName = this.originalUserSnapshot.firstName || '';
+      this.user.lastName = this.originalUserSnapshot.lastName || '';
+      this.user.address = this.originalUserSnapshot.address || '';
+      this.user.email = this.originalUserSnapshot.email || '';
+      this.user.phone = this.originalUserSnapshot.phone || '';
+      this.user.creditCard = this.originalUserSnapshot.creditCard || '';
+    }
+    this.selectedFile = null;
+    this.imagePreviewUrl = this.originalImagePreviewUrl;
+    this.message = '';
+    this.creditCardError = '';
+    this.isEditing = false;
+    this.hasChanges = false;
+  }
+
+  onFieldChange(): void {
+    if (!this.isEditing) return;
+    this.validateCreditCard();
+    this.recomputeHasChanges();
+  }
+
+  private pickComparableUserSnapshot(u: User) {
+    return {
+      firstName: u.firstName || '',
+      lastName: u.lastName || '',
+      address: u.address || '',
+      email: u.email || '',
+      phone: u.phone || '',
+      creditCard: u.creditCard || ''
+    };
+  }
+
+  private recomputeHasChanges() {
+    if (!this.isEditing) {
+      this.hasChanges = false;
+      return;
+    }
+
+    const now = this.pickComparableUserSnapshot(this.user);
+    const original = this.originalUserSnapshot;
+    const fieldsChanged = !!original && Object.keys(now).some(k => (now as any)[k] !== (original as any)[k]);
+    const fileChanged = !!this.selectedFile;
+    this.hasChanges = fieldsChanged || fileChanged;
+  }
+
   onFileSelected(event: Event) {
+    if (!this.isEditing) return;
+
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
       this.selectedFile = null;
+      this.recomputeHasChanges();
       return;
     }
     this.selectedFile = input.files[0];
@@ -66,11 +136,14 @@ export class ProfileComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreviewUrl = reader.result as string;
+      this.recomputeHasChanges();
     };
     reader.readAsDataURL(this.selectedFile);
   }
 
   saveProfile() {
+    if (!this.isEditing || !this.hasChanges) return;
+
     this.loading = true;
     this.message = '';
     this.creditCardError = '';
@@ -125,7 +198,11 @@ export class ProfileComponent implements OnInit {
         }
         this.message = 'Profile updated successfully.';
         this.loading = false;
-        this.selectedFile = null; 
+        this.selectedFile = null;
+        this.originalUserSnapshot = this.pickComparableUserSnapshot(this.user);
+        this.originalImagePreviewUrl = this.imagePreviewUrl;
+        this.isEditing = false;
+        this.hasChanges = false;
       },
       error: (err) => {
         console.error('Update failed', err);
@@ -173,7 +250,7 @@ export class ProfileComponent implements OnInit {
   }
 
   validateCreditCard(): void {
-    const cardNumber = this.user.creditCard.replace(/\s/g, ''); 
+    const cardNumber = (this.user.creditCard || '').replace(/\s/g, ''); 
     
     if (/^(36|38)\d{13}$/.test(cardNumber)) {
       this.creditCardError = '';

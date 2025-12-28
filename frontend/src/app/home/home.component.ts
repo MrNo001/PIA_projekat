@@ -27,8 +27,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   searchTerm = '';
   filtersApplied = false;
 
-  sortField = 'title';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortOption: 'title_asc' | 'title_desc' | 'price_asc' | 'price_desc' | 'rating_asc' | 'rating_desc' = 'title_asc';
+
+  scrollMode: 'vertical' | 'horizontal' = 'vertical';
 
   mapExpanded = false;
   selectedCottageId: string | undefined;
@@ -87,16 +88,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateMapIfVisible();
   }
 
-  toggleSortDirection() {
-    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    this.sortCottages();
-  }
-
   sortCottages() {
+    const [fieldRaw, dirRaw] = this.sortOption.split('_');
+    const field = fieldRaw as 'title' | 'price' | 'rating';
+    const isAsc = dirRaw === 'asc';
+
     this.Cottages.sort((a, b) => {
       let comparison = 0;
       
-      switch (this.sortField) {
+      switch (field) {
         case 'title':
           comparison = a.Title.localeCompare(b.Title);
           break;
@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           comparison = 0;
       }
       
-      return this.sortDirection === 'asc' ? comparison : -comparison;
+      return isAsc ? comparison : -comparison;
     });
   }
 
@@ -121,18 +121,26 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     return (month >= 6 && month <= 8) ? cottage.PriceSummer : cottage.PriceWinter;
   }
 
-  onSortFieldChange() {
+  onSortChange() {
     this.sortCottages();
+    this.updateMapIfVisible();
   }
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
+    if (this.scrollMode !== 'horizontal') return;
+
     const scrollContainer = this.cottagesScrollContainer?.nativeElement;
     if (scrollContainer) {
+      if (!scrollContainer.contains(event.target as Node)) return;
       event.preventDefault();
       event.stopPropagation();
       scrollContainer.scrollLeft += event.deltaY*4;
     }
+  }
+
+  setScrollMode(mode: 'vertical' | 'horizontal') {
+    this.scrollMode = mode;
   }
 
   toggleMap() {
@@ -225,17 +233,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const scrollContainer = this.cottagesScrollContainer?.nativeElement;
     if (!scrollContainer) return;
 
-    const index = this.Cottages.findIndex(c => c._id === cottageId);
-    if (index === -1) return;
+    const cardEl = scrollContainer.querySelector(`[data-cottage-id="${cottageId}"]`) as HTMLElement | null;
+    if (!cardEl) return;
 
-    const cardWidth = 300;
-    const gap = 20;
-    const scrollPosition = index * (cardWidth + gap) - scrollContainer.clientWidth / 2 + cardWidth / 2;
-    
-    scrollContainer.scrollTo({
-      left: Math.max(0, scrollPosition),
-      behavior: 'smooth'
-    });
+    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
   }
 
   ngOnInit(){

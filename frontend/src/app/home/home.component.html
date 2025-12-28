@@ -1,4 +1,4 @@
-<div class="home-container">
+<div class="home-container" [class.vertical]="scrollMode === 'vertical'" [class.horizontal]="scrollMode === 'horizontal'">
   <!-- Navigation Bar -->
   <nav class="nav-container">
     <app-nav-bar></app-nav-bar>
@@ -25,18 +25,30 @@
 
     <!-- Sort Bar -->
     <div class="sort-bar">
-      <select [(ngModel)]="sortField" (change)="onSortFieldChange()">
-        <option value="title">Title</option>
-        <option value="price">Price</option>
-        <option value="rating">Rating</option>
-      </select>
+      <div class="sort-control">
+        <label class="sort-label" for="sortBySelect">Sort by</label>
+        <select id="sortBySelect" [(ngModel)]="sortOption" (change)="onSortChange()">
+          <option value="title_asc">Title (A → Z)</option>
+          <option value="title_desc">Title (Z → A)</option>
+          <option value="price_asc">Price (Low → High)</option>
+          <option value="price_desc">Price (High → Low)</option>
+          <option value="rating_asc">Rating (Ascending)</option>
+          <option value="rating_desc">Rating (Descending)</option>
+        </select>
+      </div>
 
-      <button (click)="toggleSortDirection()" class="sort-btn" [title]="sortDirection === 'asc' ? 'Sort ascending' : 'Sort descending'">
-        <span class="arrow">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
-      </button>
+      <div class="layout-toggle" role="group" aria-label="Layout">
+        <button type="button" class="layout-btn" [class.active]="scrollMode === 'vertical'" (click)="setScrollMode('vertical')">
+          Vertical
+        </button>
+        <button type="button" class="layout-btn" [class.active]="scrollMode === 'horizontal'" (click)="setScrollMode('horizontal')">
+          Horizontal
+        </button>
+      </div>
 
       <button (click)="toggleMap()" class="map-preview-btn" [class.active]="mapExpanded" [title]="mapExpanded ? 'Hide map' : 'Show on map'">
         <div class="map-preview">
+          <div class="map-preview-bg" aria-hidden="true"></div>
           <span class="map-preview-text">Show on map</span>
         </div>
       </button>
@@ -57,6 +69,7 @@
     <div class="cottages-list">
       @for (cottage of Cottages; track cottage._id) {
         <div class="cottage-wrapper" 
+             [attr.data-cottage-id]="cottage._id"
              (click)="selectCottage(cottage._id)"
              [class.selected]="selectedCottageId === cottage._id">
           <app-cottage_card 
