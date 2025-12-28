@@ -7,11 +7,6 @@
   min-height: 100vh;
 }
 
-/* Override navbar to be transparent on profile page */
-::ng-deep .profile-wrapper app-nav-bar .navbar {
-  background: linear-gradient(90deg, rgba(76, 175, 239, 0.7), rgba(42, 123, 191, 0.7)) !important;
-}
-
 /* profile card */
 .profile-card {
   background: #fff;
@@ -29,6 +24,35 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #e9ecef;
+}
+
+.profile-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dcdcdc;
+  background: white;
+  color: #2c3e50;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.edit-btn:hover {
+  background: #f7f7f7;
+  border-color: #cfcfcf;
+}
+
+.edit-btn:active {
+  transform: translateY(1px);
 }
 
 .profile-header h3 {
@@ -102,6 +126,11 @@
   font-size: 0.9rem;
 }
 
+.file-label.disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+
 .file-label input {
   display: none;
 }
@@ -136,6 +165,11 @@
   background: #2a7bbf;
   color: white;
   cursor: pointer;
+}
+
+.actions button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
 }
 
 .actions .msg {

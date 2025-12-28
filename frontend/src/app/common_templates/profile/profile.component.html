@@ -5,7 +5,16 @@
   <main class="profile-card">
     <div class="profile-header">
       <h3>Profile</h3>
-      <span class="role-badge" [class]="'role-' + user.role">{{ user.role | titlecase }}</span>
+      <div class="profile-header-right">
+        <span class="role-badge" [class]="'role-' + user.role">{{ user.role | titlecase }}</span>
+        <button type="button" class="edit-btn" (click)="toggleEdit()" [title]="isEditing ? 'Cancel editing' : 'Edit profile'">
+          @if (!isEditing) {
+            <i class="bi bi-pencil"></i>
+          } @else {
+            <i class="bi bi-x-lg"></i>
+          }
+        </button>
+      </div>
     </div>
 
     <div class="profile-grid">
@@ -17,8 +26,8 @@
           </ng-template>
         </div>
 
-        <label class="file-label">
-          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+        <label class="file-label" [class.disabled]="!isEditing">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" [disabled]="!isEditing" />
           Change profile picture
         </label>
       </div>
@@ -26,32 +35,32 @@
       <div class="form-col">
         <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
           <label>First name
-            <input name="firstName" [(ngModel)]="user.firstName" />
+            <input name="firstName" [(ngModel)]="user.firstName" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
 
           <label>Last name
-            <input name="lastName" [(ngModel)]="user.lastName" />
+            <input name="lastName" [(ngModel)]="user.lastName" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
 
           <label>Address
-            <input name="address" [(ngModel)]="user.address" />
+            <input name="address" [(ngModel)]="user.address" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
 
           <label>Email
-            <input name="email" type="email" [(ngModel)]="user.email" />
+            <input name="email" type="email" [(ngModel)]="user.email" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
 
           <label>Phone
-            <input name="phone" [(ngModel)]="user.phone" />
+            <input name="phone" [(ngModel)]="user.phone" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
 
           <label>Credit Card
-            <input name="creditCard" [(ngModel)]="user.creditCard" (input)="onCreditCardChange()" />
+            <input name="creditCard" [(ngModel)]="user.creditCard" [disabled]="!isEditing" (ngModelChange)="onFieldChange()" />
           </label>
           <div class="error-message" *ngIf="creditCardError">{{ creditCardError }}</div>
 
           <div class="actions">
-            <button type="button" (click)="saveProfile()" [disabled]="loading">Update</button>
+            <button type="button" (click)="saveProfile()" [disabled]="loading || !isEditing || !hasChanges">Update</button>
             <span class="msg">{{ message }}</span>
           </div>
         </form>

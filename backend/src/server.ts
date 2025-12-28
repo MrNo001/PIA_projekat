@@ -2,8 +2,6 @@ import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import path from 'path';
-const { MongoClient, ServerApiVersion } = require('mongodb');
-
 
 import authRouter from './routers/auth.router'
 import cottageRouter from './routers/cottages.router'
@@ -24,8 +22,7 @@ app.use('/uploads/cottage_photos', express.static(path.join(process.cwd(), 'uplo
 app.use('/uploads/profile_photos', express.static(path.join(process.cwd(), 'uploads/profile_photos')));
 
 
-//const uri = "mongodb://127.0.0.1:27017/projectPIA"
-const uri = process.env.MONGO_URI || '';
+const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/projectPIA";
 
 mongoose.connect(uri)
 
@@ -55,24 +52,4 @@ const PORT = process.env.PORT || 4000;
 app.use('/', router)
 app.listen(PORT, ()=>console.log(`Express running on port ${PORT}`))
 
-// const client = new MongoClient(uri, {
-//     serverApi: {
-//       version: ServerApiVersion.v1,
-//       strict: true,
-//       deprecationErrors: true,
-//     }});
-    
-//   async function run() {
-//     try {
-//       // Connect the client to the server	(optional starting in v4.7)
-//       await client.connect();
-//       // Send a ping to confirm a successful connection
-//       await client.db("admin").command({ ping: 1 });
-//       console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//     } finally {
-//       // Ensures that the client will close when you finish/error
-//       await client.close();
-//     }
-//   }
-//   run().catch(console.dir);
 
